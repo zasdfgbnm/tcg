@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: apt install clang-format
+- script: sudo apt-get install clang-format
   displayName: 'install'
 
 - script: clang-format --format=Google src/*.cpp src/*.h
