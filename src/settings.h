@@ -3,19 +3,20 @@
 #include <vector>
 
 class Settings {
-public:
-    Settings():  // fallback settings
-        cgroupfs_path("/sys/fs/cgroup"),
+ public:
+  // fallback settings
+  Settings()
+      : cgroupfs_path("/sys/fs/cgroup"),
         cgroups({"cpu,cpuacct"}),
-        use_nickname(false)
-    {};
-    Settings(std::string filename)  // load settings from file, not implemented yet
-        = delete;
+        use_nickname(false){};
 
-    std::string cgroupfs_path;
-    std::vector<std::string> cgroups;
-    bool use_nickname;
-    std::vector<std::string> nicknames;
+  // load settings from file, not implemented yet
+  Settings(std::string filename) = delete;
+
+  std::string cgroupfs_path;
+  std::vector<std::string> cgroups;
+  bool use_nickname;
+  std::vector<std::string> nicknames;
 };
 
 Settings try_load_settings(std::string filename);
