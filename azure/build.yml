@@ -1,0 +1,13 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    mkdir build
+    cd build
+    cmake ..
+    make
+  displayName: 'build'

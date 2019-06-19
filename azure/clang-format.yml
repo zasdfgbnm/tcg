@@ -1,0 +1,9 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: clang-format --format=Google src/*.cpp src/*.h
+  displayName: 'build'
