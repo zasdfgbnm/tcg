@@ -5,9 +5,16 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+
+- script: sudo apt-get install clang-tidy
+  displayName: 'install clang-tidy'
+
 - script: |
     mkdir build
     cd build
     cmake ..
     make
   displayName: 'build'
+
+- script: clang-tidy .
+  displayName: 'clang-tidy'
