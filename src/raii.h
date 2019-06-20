@@ -18,8 +18,8 @@ class CGroup {
   CGroup(CGroup &&) = default;
   ~CGroup();
   void rename(const std::string &name);
-  std::string path(const std::string &cgroup);
-  std::string path(const std::string &cgroup, const std::string &name);
+  std::string path();
+  std::string path(const std::string &name);
 
   User &user;
 };
@@ -33,7 +33,7 @@ class User {
   User(User &&);
   ~User();
   void setCGroup(int64_t pid, const std::string &name);
-  std::string path(const std::string &cgroup);
+  std::string path();
 
   const std::string name;
   AutoCGrouper &autocgrouper;
@@ -49,7 +49,7 @@ class AutoCGrouper {
   static AutoCGrouper *getInstance(Settings &settings);
   static void terminate();
   User &operator[](const std::string &username);
-  std::string path(const std::string &cgroup);
+  std::string path();
   Settings &settings;
 };
 
