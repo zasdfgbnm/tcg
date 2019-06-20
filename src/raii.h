@@ -8,7 +8,8 @@ namespace autocgrouper {
 class CGroup {
   int64_t pid;
   std::string name;
-public:
+
+ public:
   CGroup(const CGroup &) = delete;
   CGroup(CGroup &&) = default;
 };
