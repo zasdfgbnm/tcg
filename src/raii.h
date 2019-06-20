@@ -6,9 +6,8 @@
 namespace autocgrouper {
 
 class CGroup {
-  int64_t pid;
+  const int64_t pid;
   std::string name;
-  User &user;
 
  public:
   CGroup(User &user, int64_t pid, const std::string & name);
@@ -17,11 +16,12 @@ class CGroup {
   ~CGroup();
   void rename(const std::string &name);
   std::string path(const std::string & cgroup);
+  std::string path(const std::string & cgroup, const std::string & name);
+  User &user;
 };
 
 class User {
-  AutoCGrouper &autocgrouper;
-  std::string name;
+  const std::string name;
   std::unordered_map<int64_t, CGroup> cgroups;
 
  public:
@@ -31,10 +31,10 @@ class User {
   ~User();
   void setCGroup(int64_t pid, const std::string & name);
   std::string path(const std::string & cgroup);
+  AutoCGrouper &autocgrouper;
 };
 
 class AutoCGrouper {
-  Settings &settings;
   std::unordered_map<std::string, User> users;
   static AutoCGrouper *instance;
   AutoCGrouper(Settings &settings);
@@ -45,6 +45,7 @@ class AutoCGrouper {
   static void terminate();
   User &operator[](const std::string & username);
   std::string path(const std::string & cgroup);
+  Settings &settings;
 };
 
 }  // namespace autocgrouper

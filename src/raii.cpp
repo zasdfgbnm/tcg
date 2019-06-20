@@ -1,13 +1,18 @@
 #include "raii.h"
+#include "linux.h"
 
 namespace autocgrouper {
 
 AutoCGrouper::AutoCGrouper(Settings &settings) : settings(settings) {
-  // mkdir
+  for (std::string cgroup : settings.cgroups) {
+    linuxapi::mkdir(path(cgroup));
+  }
 }
 
 AutoCGrouper::~AutoCGrouper() {
-  // rmdir
+  for (std::string cgroup : settings.cgroups) {
+    linuxapi::rmdir(path(cgroup));
+  }
 }
 
 AutoCGrouper *AutoCGrouper::instance = nullptr;
@@ -24,30 +29,34 @@ void AutoCGrouper::terminate() {
   instance = nullptr;
 }
 
-std::string AutoCGrouper::path(std::string cgroup) {
+std::string AutoCGrouper::path(const std::string & cgroup) {
   return settings.cgroupfs_path + "/" + cgroup + "/autocgrouper";
 }
 
-User &AutoCGrouper::operator[](std::string username) {
+User &AutoCGrouper::operator[](const std::string & username) {
   if (users.count(username) == 0) {
     users.emplace(username, User(*this, username));
   }
   return users.at(username);
 }
 
-User::User(AutoCGrouper &autocgrouper, std::string name)
+User::User(AutoCGrouper &autocgrouper, const std::string & name)
     : autocgrouper(autocgrouper), name(name) {
-  // mkdir
+  for (std::string cgroup : autocgrouper.settings.cgroups) {
+    linuxapi::mkdir(path(cgroup));
+  }
 }
 User::~User() {
-  // rmdir
+  for (std::string cgroup : autocgrouper.settings.cgroups) {
+    linuxapi::rmdir(path(cgroup));
+  }
 }
 
 User::User(User &&other) : User(other.autocgrouper, other.name) {
   std::swap(cgroups, other.cgroups);
 }
 
-void User::setCGroup(int64_t pid, std::string name) {
+void User::setCGroup(int64_t pid, const std::string & name) {
   if (cgroups.count(pid) == 0) {
     cgroups.emplace(pid, CGroup(*this, pid, name));
   } else {
@@ -55,25 +64,35 @@ void User::setCGroup(int64_t pid, std::string name) {
   }
 }
 
-std::string User::path(std::string cgroup) {
+std::string User::path(const std::string & cgroup) {
   return autocgrouper.path(cgroup) + "/" + name;
 }
 
-CGroup::CGroup(User &user, int64_t pid, std::string name)
+CGroup::CGroup(User &user, int64_t pid, const std::string & name)
     : user(user), pid(pid), name(name) {
-  // mkdir
+  for (std::string cgroup : user.autocgrouper.settings.cgroups) {
+    linuxapi::mkdir(path(cgroup));
+  }
 }
 
 CGroup::~CGroup() {
-  // rmdir
+  for (std::string cgroup : user.autocgrouper.settings.cgroups) {
+    linuxapi::rmdir(path(cgroup));
+  }
 }
 
-void CGroup::rename(std::string name) {
-  // mv dir
+void CGroup::rename(const std::string & name) {
+  for (std::string cgroup : user.autocgrouper.settings.cgroups) {
+    linuxapi::mvdir(path(cgroup), );
+  }
   this->name = name;
 }
 
-std::string CGroup::path(std::string cgroup) {
+std::string CGroup::path(const std::string & cgroup) {
+  return path(cgroup, name);
+}
+
+std::string CGroup::path(const std::string & cgroup, const std::string &name) {
   return user.path(cgroup) + "/" + name;
 }
 
