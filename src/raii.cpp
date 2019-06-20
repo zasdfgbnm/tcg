@@ -51,7 +51,6 @@ User::User(User &&other) : User(other.autocgrouper, other.name) {
 void User::setCGroup(int64_t pid, const std::string &name) {
   if (cgroups.count(pid) == 0) {
     cgroups.emplace(pid, CGroup(*this, pid, name));
-    // TODO: start monitor populated change event to clean up
   } else {
     cgroups.at(pid).rename(name);
   }
@@ -69,7 +68,8 @@ CGroup::CGroup(User &user, int64_t pid, const std::string &name)
       linuxapi::chown(filename, user.name);
     }
   }
-  linuxapi::append(dir + "/cgroup.procs", std::to_string(pid));
+  linuxapi::write(dir + "/cgroup.procs", std::to_string(pid));
+  // TODO: start monitor populated change event to clean up
 }
 
 CGroup::~CGroup() { linuxapi::rmdir(path()); }
