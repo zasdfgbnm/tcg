@@ -5,8 +5,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: sudo apt-get install clang-format
+- script: |
+    sudo apt-get install clang-format
+    wget https://raw.githubusercontent.com/Sarcasm/run-clang-format/master/run-clang-format.py
   displayName: 'install'
 
-- script: clang-format --style=Google src/*.cpp src/*.h
-  displayName: 'build'
+- script: python run-clang-format.py -r src/ test/
+  displayName: 'clang-format'
