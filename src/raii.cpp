@@ -43,4 +43,13 @@ User &AutoCGrouper::operator[](std::string username) {
   return users.at(username);
 }
 
+CGroup::CGroup(int64_t pid, std::string name, std::string username)
+    : pid(pid), name(name), username(username) {
+  // mkdir
+}
+
+CGroup::~CGroup() {
+  // rmdir
+}
+
 }  // namespace autocgrouper

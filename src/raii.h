@@ -8,10 +8,14 @@ namespace autocgrouper {
 class CGroup {
   int64_t pid;
   std::string name;
+  std::string username;
 
  public:
+  CGroup(int64_t pid, std::string name, std::string username);
   CGroup(const CGroup &) = delete;
   CGroup(CGroup &&) = default;
+  ~CGroup();
+  void rename(std::string name);
 };
 
 class User {
@@ -24,7 +28,7 @@ class User {
   User(const User &) = delete;
   User(User &&);
   ~User();
-  std::string setCGroup(int64_t pid, std::string);
+  void setCGroup(int64_t pid, std::string);
 };
 
 class AutoCGrouper {
