@@ -1,4 +1,2 @@
-autocgrouperd
-*.o
 /build
 .vscode
