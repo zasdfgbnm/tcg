@@ -14,7 +14,7 @@ class Settings {
         check_ms(1000){};
 
   // load settings from file, not implemented yet
-  Settings(const std::string & filename) = delete;
+  Settings(const std::string& filename) = delete;
 
   std::string cgroupfs_path;
   std::vector<std::string> cgroups;
@@ -23,6 +23,6 @@ class Settings {
   int64_t check_ms;
 };
 
-Settings try_load_settings(const std::string & filename);
+Settings try_load_settings(const std::string& filename);
 
 }  // namespace autocgrouper

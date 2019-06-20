@@ -29,18 +29,18 @@ void AutoCGrouper::terminate() {
   instance = nullptr;
 }
 
-std::string AutoCGrouper::path(const std::string & cgroup) {
+std::string AutoCGrouper::path(const std::string &cgroup) {
   return settings.cgroupfs_path + "/" + cgroup + "/autocgrouper";
 }
 
-User &AutoCGrouper::operator[](const std::string & username) {
+User &AutoCGrouper::operator[](const std::string &username) {
   if (users.count(username) == 0) {
     users.emplace(username, User(*this, username));
   }
   return users.at(username);
 }
 
-User::User(AutoCGrouper &autocgrouper, const std::string & name)
+User::User(AutoCGrouper &autocgrouper, const std::string &name)
     : autocgrouper(autocgrouper), name(name) {
   for (std::string cgroup : autocgrouper.settings.cgroups) {
     linuxapi::mkdir(path(cgroup));
@@ -56,7 +56,7 @@ User::User(User &&other) : User(other.autocgrouper, other.name) {
   std::swap(cgroups, other.cgroups);
 }
 
-void User::setCGroup(int64_t pid, const std::string & name) {
+void User::setCGroup(int64_t pid, const std::string &name) {
   if (cgroups.count(pid) == 0) {
     cgroups.emplace(pid, CGroup(*this, pid, name));
   } else {
@@ -64,11 +64,11 @@ void User::setCGroup(int64_t pid, const std::string & name) {
   }
 }
 
-std::string User::path(const std::string & cgroup) {
+std::string User::path(const std::string &cgroup) {
   return autocgrouper.path(cgroup) + "/" + name;
 }
 
-CGroup::CGroup(User &user, int64_t pid, const std::string & name)
+CGroup::CGroup(User &user, int64_t pid, const std::string &name)
     : user(user), pid(pid), name(name) {
   for (std::string cgroup : user.autocgrouper.settings.cgroups) {
     std::string path = this->path(cgroup);
@@ -84,18 +84,18 @@ CGroup::~CGroup() {
   }
 }
 
-void CGroup::rename(const std::string & name) {
+void CGroup::rename(const std::string &name) {
   for (std::string cgroup : user.autocgrouper.settings.cgroups) {
     linuxapi::mvdir(path(cgroup), path(cgroup, name));
   }
   this->name = name;
 }
 
-std::string CGroup::path(const std::string & cgroup) {
+std::string CGroup::path(const std::string &cgroup) {
   return path(cgroup, name);
 }
 
-std::string CGroup::path(const std::string & cgroup, const std::string &name) {
+std::string CGroup::path(const std::string &cgroup, const std::string &name) {
   return user.path(cgroup) + "/" + name;
 }
 
