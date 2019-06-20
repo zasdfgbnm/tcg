@@ -3,6 +3,10 @@
 
 namespace autocgrouper {
 
+const char *nonprivileged_files[] = {
+    ""  // TODO: fill this out
+};
+
 AutoCGrouper::AutoCGrouper(Settings &settings) : settings(settings) {
   linuxapi::mkdir(path());
 }
@@ -47,6 +51,7 @@ User::User(User &&other) : User(other.autocgrouper, other.name) {
 void User::setCGroup(int64_t pid, const std::string &name) {
   if (cgroups.count(pid) == 0) {
     cgroups.emplace(pid, CGroup(*this, pid, name));
+    // TODO: start monitor populated change event to clean up
   } else {
     cgroups.at(pid).rename(name);
   }
@@ -58,13 +63,13 @@ CGroup::CGroup(User &user, int64_t pid, const std::string &name)
     : user(user), pid(pid), name(name) {
   std::string dir = path();
   linuxapi::mkdir(dir);
-  for (std::string filename : linuxapi::list_files(dir)) {
-    if (filename != "cgroup.procs") {
-      linuxapi::chown(filename, user.name);  // TODO: Is it better to use DELEGATION?
+  for (std::string filename : nonprivileged_files) {
+    filename = dir + filename;
+    if (linuxapi::exists(filename)) {
+      linuxapi::chown(filename, user.name);
     }
   }
   linuxapi::append(dir + "/cgroup.procs", std::to_string(pid));
-  // TODO: monitor populated event
 }
 
 CGroup::~CGroup() { linuxapi::rmdir(path()); }

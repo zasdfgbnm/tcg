@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <vector>
 
 namespace linuxapi {
 
@@ -10,7 +9,6 @@ void rmdir(const std::string& dirname);
 void mvdir(const std::string& oldname, const std::string& newname);
 void chown(const std::string& path, const std::string& username);
 void append(const std::string& filename, const std::string& text);
-std::vector<std::string> list_files(const std::string& dirname);
-int filesize(const std::string& filename);
+bool exists(const std::string& filename);
 
 }  // namespace linuxapi
