@@ -22,7 +22,7 @@ class User {
  public:
   User(Settings &settings, std::string name);
   User(const User &) = delete;
-  User(User &&) = default;
+  User(User &&);
   ~User();
   std::string setCGroup(int64_t pid, std::string);
 };
