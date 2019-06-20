@@ -5,6 +5,9 @@
 
 namespace autocgrouper {
 
+class AutoCGrouper;
+class User;
+
 class CGroup {
   const int64_t pid;
   std::string name;

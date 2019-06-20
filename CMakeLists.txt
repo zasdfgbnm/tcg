@@ -5,4 +5,5 @@ add_executable(autocgrouperd
     src/autocgrouperd.cpp
     src/settings.cpp
     src/raii.cpp
+    src/linux.cpp
 )
