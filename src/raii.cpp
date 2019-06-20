@@ -58,12 +58,13 @@ CGroup::CGroup(User &user, int64_t pid, const std::string &name)
     : user(user), pid(pid), name(name) {
   std::string dir = path();
   linuxapi::mkdir(dir);
-  linuxapi::append(dir + "/cgroup.procs", std::to_string(pid));
   for (std::string filename : linuxapi::list_files(dir)) {
     if (filename != "cgroup.procs") {
-      linuxapi::chown(filename, user.name);
+      linuxapi::chown(filename, user.name);  // TODO: Is it better to use DELEGATION?
     }
   }
+  linuxapi::append(dir + "/cgroup.procs", std::to_string(pid));
+  // TODO: monitor populated event
 }
 
 CGroup::~CGroup() { linuxapi::rmdir(path()); }
