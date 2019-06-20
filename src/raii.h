@@ -28,7 +28,7 @@ class User {
   User(const User &) = delete;
   User(User &&);
   ~User();
-  void setCGroup(int64_t pid, std::string);
+  void setCGroup(int64_t pid, std::string name);
 };
 
 class AutoCGrouper {
