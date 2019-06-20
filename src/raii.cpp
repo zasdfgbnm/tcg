@@ -70,6 +70,7 @@ CGroup::~CGroup() {
 
 void CGroup::rename(std::string name) {
   // mv dir
+  this->name = name;
 }
 
 std::string CGroup::path(std::string cgroup) {
