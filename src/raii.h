@@ -16,7 +16,9 @@ class User {
   std::unordered_map<int64_t, CGroup> cgroups;
 
  public:
-  User(Settings &settings);
+  User(Settings &settings, std::string name);
+  User(const User &) = delete;
+  User(User &&) = default;
   ~User();
   std::string setCGroup(int64_t pid, std::string);
 };
@@ -24,11 +26,13 @@ class User {
 class AutoCGrouper {
   Settings &settings;
   std::unordered_map<std::string, User> users;
+  static AutoCGrouper *instance;
+  AutoCGrouper(Settings &settings);
+  ~AutoCGrouper();
 
  public:
-  AutoCGrouper(Settings &settings);
+  static AutoCGrouper *getInstance(Settings &settings);
   User &operator[](std::string username);
-  ~AutoCGrouper();
 };
 
 }  // namespace autocgrouper
