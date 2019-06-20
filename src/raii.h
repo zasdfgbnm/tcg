@@ -17,11 +17,11 @@ class CGroup {
   void rename(const std::string &name);
   std::string path(const std::string & cgroup);
   std::string path(const std::string & cgroup, const std::string & name);
+
   User &user;
 };
 
 class User {
-  const std::string name;
   std::unordered_map<int64_t, CGroup> cgroups;
 
  public:
@@ -31,6 +31,8 @@ class User {
   ~User();
   void setCGroup(int64_t pid, const std::string & name);
   std::string path(const std::string & cgroup);
+
+  const std::string name;
   AutoCGrouper &autocgrouper;
 };
 

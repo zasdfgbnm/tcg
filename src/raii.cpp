@@ -71,7 +71,10 @@ std::string User::path(const std::string & cgroup) {
 CGroup::CGroup(User &user, int64_t pid, const std::string & name)
     : user(user), pid(pid), name(name) {
   for (std::string cgroup : user.autocgrouper.settings.cgroups) {
-    linuxapi::mkdir(path(cgroup));
+    std::string path = this->path(cgroup);
+    linuxapi::mkdir(path);
+    linuxapi::chown(path, user.name);
+    linuxapi::write(path + "/cgroup.procs", std::to_string(pid));
   }
 }
 
@@ -83,7 +86,7 @@ CGroup::~CGroup() {
 
 void CGroup::rename(const std::string & name) {
   for (std::string cgroup : user.autocgrouper.settings.cgroups) {
-    linuxapi::mvdir(path(cgroup), );
+    linuxapi::mvdir(path(cgroup), path(cgroup, name));
   }
   this->name = name;
 }
