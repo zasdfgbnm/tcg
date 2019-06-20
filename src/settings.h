@@ -8,7 +8,7 @@ class Settings {
  public:
   // fallback settings
   Settings()
-      : cgroupfs_path("/sys/fs/cgroup/unified"),
+      : cgroupfs_path("/sys/fs/cgroup"),
         use_nickname(false),
         check_ms(1000){};
 
