@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <shared_mutex>
 #include "settings.h"
 
 namespace autocgrouper {
@@ -26,10 +27,13 @@ class CGroup {
 
 class User {
   std::unordered_map<int64_t, CGroup> cgroups;
+  std::shared_mutex mutex;
 
  public:
   User(AutoCGrouper &autocgrouper, const std::string &name);
   User(const User &) = delete;
+  User &operator=(const User &) = delete;
+  User &operator=(User &&) = delete;
   User(User &&);
   ~User();
   void setCGroup(int64_t pid, const std::string &name);

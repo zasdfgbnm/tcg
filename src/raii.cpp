@@ -1,5 +1,7 @@
 #include "raii.h"
 #include "linux.h"
+#include <mutex>
+#include <shared_mutex>
 
 namespace autocgrouper {
 
@@ -50,6 +52,7 @@ User::User(User &&other) : User(other.autocgrouper, other.name) {
 
 void User::setCGroup(int64_t pid, const std::string &name) {
   if (cgroups.count(pid) == 0) {
+    std::unique_lock lock(mutex);
     cgroups.emplace(pid, CGroup(*this, pid, name));
   } else {
     cgroups.at(pid).rename(name);
