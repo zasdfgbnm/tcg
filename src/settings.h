@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 
-
 namespace autocgrouper {
 
 class Settings {
@@ -24,4 +23,4 @@ class Settings {
 
 Settings try_load_settings(std::string filename);
 
-}
+}  // namespace autocgrouper

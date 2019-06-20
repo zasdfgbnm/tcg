@@ -1,5 +1,5 @@
-#include "settings.h"
 #include "raii.h"
+#include "settings.h"
 
 using namespace autocgrouper;
 

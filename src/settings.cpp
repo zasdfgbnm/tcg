@@ -7,4 +7,4 @@ Settings try_load_settings(std::string filename) {
   return Settings();
 }
 
-}
+}  // namespace autocgrouper
