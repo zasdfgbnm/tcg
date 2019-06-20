@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 
+
+namespace autocgrouper {
+
 class Settings {
  public:
   // fallback settings
@@ -20,3 +23,5 @@ class Settings {
 };
 
 Settings try_load_settings(std::string filename);
+
+}
