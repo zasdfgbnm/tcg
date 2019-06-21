@@ -1,4 +1,3 @@
 #!/bin/bash
 
-apt-cache search gcc
-sudo apt-get install gcc-9 clang-tidy clang-format
+sudo apt-get install gcc-8 g++-8 clang-tidy clang-format
