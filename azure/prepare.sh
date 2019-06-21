@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" | sudo tee /etc/apt/source.list
+sudo add-apt-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main"
 wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
 sudo apt-get update
 
