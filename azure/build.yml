@@ -6,8 +6,8 @@ pool:
 
 steps:
 
-- script: sudo apt-get install clang-tidy
-  displayName: 'install clang-tidy'
+- script: azure/prepare.sh
+  displayName: 'prepare'
 
 - script: |
     mkdir build
