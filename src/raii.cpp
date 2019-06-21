@@ -2,6 +2,7 @@
 #include "linux.h"
 #include <mutex>
 #include <shared_mutex>
+#include <thread>
 
 namespace autocgrouper {
 
@@ -54,7 +55,14 @@ void User::setCGroup(int64_t pid, const std::string &name) {
   if (cgroups.count(pid) == 0) {
     std::unique_lock lock(mutex);
     cgroups.emplace(pid, CGroup(*this, pid, name));
+    std::thread cleanup_thread([&, pid](){
+      std::unique_lock lock(mutex);
+      linuxapi::block_until_modified(cgroups.at(pid).path() + "/cgroup.events");
+      cgroups.erase(pid);
+    });
+    cleanup_thread.detach();
   } else {
+    std::shared_lock lock(mutex);
     cgroups.at(pid).rename(name);
   }
 }
@@ -72,7 +80,6 @@ CGroup::CGroup(User &user, int64_t pid, const std::string &name)
     }
   }
   linuxapi::write(dir + "/cgroup.procs", std::to_string(pid));
-  // TODO: start monitor populated change event to clean up
 }
 
 CGroup::~CGroup() { linuxapi::rmdir(path()); }
