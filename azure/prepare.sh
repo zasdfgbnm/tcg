@@ -8,6 +8,3 @@ sudo apt-get install gcc-9 g++-9
 sudo apt-get remove gcc-5 g++-5
 
 sudo apt-get install clang-8 clang-format-8 clang-tidy-8
-
-which clang-format
-which clang-tidy
