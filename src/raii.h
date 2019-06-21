@@ -1,7 +1,7 @@
 #pragma once
+#include <shared_mutex>
 #include <string>
 #include <unordered_map>
-#include <shared_mutex>
 #include "settings.h"
 
 namespace autocgrouper {

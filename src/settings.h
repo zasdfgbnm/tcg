@@ -8,9 +8,7 @@ class Settings {
  public:
   // fallback settings
   Settings()
-      : cgroupfs_path("/sys/fs/cgroup"),
-        use_nickname(false),
-        check_ms(1000){};
+      : cgroupfs_path("/sys/fs/cgroup"), use_nickname(false), check_ms(1000){};
 
   // load settings from file, not implemented yet
   Settings(const std::string& filename) = delete;
