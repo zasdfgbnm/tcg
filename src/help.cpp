@@ -1,7 +1,7 @@
 #include <cstdlib>
 
 #include <fmt/color.h>
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 void help() {
   fmt::print("Usage:\n");
