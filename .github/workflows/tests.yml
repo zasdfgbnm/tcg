@@ -18,8 +18,12 @@ jobs:
         python-version: '3.9'
     - name: Install dependencies
       run: |
-        sudo apt-get install -y qemu-system
+        # install pacman
         pip3 install meson
         git clone https://git.archlinux.org/pacman.git/
         cd pacman
         meson builddir && cd builddir
+        sudo apt-get install -y libarchive-dev
+
+        # install qemu
+        sudo apt-get install -y qemu-system
