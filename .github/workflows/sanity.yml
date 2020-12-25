@@ -44,21 +44,27 @@ jobs:
       run: |
         clang-tidy -p build/compile_commands.json src/*
 
-  compile:
+  limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
     - name: Install dependencies
       run: |
         sudo apt-get install -y libboost-all-dev
+        pip install xonsh pytest
     - name: Compile
       run: |
         mkdir build
         cd build
         cmake ..
         make -j
-    - name: Run help
+    - name: Run tests on cgroup v1
+      timeout-minutes: 1
       run: |
-        ./build/tcg help
+        export PATH=$PATH:$PWD/build
+        pytest -v

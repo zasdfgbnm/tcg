@@ -9,6 +9,8 @@ import queue
 
 uid = os.getuid()
 ROOT = f'/sys/fs/cgroup/user.slice/user-{uid}.slice/user@{uid}.service/terminals.slice/'
+CGROUP_AVAILABLE = os.path.isdir(ROOT)
+print(CGROUP_AVAILABLE)
 
 
 def random_string(length):
@@ -46,6 +48,9 @@ def test_create_illegal():
 
 
 def test_create_builtin_name():
+    if not CGROUP_AVAILABLE:
+        pytest.xfail("requires cgroup v2")
+
     groups1 = set(list_groups())
     tcg create
     tcg c
@@ -54,6 +59,9 @@ def test_create_builtin_name():
 
 
 def test_create_and_destroy():
+    if not CGROUP_AVAILABLE:
+        pytest.skip("requires cgroup v2")
+
     name1 = random_string(10)
     name2 = random_string(10)
 
@@ -102,11 +110,16 @@ def test_create_and_destroy():
     assert name2 not in groups3
 
 
-def test_list():
+def test_list_illegal():
     with pytest.raises(subprocess.CalledProcessError):
         tcg ls aaa
     with pytest.raises(subprocess.CalledProcessError):
         tcg list aaa
+
+
+def test_list():
+    if not CGROUP_AVAILABLE:
+        pytest.xfail("requires cgroup v2")
 
     name1 = random_string(10)
     name2 = random_string(10)
@@ -121,6 +134,7 @@ def test_list():
     assert groups1 == groups2
     assert groups1 == groups3
 
+
 def test_freeze_unfreeze_illegal():
     non_existing_name = random_string(10)
     with pytest.raises(subprocess.CalledProcessError):
@@ -132,12 +146,19 @@ def test_freeze_unfreeze_illegal():
     with pytest.raises(subprocess.CalledProcessError):
         tcg uf @(non_existing_name)
 
+    if not CGROUP_AVAILABLE:
+        return
+
     name = random_string(10)
     tcg create @(name)
     with pytest.raises(subprocess.CalledProcessError):
         tcg freeze @(name) aaa
 
+
 def test_freeze_unfreeze():
+    if not CGROUP_AVAILABLE:
+        pytest.skip("requires cgroup v2")
+
     name = random_string(10)
 
     q1 = multiprocessing.Queue()
