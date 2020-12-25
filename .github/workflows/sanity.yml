@@ -1,4 +1,4 @@
-name: lint
+name: sanity-check
 
 on:
   pull_request:
@@ -42,5 +42,23 @@ jobs:
         cmake ..
     - name: Lint with clang-tidy
       run: |
-        set -eux
         clang-tidy -p build/compile_commands.json src/*
+
+  compile:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -y libboost-all-dev
+    - name: Compile
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        make -j
+    - name: Run help
+      run: |
+        ./build/tcg help
