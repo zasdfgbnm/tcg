@@ -22,13 +22,3 @@ jobs:
         sudo mount archlinux.img /mnt
         sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware'
         wait
-
-    # - name: Install dependencies
-    #   run: |
-    #     set -eux
-
-    #     # install pacman
-    #     docker run archlinux
-
-    #     # install qemu
-    #     sudo apt-get install -y qemu-system
