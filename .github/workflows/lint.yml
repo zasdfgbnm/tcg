@@ -30,7 +30,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
-        sudo apt-get install -y libboost-all-dev libfmt-dev clang-tidy
+        sudo apt-get install -y libboost-all-dev clang-tidy
         # wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
         # sudo apt-add-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-11 main"
         # sudo apt-get update
