@@ -40,3 +40,4 @@ jobs:
     - name: Lint with clang-tidy
       run: |
         clang-tidy -p build/compile_commands.json src/*
+        false
