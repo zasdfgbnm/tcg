@@ -10,6 +10,7 @@ import queue
 uid = os.getuid()
 ROOT = f'/sys/fs/cgroup/user.slice/user-{uid}.slice/user@{uid}.service/terminals.slice/'
 CGROUP_AVAILABLE = os.path.isdir(ROOT)
+print(CGROUP_AVAILABLE)
 
 
 def random_string(length):
@@ -46,62 +47,62 @@ def test_create_illegal():
         tcg c -aaa
 
 
-# def test_create_builtin_name():
-#     groups1 = set(list_groups())
-#     tcg create
-#     tcg c
-#     groups2 = set(list_groups())
-#     assert len(groups2 - groups1) == 2
+def test_create_builtin_name():
+    groups1 = set(list_groups())
+    tcg create
+    tcg c
+    groups2 = set(list_groups())
+    assert len(groups2 - groups1) == 2
 
 
-@pytest.mark.skipif(not CGROUP_AVAILABLE)
-def test_create_and_destroy():
-    name1 = random_string(10)
-    name2 = random_string(10)
+# @pytest.mark.skipif(not CGROUP_AVAILABLE)
+# def test_create_and_destroy():
+#     name1 = random_string(10)
+#     name2 = random_string(10)
 
-    q1 = multiprocessing.Queue()
-    q2 = multiprocessing.Queue()
+#     q1 = multiprocessing.Queue()
+#     q2 = multiprocessing.Queue()
 
-    def f(q1, q2, name1, name2):
-        tcg create @(name1)
+#     def f(q1, q2, name1, name2):
+#         tcg create @(name1)
 
-        q1.put("sync point 1")
-        assert q2.get() == "sync point 1"
+#         q1.put("sync point 1")
+#         assert q2.get() == "sync point 1"
 
-        tcg c @(name2)
+#         tcg c @(name2)
 
-        q1.put("sync point 2")
-        assert q2.get() == "sync point 2"
+#         q1.put("sync point 2")
+#         assert q2.get() == "sync point 2"
 
-    p = multiprocessing.Process(target=f, args=(q1, q2, name1, name2))
-    p.start()
+#     p = multiprocessing.Process(target=f, args=(q1, q2, name1, name2))
+#     p.start()
 
-    assert q1.get() == "sync point 1"
-    groups1 = list_groups()
-    assert name1 in groups1
-    assert name2 not in groups1
-    assert str(p.pid) in list_processes(name1)
+#     assert q1.get() == "sync point 1"
+#     groups1 = list_groups()
+#     assert name1 in groups1
+#     assert name2 not in groups1
+#     assert str(p.pid) in list_processes(name1)
 
-    q2.put("sync point 1")
-    assert q1.get() == "sync point 2"
+#     q2.put("sync point 1")
+#     assert q1.get() == "sync point 2"
 
-    # At this point, a new cgroup name2 is created, and process `p`
-    # are moved from name1 to name2. But name1 is not empty. It contains
-    # one process which is the child process of second tcg call waiting
-    # for cleaning up name2. This means, name1 can only be garbage collected
-    # after name2 is garbage collected.
-    groups2 = list_groups()
-    assert name1 in groups2
-    assert name2 in groups2
-    assert str(p.pid) not in list_processes(name1)
-    assert str(p.pid) in list_processes(name2)
-    assert p.is_alive()
+#     # At this point, a new cgroup name2 is created, and process `p`
+#     # are moved from name1 to name2. But name1 is not empty. It contains
+#     # one process which is the child process of second tcg call waiting
+#     # for cleaning up name2. This means, name1 can only be garbage collected
+#     # after name2 is garbage collected.
+#     groups2 = list_groups()
+#     assert name1 in groups2
+#     assert name2 in groups2
+#     assert str(p.pid) not in list_processes(name1)
+#     assert str(p.pid) in list_processes(name2)
+#     assert p.is_alive()
 
-    q2.put("sync point 2")
-    sleep 0.1
-    groups3 = list_groups()
-    assert name1 not in groups3
-    assert name2 not in groups3
+#     q2.put("sync point 2")
+#     sleep 0.1
+#     groups3 = list_groups()
+#     assert name1 not in groups3
+#     assert name2 not in groups3
 
 
 def test_list_illegal():
