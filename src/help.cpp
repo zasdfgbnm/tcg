@@ -1,7 +1,7 @@
 #include <cstdlib>
 
-#include <fmt/core.h>
 #include <fmt/color.h>
+#include <fmt/core.h>
 
 void help() {
   fmt::print("Usage:\n");
@@ -13,5 +13,6 @@ void invalid_argument() {
   fmt::print("Run ");
   fmt::print(fmt::emphasis::underline, "tcg help");
   fmt::print(" for more information.\n");
-  exit(EXIT_FAILURE);;
+  exit(EXIT_FAILURE);
+  ;
 }

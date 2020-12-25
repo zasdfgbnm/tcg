@@ -1,7 +1,7 @@
 #include "utils.hpp"
 
-#include <fmt/core.h>
 #include <fmt/color.h>
+#include <fmt/core.h>
 
 #include <boost/filesystem.hpp>
 
@@ -9,12 +9,13 @@ namespace fs = boost::filesystem;
 
 std::string root_dir() {
   auto uid = getuid();
-  auto d = fmt::format("/sys/fs/cgroup/user.slice/user-{0}.slice/user@{0}.service/terminals.slice", uid);
+  auto d = fmt::format("/sys/fs/cgroup/user.slice/user-{0}.slice/"
+                       "user@{0}.service/terminals.slice",
+                       uid);
   if (!fs::is_directory(d)) {
     fmt::print(fg(fmt::color::red) | fmt::emphasis::bold,
-      "Slice is not properly set up.\n"
-      "Please refer to https://example.com on how to setup slice."
-    );
+               "Slice is not properly set up.\n"
+               "Please refer to https://example.com on how to setup slice.");
   }
   return d;
 }
@@ -24,15 +25,12 @@ std::string name_dir(std::string name, std::optional<bool> assert_existence) {
   if (assert_existence.has_value()) {
     bool v = assert_existence.value();
     if (v && !fs::is_directory(dir)) {
-      fmt::print(fg(fmt::color::red) | fmt::emphasis::bold,
-        "Invalid name."
-      );
+      fmt::print(fg(fmt::color::red) | fmt::emphasis::bold, "Invalid name.");
       exit(EXIT_FAILURE);
     }
     if (!v && fs::is_directory(dir)) {
       fmt::print(fg(fmt::color::red) | fmt::emphasis::bold,
-        "Name already used."
-      );
+                 "Name already used.");
       exit(EXIT_FAILURE);
     }
   }
@@ -58,10 +56,10 @@ bool is_used(std::string name) {
 
 std::string new_name() {
   const static std::string names[] = {
-    "newton", "einstein", "schrodinger", "feynman", "fermi", "noether", "dirac",
-    "kepler", "ampere", "pauli", "heisenberg", "hilbert", "poincare", "maxwell",
-    "boltzmann", "gibbs", "hawking", "lorentz"
-  };
+      "newton",     "einstein", "schrodinger", "feynman", "fermi",
+      "noether",    "dirac",    "kepler",      "ampere",  "pauli",
+      "heisenberg", "hilbert",  "poincare",    "maxwell", "boltzmann",
+      "gibbs",      "hawking",  "lorentz"};
   for (auto n : names) {
     if (!is_used(n)) {
       return n;

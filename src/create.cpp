@@ -1,15 +1,15 @@
-#include <string>
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
+#include <string>
 
-#include <fmt/os.h>
-#include <fmt/color.h>
 #include <boost/filesystem.hpp>
+#include <fmt/color.h>
+#include <fmt/os.h>
 
-#include <unistd.h>
 #include <sys/inotify.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "utils.hpp"
 
@@ -17,10 +17,12 @@ namespace fs = boost::filesystem;
 
 void validate_name(const std::string &name) {
   for (char c : name) {
-    if (c == '_' || (c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') || (c <= '9' && c >= '0')) {
+    if (c == '_' || (c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') ||
+        (c <= '9' && c >= '0')) {
       continue;
     }
-    fmt::print(fg(fmt::color::red) | fmt::emphasis::bold, "Name can only contain letters, digits, or underscore.\n");
+    fmt::print(fg(fmt::color::red) | fmt::emphasis::bold,
+               "Name can only contain letters, digits, or underscore.\n");
     exit(EXIT_FAILURE);
   }
 }
@@ -51,7 +53,8 @@ void create(std::string name_) {
   // See: http://netzmafia.de/skripten/unix/linux-daemon-howto.html
   auto pid = fork();
   if (pid < 0) {
-    fmt::print(fg(fmt::color::red) | fmt::emphasis::bold, "Can not detach from shell.\n");
+    fmt::print(fg(fmt::color::red) | fmt::emphasis::bold,
+               "Can not detach from shell.\n");
     exit(EXIT_FAILURE);
   } else if (pid > 0) {
     exit(EXIT_SUCCESS);
@@ -77,7 +80,7 @@ void create(std::string name_) {
   if (fd < 0) {
     exit(EXIT_FAILURE);
   }
-  if(inotify_add_watch(fd, events_file.c_str(), IN_MODIFY) < 0) {
+  if (inotify_add_watch(fd, events_file.c_str(), IN_MODIFY) < 0) {
     exit(EXIT_FAILURE);
   }
   while (true) {
