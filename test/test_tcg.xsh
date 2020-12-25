@@ -37,13 +37,13 @@ def test_help():
     tcg h
 
 
-# def test_create_illegal():
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg create aaa aaa
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg c aaa aaa
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg c -aaa
+def test_create_illegal():
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg create aaa aaa
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg c aaa aaa
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg c -aaa
 
 
 # def test_create_builtin_name():
