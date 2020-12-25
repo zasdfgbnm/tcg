@@ -1,5 +1,7 @@
 project(tcg)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 find_package(fmt REQUIRED)
 find_package(Boost COMPONENTS filesystem REQUIRED)
 

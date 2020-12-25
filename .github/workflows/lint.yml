@@ -24,3 +24,16 @@ jobs:
         fi
         echo $GIT_DIFF
         exit 1
+  clang-tidy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Lint with clang-format
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        cd ..
+        clang-tidy -p build/compile_commands.json src/*
