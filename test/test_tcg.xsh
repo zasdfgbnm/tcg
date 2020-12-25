@@ -9,6 +9,7 @@ import queue
 
 uid = os.getuid()
 ROOT = f'/sys/fs/cgroup/user.slice/user-{uid}.slice/user@{uid}.service/terminals.slice/'
+IS_CGROUP1 = not os.path.isdir('/sys/fs/cgroup/user.slice/')
 
 
 def random_string(length):
@@ -121,6 +122,7 @@ def test_list():
     assert groups1 == groups2
     assert groups1 == groups3
 
+
 def test_freeze_unfreeze_illegal():
     non_existing_name = random_string(10)
     with pytest.raises(subprocess.CalledProcessError):
@@ -136,6 +138,7 @@ def test_freeze_unfreeze_illegal():
     tcg create @(name)
     with pytest.raises(subprocess.CalledProcessError):
         tcg freeze @(name) aaa
+
 
 def test_freeze_unfreeze():
     name = random_string(10)

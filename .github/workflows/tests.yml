@@ -16,17 +16,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
-    - name: Install dependencies
+    - name: TODO
       run: |
-        sudo apt-get install -y libboost-all-dev xonsh python3-pytest
-    - name: Compile
-      run: |
-        mkdir build
-        cd build
-        cmake ..
-        make -j
-    - name: Run help
-      run: |
-        ls /sys/fs/cgroup/
-        export PATH=$PATH:$PWD/build
-        pytest -v
+        ls

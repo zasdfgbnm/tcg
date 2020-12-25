@@ -44,7 +44,7 @@ jobs:
       run: |
         clang-tidy -p build/compile_commands.json src/*
 
-  compile:
+  cgroupv1:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
@@ -52,13 +52,14 @@ jobs:
         submodules: true
     - name: Install dependencies
       run: |
-        sudo apt-get install -y libboost-all-dev
+        sudo apt-get install -y libboost-all-dev xonsh python3-pytest
     - name: Compile
       run: |
         mkdir build
         cd build
         cmake ..
         make -j
-    - name: Run help
+    - name: Run tests on cgroup v1
       run: |
-        ./build/tcg help
+        export PATH=$PATH:$PWD/build
+        pytest -v
