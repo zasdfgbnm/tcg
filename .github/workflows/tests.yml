@@ -21,11 +21,7 @@ jobs:
         set -eux
 
         # install pacman
-        pip3 install meson
-        git clone https://git.archlinux.org/pacman.git/
-        cd pacman
-        meson builddir && cd builddir
-        sudo apt-get install -y libarchive-dev
+        docker run archlinux
 
         # install qemu
         sudo apt-get install -y qemu-system
