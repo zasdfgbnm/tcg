@@ -104,11 +104,11 @@ def test_create_illegal():
 #     assert name2 not in groups3
 
 
-# def test_list_illegal():
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg ls aaa
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg list aaa
+def test_list_illegal():
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg ls aaa
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg list aaa
 
 
 # def test_list():
