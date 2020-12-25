@@ -1,4 +1,4 @@
-name: clang-format
+name: lint
 
 on:
   pull_request:
@@ -9,10 +9,9 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
+
   clang-format:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Lint with clang-format
@@ -24,10 +23,10 @@ jobs:
         fi
         echo $GIT_DIFF
         exit 1
+
   clang-tidy:
 
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Lint with clang-format
