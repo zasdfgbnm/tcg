@@ -13,9 +13,13 @@ jobs:
   tests:
     runs-on: ubuntu-20.04
     steps:
-    - name: Install qemu
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
       run: |
-        lscpu
-        sudo apt-get install -y qemu-kvm
-        sudo modprobe kvm_intel
-        cat /sys/module/kvm_intel/parameters/nested
+        sudo apt-get install -y qemu-system
+        pip3 install meson
+        git clone https://git.archlinux.org/pacman.git/
+        cd pacman
+        meson builddir && cd builddir
