@@ -64,6 +64,7 @@ jobs:
         cmake ..
         make -j
     - name: Run tests on cgroup v1
+      timeout-minutes: 1
       run: |
         export PATH=$PATH:$PWD/build
         pytest -v
