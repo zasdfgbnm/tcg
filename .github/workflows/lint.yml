@@ -35,17 +35,11 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get install -y libboost-all-dev clang-tidy
-        # wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-        # sudo apt-add-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-11 main"
-        # sudo apt-get update
-        # sudo apt-get install -y clang-tidy-11
-        # sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-11 1000
     - name: Generate compile_commands.json
       run: |
         mkdir build
         cd build
         cmake ..
-        make -j
     - name: Lint with clang-tidy
       run: |
         set -eux
