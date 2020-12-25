@@ -9,7 +9,7 @@ import queue
 
 uid = os.getuid()
 ROOT = f'/sys/fs/cgroup/user.slice/user-{uid}.slice/user@{uid}.service/terminals.slice/'
-IS_CGROUP1 = not os.path.isdir('/sys/fs/cgroup/user.slice/')
+CGROUP_AVAILABLE = os.path.isdir(ROOT)
 
 
 def random_string(length):
