@@ -119,7 +119,7 @@ def test_list_illegal():
 
 def test_list():
     if not CGROUP_AVAILABLE:
-        pytest.skip("requires cgroup v2")
+        pytest.xfail("requires cgroup v2")
 
     name1 = random_string(10)
     name2 = random_string(10)
