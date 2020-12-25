@@ -22,3 +22,4 @@ jobs:
         sudo mount archlinux.img /mnt
         sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware'
         wait
+        sudo chroot /mnt ls
