@@ -27,6 +27,6 @@ jobs:
         make -j
     - name: Run help
       run: |
-        ls /sys/fs/cgroup/user.slice/
+        ls /sys/fs/cgroup/
         export PATH=$PATH:$PWD/build
         pytest -v
