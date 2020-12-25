@@ -47,7 +47,9 @@ def test_create_illegal():
         tcg c -aaa
 
 
+@pytest.mark.xfail(not CGROUP_AVAILABLE)
 def test_create_builtin_name():
+    print(CGROUP_AVAILABLE)
     groups1 = set(list_groups())
     tcg create
     tcg c
