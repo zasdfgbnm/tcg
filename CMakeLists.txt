@@ -16,8 +16,10 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
-target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY})
-
 add_subdirectory(third_party/fmt EXCLUDE_FROM_ALL)
+
+# target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY})
 # find_package(fmt)
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)
+# target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)
+
+target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} PRIVATE fmt::fmt-header-only)
