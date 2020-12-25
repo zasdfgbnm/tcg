@@ -62,4 +62,4 @@ jobs:
     - name: Run tests on cgroup v1
       run: |
         export PATH=$PATH:$PWD/build
-        pytest -v
+        python3 -m pytest -v
