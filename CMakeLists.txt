@@ -22,4 +22,4 @@ add_subdirectory(third_party/fmt EXCLUDE_FROM_ALL)
 # find_package(fmt)
 # target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)
 
-target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} PRIVATE fmt::fmt-header-only)
+target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} fmt::fmt-header-only)
