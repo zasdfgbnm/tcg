@@ -44,7 +44,7 @@ jobs:
       run: |
         clang-tidy -p build/compile_commands.json src/*
 
-  cgroupv1:
+  limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
