@@ -39,5 +39,5 @@ jobs:
         cmake ..
     - name: Lint with clang-tidy
       run: |
+        set -eux
         clang-tidy -p build/compile_commands.json src/*
-        false
