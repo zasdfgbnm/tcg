@@ -54,6 +54,7 @@ def test_create_builtin_name():
     assert len(groups2 - groups1) == 2
 
 
+@pytest.mark.skipif(not CGROUP_AVAILABLE)
 def test_create_and_destroy():
     name1 = random_string(10)
     name2 = random_string(10)
@@ -103,12 +104,14 @@ def test_create_and_destroy():
     assert name2 not in groups3
 
 
-def test_list():
+def test_list_illegal():
     with pytest.raises(subprocess.CalledProcessError):
         tcg ls aaa
     with pytest.raises(subprocess.CalledProcessError):
         tcg list aaa
 
+
+def test_list():
     name1 = random_string(10)
     name2 = random_string(10)
     tcg create @(name1)
@@ -140,6 +143,7 @@ def test_freeze_unfreeze_illegal():
         tcg freeze @(name) aaa
 
 
+@pytest.mark.skipif(not CGROUP_AVAILABLE)
 def test_freeze_unfreeze():
     name = random_string(10)
 
