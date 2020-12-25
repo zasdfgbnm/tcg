@@ -28,4 +28,5 @@ jobs:
     - name: Run help
       run: |
         ls /sys/fs/cgroup/user.slice/
+        export PATH=$PATH:$PWD/build
         pytest -v
