@@ -49,7 +49,8 @@ def test_create_illegal():
 
 @pytest.mark.xfail(not CGROUP_AVAILABLE)
 def test_create_builtin_name():
-    print(CGROUP_AVAILABLE)
+    if not CGROUP_AVAILABLE:
+        pytest.xfail("requires cgroup v2")
     groups1 = set(list_groups())
     tcg create
     tcg c
