@@ -29,10 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Lint with clang-format
+    - name: Generate compile_commands.json
       run: |
         mkdir build
         cd build
         cmake ..
-        cd ..
+    - name: Lint with clang-tidy
+      run: |
         clang-tidy -p build/compile_commands.json src/*
