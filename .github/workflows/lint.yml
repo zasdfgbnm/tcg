@@ -13,7 +13,7 @@ jobs:
   clang-format:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Lint with clang-format
       run: |
         find -name '*.cpp' -o -name '*.h' -o -name '*.hpp'| xargs clang-format -i
@@ -27,7 +27,7 @@ jobs:
   clang-tidy:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Install dependencies
       run: |
         sudo apt-get install -y libboost-all-dev clang-tidy
