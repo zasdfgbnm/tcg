@@ -117,93 +117,101 @@ def test_list_illegal():
         tcg list aaa
 
 
-# def test_list():
-#     name1 = random_string(10)
-#     name2 = random_string(10)
-#     tcg create @(name1)
-#     tcg create @(name2)
-#     groups1 = set(list_groups())
-#     groups2 = set($(tcg list).strip().split(', '))
-#     groups3 = set($(tcg ls).strip().split(', '))
-#     print(groups1)
-#     print(groups2)
-#     print(groups3)
-#     assert groups1 == groups2
-#     assert groups1 == groups3
+def test_list():
+    if not CGROUP_AVAILABLE:
+        pytest.skip("requires cgroup v2")
+
+    name1 = random_string(10)
+    name2 = random_string(10)
+    tcg create @(name1)
+    tcg create @(name2)
+    groups1 = set(list_groups())
+    groups2 = set($(tcg list).strip().split(', '))
+    groups3 = set($(tcg ls).strip().split(', '))
+    print(groups1)
+    print(groups2)
+    print(groups3)
+    assert groups1 == groups2
+    assert groups1 == groups3
 
 
-# def test_freeze_unfreeze_illegal():
-#     non_existing_name = random_string(10)
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg freeze @(non_existing_name)
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg f @(non_existing_name)
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg unfreeze @(non_existing_name)
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg uf @(non_existing_name)
+def test_freeze_unfreeze_illegal():
+    non_existing_name = random_string(10)
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg freeze @(non_existing_name)
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg f @(non_existing_name)
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg unfreeze @(non_existing_name)
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg uf @(non_existing_name)
 
-#     name = random_string(10)
-#     tcg create @(name)
-#     with pytest.raises(subprocess.CalledProcessError):
-#         tcg freeze @(name) aaa
+    if not CGROUP_AVAILABLE:
+        return
+
+    name = random_string(10)
+    tcg create @(name)
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg freeze @(name) aaa
 
 
-# @pytest.mark.skipif(not CGROUP_AVAILABLE)
-# def test_freeze_unfreeze():
-#     name = random_string(10)
+def test_freeze_unfreeze():
+    if not CGROUP_AVAILABLE:
+        pytest.skip("requires cgroup v2")
 
-#     q1 = multiprocessing.Queue()
-#     q2 = multiprocessing.Queue()
+    name = random_string(10)
 
-#     def echo(q1, q2, name):
-#         tcg create @(name)
+    q1 = multiprocessing.Queue()
+    q2 = multiprocessing.Queue()
 
-#         q1.put("start")
+    def echo(q1, q2, name):
+        tcg create @(name)
 
-#         while (v := q2.get()) != "end":
-#             q1.put(v)
+        q1.put("start")
 
-#     p = multiprocessing.Process(target=echo, args=(q1, q2, name))
-#     p.start()
+        while (v := q2.get()) != "end":
+            q1.put(v)
 
-#     assert q1.get() == "start"
+    p = multiprocessing.Process(target=echo, args=(q1, q2, name))
+    p.start()
 
-#     q2.put(1)
-#     q2.put(2)
-#     q2.put(3)
-#     assert q1.get() == 1
-#     assert q1.get() == 2
-#     assert q1.get() == 3
+    assert q1.get() == "start"
 
-#     tcg freeze @(name)
+    q2.put(1)
+    q2.put(2)
+    q2.put(3)
+    assert q1.get() == 1
+    assert q1.get() == 2
+    assert q1.get() == 3
 
-#     q2.put(4)
-#     q2.put(5)
-#     q2.put(6)
+    tcg freeze @(name)
 
-#     with pytest.raises(queue.Empty):
-#         q1.get(timeout=0.1)
+    q2.put(4)
+    q2.put(5)
+    q2.put(6)
 
-#     tcg unfreeze @(name)
+    with pytest.raises(queue.Empty):
+        q1.get(timeout=0.1)
 
-#     assert q1.get() == 4
-#     assert q1.get() == 5
-#     assert q1.get() == 6
+    tcg unfreeze @(name)
 
-#     tcg f @(name)
+    assert q1.get() == 4
+    assert q1.get() == 5
+    assert q1.get() == 6
 
-#     q2.put(7)
-#     q2.put(8)
-#     q2.put(9)
+    tcg f @(name)
 
-#     with pytest.raises(queue.Empty):
-#         q1.get(timeout=0.1)
+    q2.put(7)
+    q2.put(8)
+    q2.put(9)
 
-#     tcg uf @(name)
+    with pytest.raises(queue.Empty):
+        q1.get(timeout=0.1)
 
-#     assert q1.get() == 7
-#     assert q1.get() == 8
-#     assert q1.get() == 9
+    tcg uf @(name)
 
-#     q2.put("end")
+    assert q1.get() == 7
+    assert q1.get() == 8
+    assert q1.get() == 9
+
+    q2.put("end")
