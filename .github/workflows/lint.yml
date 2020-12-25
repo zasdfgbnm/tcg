@@ -18,7 +18,7 @@ jobs:
         submodules: true
     - name: Lint with clang-format
       run: |
-        find -name '*.cpp' -o -name '*.h' -o -name '*.hpp'| xargs clang-format -i
+        find src -name '*.cpp' -o -name '*.h' -o -name '*.hpp'| xargs clang-format -i
         GIT_DIFF=$(git diff)
         if [[ -z $GIT_DIFF ]]; then
             exit 0
