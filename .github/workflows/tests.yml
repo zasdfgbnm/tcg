@@ -15,5 +15,7 @@ jobs:
     steps:
     - name: Install qemu
       run: |
+        lscpu
         sudo apt-get install -y qemu-kvm
+        sudo modprobe kvm_intel
         cat /sys/module/kvm_intel/parameters/nested
