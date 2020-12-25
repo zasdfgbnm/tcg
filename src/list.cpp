@@ -6,7 +6,7 @@
 
 std::ostream &operator<<(std::ostream &os, const std::vector<std::string> &v) {
   bool first = true;
-  for(auto i : v) {
+  for (auto i : v) {
     if (!first) {
       os << ", ";
     }
@@ -16,6 +16,4 @@ std::ostream &operator<<(std::ostream &os, const std::vector<std::string> &v) {
   return os;
 }
 
-void list() {
-  std::cout << used_names() << std::endl;
-}
+void list() { std::cout << used_names() << std::endl; }
