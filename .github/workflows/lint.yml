@@ -42,6 +42,7 @@ jobs:
         mkdir build
         cd build
         cmake ..
+        make -j
     - name: Lint with clang-tidy
       run: |
         set -eux
