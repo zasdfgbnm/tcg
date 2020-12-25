@@ -13,13 +13,33 @@ jobs:
   tests:
     runs-on: ubuntu-20.04
     steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
     - name: Prepare environment
       run: |
         set -eux
+        cd ..
+
+        # install qemu
         sudo apt-get install -y qemu-system &
-        dd if=/dev/zero of=archlinux.img bs=1MB count=4096
-        mkfs.btrfs archlinux.img
-        sudo mount archlinux.img /mnt
+
+        # prepare disk image
+        dd if=/dev/zero of=archlinux.img bs=1MiB count=4097
+        sudo losetup -f archlinux.img
+        sudo parted /dev/loop0 -s mklabel gpt mkpart ext4 2048s 4GiB print
+        sudo mkfs.ext4 /dev/loop0p1
+        sudo mount /dev/loop0p1 /mnt
         sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware python python-pip xonsh'
+        
+        # copy files
         wait
+        cp /mnt/boot/vmlinuz-linux .
+        pwd
+        ls
+        sudo cp tcg /mnt
+        sudo chown root:root /mnt/tcg
         sudo chroot /mnt ls
+
+        sudo umount /mnt
+        sudo losetup -d /dev/loop0
