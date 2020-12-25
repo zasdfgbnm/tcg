@@ -17,7 +17,7 @@ jobs:
       run: |
         set -eux
         sudo apt-get install -y qemu-system &
-        dd if=/dev/zero of=archlinux.img bs=1MB count=2048
+        dd if=/dev/zero of=archlinux.img bs=1MB count=4096
         mkfs.btrfs archlinux.img
         sudo mount archlinux.img /mnt
         sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware'
