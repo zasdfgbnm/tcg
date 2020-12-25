@@ -18,6 +18,8 @@ jobs:
         python-version: '3.9'
     - name: Install dependencies
       run: |
+        set -eux
+
         # install pacman
         pip3 install meson
         git clone https://git.archlinux.org/pacman.git/
