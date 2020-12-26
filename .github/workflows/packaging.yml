@@ -23,5 +23,5 @@ jobs:
           cp -r /workspace/packaging/archlinux ~/package;
           ln -s /workspace ~/package/tcg;
           cd ~/package;
-          sudo -u user makepkg
+          makepkg -s
         "
