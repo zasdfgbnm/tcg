@@ -125,9 +125,6 @@ jobs:
     - name: Cleanup mounts
       run: |
         set -eux
-        sudo umount /mnt/proc
-        sudo umount /mnt/sys
-        sudo umount /mnt/dev
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
