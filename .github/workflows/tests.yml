@@ -45,6 +45,7 @@ jobs:
         # setup users and system
         sudo chroot /mnt useradd -m user
         sudo chroot /mnt usermod -a -G wheel user
+        sudo chroot /mnt usermod -a -G wheel root
         sudo chroot /mnt bash -c 'echo root:password | chpasswd'
         sudo chroot /mnt bash -c 'echo user:password | chpasswd'
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
