@@ -10,16 +10,41 @@ on:
 
 jobs:
 
-  tests:
+  archlinux-pkg:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    - name: build
+      run: |
+        docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
+          set -eux
+          cp -r /workspace/packaging/archlinux ~/package;
+          cd ~/package;
+          sed -i "s/source=.*/source=(\"tcg::git+file:\/\/\/workspace\")/g" PKGBUILD
+          makepkg -s --noconfirm
+          sudo cp *.pkg.tar.zst /workspace/packaging/archlinux
+        '
+    - uses: actions/upload-artifact@v2
+      with:
+        name: archlinux-pkg
+        path: packaging/archlinux/*.pkg.tar.zst
+        retention-days: 5
+
+  tests:
+    runs-on: ubuntu-20.04
+    needs: archlinux-pkg
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - uses: actions/download-artifact@v2
+      with:
+        name: archlinux-pkg
     - name: Prepare environment
       run: |
         set -eux
-        cd ..
 
         # install qemu
         sudo apt-get install -y qemu-system
@@ -61,16 +86,16 @@ jobs:
 
         # setup autorun of tests scripts
         cat << EOF | sudo tee /mnt/home/user/.bashrc
-        cp -r /tcg ~
-        cd ~/tcg
-        ./run_tests.sh
+        cp -r /test ~
+        cd ~/test
+        py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo poweroff
         EOF
 
         # copy files
         cp /mnt/boot/* .
-        sudo cp -r tcg /mnt
-        sudo chown root:root /mnt/tcg
+        sudo cp *.pkg.tar.zst /mnt
+        sudo cp -r test /mnt/test
 
         # cleanup
         sudo umount /mnt/proc
