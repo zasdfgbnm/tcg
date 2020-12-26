@@ -36,7 +36,6 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - archlinux-pkg
-      - vm-image
     steps:
     - name: Install qemu
       run: sudo apt-get install -y qemu-system
