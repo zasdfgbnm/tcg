@@ -50,21 +50,9 @@ jobs:
         path: /boot/*
         retention-days: 1
 
-  tests:
+  archlinux-image:
     runs-on: ubuntu-20.04
-    needs:
-      - archlinux-pkg
-      - archlinux-kernel
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-    - uses: actions/download-artifact@v2
-      with:
-        name: archlinux-pkg
-    - uses: actions/download-artifact@v2
-      with:
-        name: archlinux-kernel
     - name: Install qemu
       run: sudo apt-get install -y qemu-system
     - name: Create empty image
@@ -118,14 +106,44 @@ jobs:
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo poweroff
         EOF
-    - name: Copy files
-      run: |
-        set -eux
-        sudo cp *.pkg.tar.zst /mnt
-        sudo cp -r test /mnt/test
     - name: Cleanup mounts
       run: |
         set -eux
+        sudo umount /mnt
+        sudo qemu-nbd --disconnect /dev/nbd0
+    - uses: actions/upload-artifact@v2
+      with:
+        name: archlinux-image
+        path: archlinux.qcow2
+        retention-days: 1
+
+  tests:
+    runs-on: ubuntu-20.04
+    needs:
+      - archlinux-pkg
+      - archlinux-kernel
+      - archlinux-image
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - uses: actions/download-artifact@v2
+      with:
+        name: archlinux-pkg
+    - uses: actions/download-artifact@v2
+      with:
+        name: archlinux-kernel
+    - uses: actions/download-artifact@v2
+      with:
+        name: archlinux-image
+    - name: Install qemu
+      run: sudo apt-get install -y qemu-system
+    - name: Copy files
+      run: |
+        set -eux
+        sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
+        sudo mount /dev/nbd0 /mnt
+        sudo cp *.pkg.tar.zst /mnt
+        sudo cp -r test /mnt/test
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
