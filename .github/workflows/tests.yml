@@ -123,6 +123,7 @@ jobs:
       - archlinux-pkg
       - archlinux-kernel
       - archlinux-image
+    steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
