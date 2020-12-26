@@ -80,7 +80,7 @@ jobs:
         retention-days: 1
         if-no-files-found: error
 
-  build-vm:
+  tests:
     runs-on: ubuntu-20.04
     needs: build-vm
     steps:
