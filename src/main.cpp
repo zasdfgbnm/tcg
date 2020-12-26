@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <string>
 #include <cstdlib>
 
