@@ -61,7 +61,7 @@ jobs:
           pacman -Sy --noconfirm wget arch-install-scripts
           wget https://gitlab.archlinux.org/archlinux/archlinux-docker/-/raw/master/pacman-conf.d-noextract.conf?inline=false -O pacman-conf.d-noextract.conf
           cat pacman-conf.d-noextract.conf >> /etc/pacman.conf
-          pacstrap /newroot base linux linux-firmware sudo python python-pip python-pytest xonsh cmake make g++ boost python-pip
+          pacstrap /newroot base linux linux-firmware sudo python python-pip python-pytest xonsh boost-libs
         '
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout
