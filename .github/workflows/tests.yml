@@ -141,6 +141,7 @@ jobs:
     - name: Copy files
       run: |
         set -eux
+        sudo modprobe nbd
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
         sudo cp *.pkg.tar.zst /mnt
