@@ -38,18 +38,17 @@ jobs:
         cat /mnt/etc/mkinitcpio.conf
         sudo mount -t proc proc /mnt/proc
         sudo mount -t sysfs sys /mnt/sys
-        sudo mount -o bind dev /dev /mnt/dev
+        sudo mount -o bind /dev /mnt/dev
         sudo chroot /mnt mkinitcpio -P
         
         # copy files
-        wait
-        cp /mnt/boot/vmlinuz-linux .
-        pwd
-        ls
-        sudo cp tcg /mnt
+        cp /mnt/boot/* .
+        sudo cp -r tcg /mnt
         sudo chown root:root /mnt/tcg
-        sudo chroot /mnt ls
 
+        sudo umount /mnt/proc
+        sudo umount /mnt/sys
+        sudo umount /mnt/dev
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
 
