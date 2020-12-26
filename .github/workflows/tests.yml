@@ -72,16 +72,4 @@ jobs:
       run: |
         set -eux
         cd ..
-        mkfifo /tmp/guest.in /tmp/guest.out
-        qemu-system-x86_64 -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "systemd.unified_cgroup_hierarchy=1 cgroup_no_v1=all console=ttyS0 root=/dev/sda rw" -monitor vc -serial stdio -nographic -m 2048 -serial pipe:/tmp/guest &
-        printf "user\n" > /tmp/guest.in
-        while read line; do
-          echo "${line}"
-          if [[ ${line} == *"login"* ]]; then
-            printf "user\n" > /tmp/guest.in
-          fi
-          if [[ ${line} == *"Password"* ]]; then
-            printf "password\n" > /tmp/guest.in
-          fi
-        done < /tmp/quest.out
-        wait
+        echo "ls\nls\nls\nls" | qemu-system-x86_64 -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "systemd.unified_cgroup_hierarchy=1 cgroup_no_v1=all console=ttyS0 root=/dev/sda rw" -monitor vc -serial stdio -nographic -m 2048 -serial pipe:/tmp/guest
