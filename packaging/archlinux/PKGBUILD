@@ -32,7 +32,7 @@ build() {
 
 package() {
   cd "$srcdir/${_pkgname}"
-  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${_pkgname}/LICENSE"
-  install -Dm644 static/terminals.slice "${pkgdir}/lib/systemd/user/terminals.slice"
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm644 static/terminals.slice "${pkgdir}/usr/lib/systemd/user/terminals.slice"
   install -Dm755 build/tcg "${pkgdir}/usr/bin/tcg"
 }
