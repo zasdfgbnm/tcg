@@ -51,6 +51,7 @@ jobs:
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
         echo 'root ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /mnt/etc/sudoers
         echo "archvm" | sudo tee /mnt/etc/hostname
+        cat /mnt/etc/passwd
 
         # setup automatic login
         # https://wiki.archlinux.org/index.php/Getty#Serial_console
