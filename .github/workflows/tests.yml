@@ -26,7 +26,7 @@ jobs:
 
         # prepare disk image
         sudo modprobe nbd
-        qemu-img create -f qcow2 archlinux.qcow2 10G
+        qemu-img create -f qcow2 archlinux.qcow2 10.01G
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo parted /dev/nbd0 -s mklabel gpt mkpart ext4 2048s 10GiB print
         sudo mkfs.ext4 /dev/nbd0p1
