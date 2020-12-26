@@ -1,4 +1,5 @@
 #include <string>
+#include <spdlog/spdlog.h>
 
 void invalid_argument();
 
@@ -16,6 +17,7 @@ void freeze(std::string name);
 void unfreeze(std::string name);
 
 int main(int argc, const char *argv[]) {
+  spdlog::set_level(spdlog::level::critical);
   check_arg(argc >= 2);
 
   std::string command = argv[1];
