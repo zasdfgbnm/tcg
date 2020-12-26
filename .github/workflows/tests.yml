@@ -28,10 +28,9 @@ jobs:
         sudo modprobe nbd
         qemu-img create -f qcow2 archlinux.qcow2 10.01G
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
-        # sudo parted /dev/nbd0 -s mklabel gpt mkpart ext4 2048s 10GiB print
         sudo mkfs.ext4 /dev/nbd0
         sudo mount /dev/nbd0 /mnt
-        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware python python-pip python-pytest xonsh'
+        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh'
 
         # regenerate initramfs with autodetection disabled
         sudo sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
@@ -41,15 +40,23 @@ jobs:
         sudo mount -o bind /dev /mnt/dev
         sudo chroot /mnt mkinitcpio -P
 
+        # setup users
+        sudo chroot /mnt bash -c 'echo "password\npassword" | passwd'
+        sudo chroot /mnt useradd -m user
+        sudo chroot /mnt bash -c 'echo "password\npassword" | passwd user'
+        echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
+
         # copy files
         cp /mnt/boot/* .
         sudo cp -r tcg /mnt
         sudo chown root:root /mnt/tcg
 
+        # cleanup
         sudo umount /mnt/proc
         sudo umount /mnt/sys
         sudo umount /mnt/dev
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
-
+    - name: Prepare environment
+      run: |
         qemu-system-x86_64 -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "console=ttyS0 root=/dev/sda" -monitor vc -serial stdio -nographic -m 2048
