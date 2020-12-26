@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  tests:
+  build-vm:
     runs-on: ubuntu-20.04
     steps:
     - name: Build vm image
@@ -79,13 +79,22 @@ jobs:
         path: archlinux.qcow2
         retention-days: 1
         if-no-files-found: error
+  build-vm:
+    runs-on: ubuntu-20.04
+    needs: build-vm
+    steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    - uses: actions/download-artifact@v2
+      with:
+        name: vm-image
     - name: Copy files
       run: |
         set -eux
+        ls
         cd ..
+        ls
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
 
