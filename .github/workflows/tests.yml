@@ -93,9 +93,9 @@ jobs:
     - name: Copy files
       run: |
         set -eux
-        ls
+
+        mv archlinux.qcow2 ..
         cd ..
-        ls
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
 
