@@ -1,4 +1,7 @@
 #include <string>
+#include <cstdlib>
+
+#include <boost/algorithm/string.hpp>
 
 void invalid_argument();
 
@@ -9,6 +12,21 @@ void check_arg(bool condition) {
   invalid_argument();
 }
 
+void set_log_level() {
+  std::string level = boost::algorithm::to_lower(std::getenv("TCG_LOG_LEVEL"));
+  if (level == "critical") {
+    spdlog::set_level(spdlog::level::critical);
+  } else if (level == "error" || level == "") {
+    spdlog::set_level(spdlog::level::error);
+  } else if (level == "warn") {
+    spdlog::set_level(spdlog::level::warn);
+  } else if (level == "info") {
+    spdlog::set_level(spdlog::level::info);
+  } else if (level == "debug") {
+    spdlog::set_level(spdlog::level::debug);
+  }
+}
+
 void help();
 void list();
 void create(std::string name_);
@@ -16,6 +34,7 @@ void freeze(std::string name);
 void unfreeze(std::string name);
 
 int main(int argc, const char *argv[]) {
+  set_log_level();
   check_arg(argc >= 2);
 
   std::string command = argv[1];
