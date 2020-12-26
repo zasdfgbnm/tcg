@@ -42,7 +42,7 @@ jobs:
     - name: Regenerate initramfs
       run: |
         set -eux
-        sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
+        sed -i 's/autodetect //g' /etc/mkinitcpio.conf
         mkinitcpio -P
     - uses: actions/upload-artifact@v2
       with:
