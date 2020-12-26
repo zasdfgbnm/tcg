@@ -46,6 +46,9 @@ jobs:
         sudo chroot /mnt bash -c 'echo user:password | chpasswd'
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
 
+        # setup system
+        echo "archvm" | sudo tee /mnt/etc/hostname
+
         # copy files
         cp /mnt/boot/* .
         sudo cp -r tcg /mnt
