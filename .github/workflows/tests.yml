@@ -1,0 +1,92 @@
+name: tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+
+  tests:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Prepare environment
+      run: |
+        set -eux
+        cd ..
+
+        # install qemu
+        sudo apt-get install -y qemu-system
+
+        # prepare disk image
+        sudo modprobe nbd
+        qemu-img create -f qcow2 archlinux.qcow2 10.01G
+        sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
+        sudo mkfs.ext4 /dev/nbd0
+        sudo mount /dev/nbd0 /mnt
+        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh cmake boost python-pip'
+        sudo cp /etc/resolv.conf /mnt/etc
+        sudo chroot /mnt pip install pytest-json-report
+
+        # regenerate initramfs with autodetection disabled
+        sudo sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
+        cat /mnt/etc/mkinitcpio.conf
+        sudo mount -t proc proc /mnt/proc
+        sudo mount -t sysfs sys /mnt/sys
+        sudo mount -o bind /dev /mnt/dev
+        sudo chroot /mnt mkinitcpio -P
+
+        # setup users and system
+        sudo chroot /mnt useradd -m user
+        sudo chroot /mnt usermod -a -G wheel user
+        sudo chroot /mnt bash -c 'echo root:password | chpasswd'
+        sudo chroot /mnt bash -c 'echo user:password | chpasswd'
+        echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
+        echo "archvm" | sudo tee /mnt/etc/hostname
+
+        # setup automatic login
+        # https://wiki.archlinux.org/index.php/Getty#Serial_console
+        sudo mkdir -p /mnt/etc/systemd/system/serial-getty@ttyS0.service.d/
+        cat << EOF | sudo tee /mnt/etc/systemd/system/serial-getty@ttyS0.service.d/autologin.conf
+        [Service]
+        ExecStart=
+        ExecStart=-/usr/bin/agetty --autologin user -s %I 115200,38400,9600 vt102
+        EOF
+
+        # setup autorun of tests scripts
+        cat << EOF | sudo tee /mnt/home/user/.bashrc
+        cp -r /tcg ~
+        cd ~/tcg
+        ./run_tests.sh
+        sudo poweroff
+        EOF
+
+        # copy files
+        cp /mnt/boot/* .
+        sudo cp -r tcg /mnt
+        sudo chown root:root /mnt/tcg
+
+        # cleanup
+        sudo umount /mnt/proc
+        sudo umount /mnt/sys
+        sudo umount /mnt/dev
+        sudo umount /mnt
+        sudo qemu-nbd --disconnect /dev/nbd0
+    - name: Run tests in qemu
+      timeout-minutes: 30
+      run: |
+        set -eux
+        cd ..
+        qemu-system-x86_64 -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "systemd.unified_cgroup_hierarchy=1 cgroup_no_v1=all console=ttyS0 root=/dev/sda rw" -monitor vc -serial stdio -nographic -m 2048
+    - name: Check test results
+      run: |
+        set -eux
+        sudo qemu-nbd --connect=/dev/nbd0 ../archlinux.qcow2
+        sudo mount /dev/nbd0 /mnt
+        python check_results.py /mnt/home/user/tcg/test_result.json
