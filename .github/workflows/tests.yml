@@ -59,6 +59,7 @@ jobs:
       run: |
         set -eux
         sudo docker run --privileged -v /mnt:/newroot archlinux bash -c '
+          set -eux
           wget https://gitlab.archlinux.org/archlinux/archlinux-docker/-/raw/master/pacman-conf.d-noextract.conf?inline=false -O pacman-conf.d-noextract.conf
           cat pacman-conf.d-noextract.conf >> /etc/pacman.conf
           pacman -Sy --noconfirm arch-install-scripts
