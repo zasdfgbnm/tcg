@@ -61,6 +61,7 @@ jobs:
         ExecStart=-/usr/bin/agetty --autologin user -s %I 115200,38400,9600 vt102
         EOF
 
+        # Enable user delegation
         sudo mkdir -p /mnt/etc/systemd/system/user@1000.service.d/
         cat << EOF | sudo tee /mnt/etc/systemd/system/user@1000.service.d/override.conf
         [Service]
