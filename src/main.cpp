@@ -1,6 +1,6 @@
 #include <cstdlib>
-#include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 #include <string>
 
 #include <boost/algorithm/string.hpp>

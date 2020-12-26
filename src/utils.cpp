@@ -18,8 +18,9 @@ std::string root_dir() {
                        uid);
   logger->debug("so the root directory is {}.", d);
   if (!fs::is_directory(d)) {
-    logger->critical("Slice is not properly set up. "
-      "Please refer to https://example.com on how to setup slice.");
+    logger->critical(
+        "Slice is not properly set up. "
+        "Please refer to https://example.com on how to setup slice.");
   }
   return d;
 }
@@ -31,7 +32,7 @@ std::string name_dir(std::string name, std::optional<bool> assert_existence) {
   logger->debug("The directory should be {}.", dir);
   if (assert_existence.has_value()) {
     bool v = assert_existence.value();
-    logger->debug("Check that the directory{} exist.", (v ? "": " does not"));
+    logger->debug("Check that the directory{} exist.", (v ? "" : " does not"));
     if (v && !fs::is_directory(dir)) {
       logger->error("Cgroup does not exist.");
       exit(EXIT_FAILURE);
@@ -64,7 +65,9 @@ std::vector<std::string> used_names() {
 bool is_used(std::string name) {
   auto logger = spdlog::get("utils");
   auto d = root_dir() + "/" + name;
-  logger->debug("Check if name {}, which correspond to directory {} is already used.", name, d);
+  logger->debug(
+      "Check if name {}, which correspond to directory {} is already used.",
+      name, d);
   fs::path p(d);
   return fs::is_directory(p);
 }

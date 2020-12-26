@@ -15,7 +15,8 @@
 
 namespace fs = boost::filesystem;
 
-void validate_name(std::shared_ptr<spdlog::logger> logger, const std::string &name) {
+void validate_name(std::shared_ptr<spdlog::logger> logger,
+                   const std::string &name) {
   for (char c : name) {
     if (c == '_' || (c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') ||
         (c <= '9' && c >= '0')) {
