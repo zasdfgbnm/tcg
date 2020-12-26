@@ -41,9 +41,9 @@ jobs:
         sudo chroot /mnt mkinitcpio -P
 
         # setup users
-        sudo chroot /mnt bash -c 'echo password | passwd --stdin'
         sudo chroot /mnt useradd -m user
-        sudo chroot /mnt bash -c 'echo password | passwd --stdin user'
+        sudo chroot /mnt bash -c 'echo root:password | chpasswd'
+        sudo chroot /mnt bash -c 'echo user:password | chpasswd'
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
 
         # copy files
