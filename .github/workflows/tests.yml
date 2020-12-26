@@ -32,7 +32,7 @@ jobs:
           pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh cmake boost python-pip
         '
         sudo cp /etc/resolv.conf /mnt/etc
-        sudo chroot /mnt pip install pytest-json-report
+        sudo chroot /mnt pip install pytest-json-report pytest-timeout
 
         # regenerate initramfs with autodetection disabled
         sudo sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
