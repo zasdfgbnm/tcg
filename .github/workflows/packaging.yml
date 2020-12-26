@@ -22,6 +22,6 @@ jobs:
           set -eux
           cp -r /workspace/packaging/archlinux ~/package;
           cd ~/package;
-          sed -i 's/source=.*/source=("git+/workspace")/g'
+          sed -i 's/source=.*/source=(\"git+/workspace\")/g PKGBUILD'
           makepkg -s --noconfirm
         "
