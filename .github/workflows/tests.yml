@@ -61,12 +61,10 @@ jobs:
         submodules: true
     - uses: actions/download-artifact@v2
       with:
-        name:
-          - archlinux-pkg
+        name: archlinux-pkg
     - uses: actions/download-artifact@v2
       with:
-        name:
-          - archlinux-kernel
+        name: archlinux-kernel
     - name: Install qemu
       run: sudo apt-get install -y qemu-system
     - name: Create empty image
