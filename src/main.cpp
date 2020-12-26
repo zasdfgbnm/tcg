@@ -15,6 +15,7 @@ void check_arg(bool condition) {
 
 void set_log_level() {
   std::string level = boost::algorithm::to_lower(std::getenv("TCG_LOG_LEVEL"));
+  spdlog::set_level(spdlog::level::error);
   if (level == "critical") {
     spdlog::set_level(spdlog::level::critical);
   } else if (level == "error" || level == "") {
@@ -25,6 +26,8 @@ void set_log_level() {
     spdlog::set_level(spdlog::level::info);
   } else if (level == "debug") {
     spdlog::set_level(spdlog::level::debug);
+  } else {
+    spdlog::error("Unknown log level.");
   }
 }
 
