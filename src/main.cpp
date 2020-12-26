@@ -1,6 +1,6 @@
+#include <cstdlib>
 #include <spdlog/spdlog.h>
 #include <string>
-#include <cstdlib>
 
 #include <boost/algorithm/string.hpp>
 
