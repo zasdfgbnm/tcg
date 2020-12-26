@@ -14,13 +14,13 @@ void check_arg(bool condition) {
 }
 
 void set_log_level() {
-  const char *l =  std::getenv("TCG_LOG_LEVEL");
+  const char *l = std::getenv("TCG_LOG_LEVEL");
   if (l == nullptr) {
     spdlog::set_level(spdlog::level::err);
+    return;
   }
   std::string level(l);
   boost::algorithm::to_lower(level);
-  spdlog::set_level(spdlog::level::err);
   if (level == "critical") {
     spdlog::set_level(spdlog::level::critical);
   } else if (level == "err") {
