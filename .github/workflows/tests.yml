@@ -74,7 +74,7 @@ jobs:
         sudo cp -r tcg /mnt
         sudo chown root:root /mnt/tcg
         sudo cp /mnt/tcg/static/terminals.slice /mnt/lib/systemd/user/
-        sudo chroot /mnt sudo -i user systemctl --user enable terminals.slice
+        sudo chroot /mnt sudo -u user systemctl --user enable terminals.slice
 
         # cleanup
         sudo umount /mnt/proc
