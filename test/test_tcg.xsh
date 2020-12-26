@@ -215,7 +215,3 @@ def test_freeze_unfreeze():
     assert q1.get() == 9
 
     q2.put("end")
-
-
-def test_fail():
-    assert False
