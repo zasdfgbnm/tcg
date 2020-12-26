@@ -21,7 +21,8 @@ void validate_name(const std::string &name) {
         (c <= '9' && c >= '0')) {
       continue;
     }
-    spdlog::critical("Illegal name: can only use letters, digits, or underscore.");
+    spdlog::critical(
+        "Illegal name: can only use letters, digits, or underscore.");
     exit(EXIT_FAILURE);
   }
 }
@@ -52,14 +53,16 @@ void create(std::string name_) {
   spdlog::info("Adding parent process to the new cgroup");
   auto out = fmt::output_file(procs_file);
   auto ppid = getppid();
-  spdlog::info("Parent process's pid is {}, will add to file {}", ppid, procs_file);
+  spdlog::info("Parent process's pid is {}, will add to file {}", ppid,
+               procs_file);
   out.print("{:d}", ppid);
   out.close();
   spdlog::info("Done adding parent process to the new cgroup");
 
   // detach from shell
   // See: http://netzmafia.de/skripten/unix/linux-daemon-howto.html
-  spdlog::info("Will detach from shell and run in background to garbage collect the cgroup when it's empty.");
+  spdlog::info("Will detach from shell and run in background to garbage "
+               "collect the cgroup when it's empty.");
   auto pid = fork();
   if (pid < 0) {
     spdlog::critical("Fork failed.");

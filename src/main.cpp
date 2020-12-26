@@ -1,5 +1,5 @@
-#include <string>
 #include <spdlog/spdlog.h>
+#include <string>
 
 void invalid_argument();
 
