@@ -35,6 +35,7 @@ void set_log_level() {
     spdlog::set_level(spdlog::level::debug);
   } else {
     logger->error("Unknown log level.");
+    exit(EXIT_FAILURE);
   }
 }
 
