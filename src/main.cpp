@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 #include <string>
 
@@ -14,6 +15,7 @@ void check_arg(bool condition) {
 }
 
 void set_log_level() {
+  auto logger = spdlog::get("main");
   const char *l = std::getenv("TCG_LOG_LEVEL");
   if (l == nullptr) {
     spdlog::set_level(spdlog::level::err);
@@ -32,8 +34,17 @@ void set_log_level() {
   } else if (level == "debug") {
     spdlog::set_level(spdlog::level::debug);
   } else {
-    spdlog::error("Unknown log level.");
+    logger->error("Unknown log level.");
   }
+}
+
+void setup_loggers() {
+  auto sink = std::make_shared<spdlog::sinks::stderr_color_sink_mt>();
+  spdlog::register_logger(std::make_shared<spdlog::logger>("main", sink));
+  spdlog::register_logger(std::make_shared<spdlog::logger>("create", sink));
+  spdlog::register_logger(std::make_shared<spdlog::logger>("list", sink));
+  spdlog::register_logger(std::make_shared<spdlog::logger>("freeze", sink));
+  spdlog::register_logger(std::make_shared<spdlog::logger>("utils", sink));
 }
 
 void help();
@@ -43,6 +54,7 @@ void freeze(std::string name);
 void unfreeze(std::string name);
 
 int main(int argc, const char *argv[]) {
+  setup_loggers();
   set_log_level();
   check_arg(argc >= 2);
 
