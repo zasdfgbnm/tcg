@@ -21,8 +21,7 @@ void validate_name(const std::string &name) {
         (c <= '9' && c >= '0')) {
       continue;
     }
-    spdlog::critical(
-        "Illegal name: can only use letters, digits, or underscore.");
+    spdlog::error("Illegal name: can only use letters, digits, or underscore.");
     exit(EXIT_FAILURE);
   }
 }
