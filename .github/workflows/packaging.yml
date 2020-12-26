@@ -21,7 +21,7 @@ jobs:
         docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c "
           set -eux
           cp -r /workspace/packaging/archlinux ~/package;
-          cp -r /workspace ~/package/tcg;
           cd ~/package;
+          sed -i 's/source=.*/source=("git+/workspace")/g'
           makepkg -s --noconfirm
         "
