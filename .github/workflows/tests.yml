@@ -35,6 +35,7 @@ jobs:
 
         # regenerate initramfs with autodetection disabled
         sudo sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
+        cat /mnt/etc/mkinitcpio.conf
         sudo mount -t proc proc /mnt/proc
         sudo mount -t sysfs sys /mnt/sys
         sudo mount -o bind dev /dev /mnt/dev
