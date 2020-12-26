@@ -90,13 +90,14 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: vm-image
+    - name: Install qemu
+      run: sudo apt-get install -y qemu-system
     - name: Copy files
       run: |
         set -eux
 
         mv archlinux.qcow2 ..
         cd ..
-        ls
         sudo qemu-nbd --connect=/dev/nbd0 ./archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
 
