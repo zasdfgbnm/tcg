@@ -41,9 +41,9 @@ jobs:
         sudo chroot /mnt mkinitcpio -P
 
         # setup users
-        sudo chroot /mnt bash -c 'echo "password\npassword" | passwd'
+        sudo chroot /mnt bash -c 'echo password | passwd --stdin'
         sudo chroot /mnt useradd -m user
-        sudo chroot /mnt bash -c 'echo "password\npassword" | passwd user'
+        sudo chroot /mnt bash -c 'echo password | passwd --stdin user'
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
 
         # copy files
@@ -57,6 +57,7 @@ jobs:
         sudo umount /mnt/dev
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
-    - name: Prepare environment
+    - name: Run qemu
+      timeout-minutes: 2
       run: |
         qemu-system-x86_64 -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "console=ttyS0 root=/dev/sda" -monitor vc -serial stdio -nographic -m 2048
