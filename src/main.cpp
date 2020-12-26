@@ -17,7 +17,7 @@ void freeze(std::string name);
 void unfreeze(std::string name);
 
 int main(int argc, const char *argv[]) {
-  spdlog::set_level(spdlog::level::critical);
+  spdlog::set_level(spdlog::level::debug);
   check_arg(argc >= 2);
 
   std::string command = argv[1];
