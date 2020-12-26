@@ -20,8 +20,8 @@ jobs:
       run: |
         docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
           set -eux
-          cp -r /workspace/packaging/archlinux ~/package;
-          cd ~/package;
+          cp -r /workspace/packaging/archlinux ~/package
+          cd ~/package
           sed -i "s/source=.*/source=(\"tcg::git+file:\/\/\/workspace\")/g" PKGBUILD
           makepkg -s --noconfirm
           sudo cp *.pkg.tar.zst /workspace/packaging/archlinux
