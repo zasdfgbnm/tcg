@@ -16,4 +16,5 @@ cmake ..
 make -j
 cd ..
 tcg c
+ls -lah /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/terminals.slice
 py.test --json-report --json-report-file=test_result.json --timeout=60 -v
