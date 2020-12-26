@@ -16,7 +16,7 @@ jobs:
     steps:
     - name: Prepare environments
       run: |
-        pacman -Sy --noconfirm git
+        sudo pacman -Sy --noconfirm git
     - uses: actions/checkout@v2
       with:
         submodules: true
