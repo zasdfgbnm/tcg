@@ -92,7 +92,7 @@ jobs:
         cat << EOF | sudo tee /mnt/root/.bashrc
         #!/bin/bash
         set -eux
-        pacman -U --noconfirm /*.pkg.tar.zst
+        pacman -U --noconfirm *.pkg.tar.zst
         systemctl --user start terminals.slice
         export TCG_LOG_LEVEL=debug
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
