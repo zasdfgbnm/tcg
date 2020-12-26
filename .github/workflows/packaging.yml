@@ -18,10 +18,10 @@ jobs:
         submodules: true
     - name: build
       run: |
-        docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c "
+        docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
           set -eux
           cp -r /workspace/packaging/archlinux ~/package;
           cd ~/package;
-          sed -i 's/source=.*/source=(\"git+/workspace\")/g PKGBUILD'
+          sed -i "s/source=.*/source=(\"git+/workspace\")/g" PKGBUILD
           makepkg -s --noconfirm
-        "
+        '
