@@ -1,0 +1,21 @@
+name: packaging
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+
+  archlinux:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: build
+      run: |
+        docker run -v $PWD:/workspace archlinux:base-devel bash -c "sudo pacman -Sy cmake boost; cd /workspace/packaging/archlinux; ln -s /workspace tcg; makepkg"
