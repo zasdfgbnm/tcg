@@ -39,6 +39,7 @@ void create(std::string name_) {
 
   // create new cgroup
   auto dir = name_dir(name, false);
+  std::cout << "About to create" << dir << std::endl;
   fs::create_directory(dir);
   auto procs_file = dir + "/cgroup.procs";
   auto events_file = dir + "/cgroup.events";
