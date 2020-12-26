@@ -2,20 +2,24 @@
 
 #include <fmt/color.h>
 #include <fmt/core.h>
+#include <spdlog/spdlog.h>
 
 #include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
 
 std::string root_dir() {
+  auto logger = spdlog::get("utils");
+  logger->debug("Getting root dir...");
   auto uid = getuid();
+  logger->debug("User id is {},", uid);
   auto d = fmt::format("/sys/fs/cgroup/user.slice/user-{0}.slice/"
                        "user@{0}.service/terminals.slice",
                        uid);
+  logger->debug("so the root directory is {}.", d);
   if (!fs::is_directory(d)) {
-    fmt::print(fg(fmt::color::red) | fmt::emphasis::bold,
-               "Slice is not properly set up.\n"
-               "Please refer to https://example.com on how to setup slice.");
+    logger->critical("Slice is not properly set up. "
+      "Please refer to https://example.com on how to setup slice.");
   }
   return d;
 }
