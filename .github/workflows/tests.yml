@@ -78,6 +78,11 @@ jobs:
         sudo umount /mnt/dev
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
+    - uses: actions/upload-artifact@v2
+      with:
+        name: vm-image
+        path: archlinux.qcow2
+        retention-days: 1
     - name: Run tests in qemu
       timeout-minutes: 30
       run: |
