@@ -6,4 +6,4 @@ cd build
 cmake ..
 make -j
 cd ..
-py.test --json-report --json-report-file=test_result.json -v
+py.test --json-report --json-report-file=test_result.json --timeout=60 -v
