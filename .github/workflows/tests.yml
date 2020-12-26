@@ -73,3 +73,4 @@ jobs:
             printf "password\n" > /tmp/guest.in
           fi
         done < /tmp/quest.out
+        wait
