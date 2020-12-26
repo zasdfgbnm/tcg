@@ -99,13 +99,21 @@ jobs:
     - name: Setup autorun of tests
       run: |
         set -eux
-        cat << EOF | sudo tee /mnt/home/user/.bashrc
+        cat << EOF | sudo tee /mnt/home/user/run_tests.sh
+        #!/bin/bash
+        set -eux
         cp -r /test ~
         cd ~/test
         sudo pacman -U --noconfirm /*.pkg.tar.zst
+        sudo systemctl --user start terminals.slice
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo poweroff
         EOF
+        sudo chmod +x /mnt/home/user/run_tests.sh
+        cat << EOF | sudo tee /mnt/home/user/.bashrc
+        ~/run_tests.sh
+        EOF
+        sudo chroot /mnt chown -R user:user /mnt/home/user
     - name: Cleanup mounts
       run: |
         set -eux
@@ -147,6 +155,7 @@ jobs:
         ls
         sudo cp *.pkg.tar.zst /mnt
         sudo cp -r test /mnt/test
+        sudo chroot /mnt chown -R user:user /mnt/home/user
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
