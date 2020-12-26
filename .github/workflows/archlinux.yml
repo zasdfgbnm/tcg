@@ -152,10 +152,8 @@ jobs:
         sudo modprobe nbd
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
-        ls
         sudo cp *.pkg.tar.zst /mnt
         sudo cp -r test /mnt/test
-        sudo chroot /mnt chown -R user:user /mnt/home/user
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
