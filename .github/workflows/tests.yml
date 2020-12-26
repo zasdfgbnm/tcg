@@ -40,14 +40,19 @@ jobs:
         sudo mount -o bind /dev /mnt/dev
         sudo chroot /mnt mkinitcpio -P
 
-        # setup users
+        # setup users and system
         sudo chroot /mnt useradd -m user
         sudo chroot /mnt bash -c 'echo root:password | chpasswd'
         sudo chroot /mnt bash -c 'echo user:password | chpasswd'
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
-
-        # setup system
         echo "archvm" | sudo tee /mnt/etc/hostname
+
+        # setup automatic login
+        cat << EOF > /etc/systemd/system/serial-getty@ttyS0.service.d/autologin.conf
+        [Service]
+        ExecStart=
+        ExecStart=-/usr/bin/agetty --autologin user -s %I 115200,38400,9600 vt102
+        EOF
 
         # copy files
         cp /mnt/boot/* .
