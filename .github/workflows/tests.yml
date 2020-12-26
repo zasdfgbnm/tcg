@@ -72,7 +72,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: vm-image
-        path: ../archlinux.qcow2
+        path: archlinux.qcow2
         retention-days: 1
         if-no-files-found: error
     - uses: actions/checkout@v2
