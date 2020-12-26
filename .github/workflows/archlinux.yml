@@ -71,21 +71,11 @@ jobs:
           pacman -Sy --noconfirm wget arch-install-scripts
           wget https://gitlab.archlinux.org/archlinux/archlinux-docker/-/raw/master/pacman-conf.d-noextract.conf?inline=false -O pacman-conf.d-noextract.conf
           cat pacman-conf.d-noextract.conf >> /etc/pacman.conf
-          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs
+          pacstrap /newroot base python python-pip python-pytest xonsh boost-libs
         '
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout
         ls /mnt/usr/share/
-    - name: Setup users and system
-      run: |
-        set -eux
-        sudo chroot /mnt useradd -m user
-        sudo chroot /mnt usermod -a -G wheel user
-        sudo chroot /mnt bash -c 'echo root:password | chpasswd'
-        sudo chroot /mnt bash -c 'echo user:password | chpasswd'
-        echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
-        echo 'root ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /mnt/etc/sudoers
-        echo "archvm" | sudo tee /mnt/etc/hostname
     - name: Setup autologin
       run: |
         set -eux
@@ -94,27 +84,20 @@ jobs:
         cat << EOF | sudo tee /mnt/etc/systemd/system/serial-getty@ttyS0.service.d/autologin.conf
         [Service]
         ExecStart=
-        ExecStart=-/usr/bin/agetty --autologin user -s %I 115200,38400,9600 vt102
+        ExecStart=-/usr/bin/agetty --autologin root -s %I 115200,38400,9600 vt102
         EOF
     - name: Setup autorun of tests
       run: |
         set -eux
-        cat << EOF | sudo tee /mnt/home/user/run_tests.sh
+        cat << EOF | sudo tee /mnt/root/.bashrc
         #!/bin/bash
         set -eux
-        cp -r /test ~
-        cd ~/test
-        sudo pacman -U --noconfirm /*.pkg.tar.zst
+        pacman -U --noconfirm /*.pkg.tar.zst
         systemctl --user start terminals.slice
         export TCG_LOG_LEVEL=debug
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
-        sudo poweroff
+        poweroff
         EOF
-        sudo chmod +x /mnt/home/user/run_tests.sh
-        cat << EOF | sudo tee /mnt/home/user/.bashrc
-        ~/run_tests.sh
-        EOF
-        sudo chroot /mnt chown -R user:user /home/user
     - name: Cleanup mounts
       run: |
         set -eux
@@ -154,9 +137,8 @@ jobs:
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
         ls
-        sudo cp *.pkg.tar.zst /mnt
-        sudo cp -r test /mnt/test
-        ls /mnt
+        sudo cp -r test *.pkg.tar.zst /mnt/root
+        sudo ls /mnt/root
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
@@ -167,5 +149,5 @@ jobs:
         set -eux
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
-        FILE=/mnt/home/user/test/test_result.json
+        FILE=/mnt/root/test_result.json
         sudo python -c "import sys; import json; j = json.load(open('$FILE')); sys.exit(j['exitcode'])"
