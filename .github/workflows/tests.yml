@@ -40,7 +40,7 @@ jobs:
         sudo mount -t sysfs sys /mnt/sys
         sudo mount -o bind /dev /mnt/dev
         sudo chroot /mnt mkinitcpio -P
-        
+
         # copy files
         cp /mnt/boot/* .
         sudo cp -r tcg /mnt
@@ -52,4 +52,4 @@ jobs:
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
 
-        qemu-system-x86_64 -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "console=ttyS0 root=/dev/sda" -monitor vc -serial stdio -nographic
+        qemu-system-x86_64 -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "console=ttyS0 root=/dev/sda" -monitor vc -serial stdio -nographic -m 2048
