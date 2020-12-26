@@ -1,6 +1,8 @@
 #!/bin/bash
 
 export PATH=$PATH:$PWD/build
+export TCG_LOG_LEVEL=debug
+
 mkdir -p build
 cd build
 cmake ..
