@@ -76,7 +76,7 @@ jobs:
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
-      timeout-minutes: 2
+      timeout-minutes: 10
       run: |
         set -eux
         cd ..
