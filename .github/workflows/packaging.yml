@@ -18,4 +18,10 @@ jobs:
         submodules: true
     - name: build
       run: |
-        docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c "sudo pacman -Sy --noconfirm cmake boost; cd /workspace/packaging/archlinux; ln -s /workspace tcg; sudo -u user makepkg"
+        docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c "
+          sudo pacman -Sy --noconfirm cmake boost;
+          cp -r /workspace/packaging/archlinux ~/package;
+          ln -s /workspace ~/package/tcg;
+          cd ~/package;
+          sudo -u user makepkg
+        "
