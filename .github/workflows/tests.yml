@@ -55,7 +55,11 @@ jobs:
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mkfs.ext4 /dev/nbd0
         sudo mount /dev/nbd0 /mnt
-        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh cmake boost python-pip'
+        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c '
+          set -eux
+          pacman -Sy --noconfirm arch-install-scripts
+          pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh cmake boost python-pip
+        '
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout
 
@@ -73,6 +77,7 @@ jobs:
         sudo chroot /mnt bash -c 'echo root:password | chpasswd'
         sudo chroot /mnt bash -c 'echo user:password | chpasswd'
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
+        echo 'root ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /mnt/etc/sudoers
         echo "archvm" | sudo tee /mnt/etc/hostname
 
         # setup automatic login
