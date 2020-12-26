@@ -5,7 +5,6 @@
 #include <boost/filesystem.hpp>
 #include <fmt/os.h>
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <sys/inotify.h>
 #include <sys/stat.h>

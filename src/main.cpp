@@ -42,6 +42,7 @@ void setup_loggers() {
   auto sink = std::make_shared<spdlog::sinks::stderr_color_sink_mt>();
   spdlog::register_logger(std::make_shared<spdlog::logger>("main", sink));
   spdlog::register_logger(std::make_shared<spdlog::logger>("create", sink));
+  spdlog::register_logger(std::make_shared<spdlog::logger>("list", sink));
   spdlog::register_logger(std::make_shared<spdlog::logger>("freeze", sink));
   spdlog::register_logger(std::make_shared<spdlog::logger>("utils", sink));
 }
