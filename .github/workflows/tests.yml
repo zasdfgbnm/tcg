@@ -60,9 +60,9 @@ jobs:
         set -eux
         sudo docker run --privileged -v /mnt:/newroot archlinux bash -c '
           set -eux
+          pacman -Sy --noconfirm wget arch-install-scripts
           wget https://gitlab.archlinux.org/archlinux/archlinux-docker/-/raw/master/pacman-conf.d-noextract.conf?inline=false -O pacman-conf.d-noextract.conf
           cat pacman-conf.d-noextract.conf >> /etc/pacman.conf
-          pacman -Sy --noconfirm arch-install-scripts
           pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh cmake boost python-pip
         '
         sudo cp /etc/resolv.conf /mnt/etc
