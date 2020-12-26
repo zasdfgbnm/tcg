@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export PATH=$PATH:$PWD/build
+ls /sys/fs/cgroup/user.slice
 mkdir -p build
 cd build
 cmake ..
