@@ -24,4 +24,10 @@ jobs:
           cd ~/package;
           sed -i "s/source=.*/source=(\"tcg::git+file:\/\/\/workspace\")/g" PKGBUILD
           makepkg -s --noconfirm
+          sudo cp *.pkg.tar.zst /workspace/packaging/archlinux
         '
+    - uses: actions/upload-artifact@v2
+      with:
+        name: package
+        path: packaging/archlinux/*.pkg.tar.zst
+        retention-days: 5
