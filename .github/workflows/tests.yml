@@ -121,7 +121,6 @@ jobs:
     - name: Copy files
       run: |
         set -eux
-        cp /mnt/boot/* .
         sudo cp *.pkg.tar.zst /mnt
         sudo cp -r test /mnt/test
     - name: Cleanup mounts
