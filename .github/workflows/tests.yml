@@ -30,7 +30,9 @@ jobs:
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mkfs.ext4 /dev/nbd0
         sudo mount /dev/nbd0 /mnt
-        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh cmake boost'
+        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh cmake boost python-pip'
+        sudo /mnt/usr/bin/python -m pip install pytest-json-report
+
 
         # regenerate initramfs with autodetection disabled
         sudo sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
@@ -42,6 +44,7 @@ jobs:
 
         # setup users and system
         sudo chroot /mnt useradd -m user
+        sudo chroot /mnt usermod -a -G wheel user
         sudo chroot /mnt bash -c 'echo root:password | chpasswd'
         sudo chroot /mnt bash -c 'echo user:password | chpasswd'
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
@@ -76,7 +79,7 @@ jobs:
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
-      timeout-minutes: 10
+      timeout-minutes: 30
       run: |
         set -eux
         cd ..
