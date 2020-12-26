@@ -88,7 +88,7 @@ jobs:
         cat << EOF | sudo tee /mnt/home/user/.bashrc
         cp -r /test ~
         cd ~/test
-        sudo pacman -U /*.pkg.tar.zst
+        sudo pacman -U --noconfirm /*.pkg.tar.zst
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo poweroff
         EOF
