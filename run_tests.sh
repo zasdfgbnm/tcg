@@ -15,4 +15,5 @@ cd build
 cmake ..
 make -j
 cd ..
+tcg c
 py.test --json-report --json-report-file=test_result.json --timeout=60 -v
