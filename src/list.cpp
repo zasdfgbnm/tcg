@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+#include <spdlog/spdlog.h>
+
 #include "utils.hpp"
 
 std::ostream &operator<<(std::ostream &os, const std::vector<std::string> &v) {
@@ -16,4 +18,8 @@ std::ostream &operator<<(std::ostream &os, const std::vector<std::string> &v) {
   return os;
 }
 
-void list() { std::cout << used_names() << std::endl; }
+void list() {
+  auto logger = spdlog::get("list");
+  logger->debug("Listing existing cgroups...");
+  std::cout << used_names() << std::endl;
+}
