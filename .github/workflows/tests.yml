@@ -32,10 +32,29 @@ jobs:
         path: packaging/archlinux/*.pkg.tar.zst
         retention-days: 5
 
+  archlinux-kernel:
+    runs-on: ubuntu-20.04
+    container: archlinux
+    steps:
+    - name: Install missing packages
+      run: |
+        pacman -Sy --noconfirm linux mkinitcpio
+    - name: Regenerate initramfs
+      run: |
+        set -eux
+        sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
+        mkinitcpio -P
+    - uses: actions/upload-artifact@v2
+      with:
+        name: archlinux-kernel
+        path: /boot/*
+        retention-days: 1
+
   tests:
     runs-on: ubuntu-20.04
     needs:
       - archlinux-pkg
+      - archlinux-kernel
     steps:
     - uses: actions/checkout@v2
       with:
@@ -43,6 +62,9 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: archlinux-pkg
+    - uses: actions/download-artifact@v2
+      with:
+        name: archlinux-kernel
     - name: Install qemu
       run: sudo apt-get install -y qemu-system
     - name: Create empty image
@@ -66,15 +88,6 @@ jobs:
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout
         ls /mnt/usr/share/
-    - name: Regenerate initramfs
-      run: |
-        set -eux
-        sudo sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
-        cat /mnt/etc/mkinitcpio.conf
-        sudo mount -t proc proc /mnt/proc
-        sudo mount -t sysfs sys /mnt/sys
-        sudo mount -o bind /dev /mnt/dev
-        sudo chroot /mnt mkinitcpio -P
     - name: Setup users and system
       run: |
         set -eux
