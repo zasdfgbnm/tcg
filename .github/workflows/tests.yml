@@ -61,6 +61,11 @@ jobs:
         ExecStart=-/usr/bin/agetty --autologin user -s %I 115200,38400,9600 vt102
         EOF
 
+        cat << EOF | sudo tee /etc/systemd/system/user@1000.service.d/override.conf
+        [Service]
+        Delegate=yes
+        EOF
+
         # setup autorun of tests scripts
         cat << EOF | sudo tee /mnt/home/user/.bashrc
         cp -r /tcg ~
