@@ -67,7 +67,7 @@ jobs:
         '
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout
-        ls /mnt/usr/share/man/
+        ls /mnt/usr/share/
     - name: Regenerate initramfs
       run: |
         set -eux
