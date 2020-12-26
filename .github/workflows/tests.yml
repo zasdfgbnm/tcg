@@ -32,6 +32,10 @@ jobs:
         sudo mkfs.ext4 /dev/nbd0p1
         sudo mount /dev/nbd0p1 /mnt
         sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware python python-pip python-pytest xonsh'
+
+        # regenerate initramfs with autodetection disabled
+        sudo sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
+        sudo chroot /mnt mkinitcpio -P
         
         # copy files
         wait
