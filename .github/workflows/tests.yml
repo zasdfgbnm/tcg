@@ -13,13 +13,9 @@ jobs:
   tests:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-    - name: Prepare environment
+    - name: Build vm image
       run: |
         set -eux
-        cd ..
 
         # install qemu
         sudo apt-get install -y qemu-system
@@ -67,11 +63,6 @@ jobs:
         sudo poweroff
         EOF
 
-        # copy files
-        cp /mnt/boot/* .
-        sudo cp -r tcg /mnt
-        sudo chown root:root /mnt/tcg
-
         # cleanup
         sudo umount /mnt/proc
         sudo umount /mnt/sys
@@ -84,6 +75,22 @@ jobs:
         path: ../archlinux.qcow2
         retention-days: 1
         if-no-files-found: error
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Copy files
+      run: |
+        set -eux
+        cd ..
+        sudo qemu-nbd --connect=/dev/nbd0 ../archlinux.qcow2
+        sudo mount /dev/nbd0 /mnt
+
+        cp /mnt/boot/* .
+        sudo cp -r tcg /mnt
+        sudo chown root:root /mnt/tcg
+
+        sudo umount /mnt
+        sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
       timeout-minutes: 30
       run: |
