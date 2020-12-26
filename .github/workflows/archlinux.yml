@@ -113,7 +113,7 @@ jobs:
         cat << EOF | sudo tee /mnt/home/user/.bashrc
         ~/run_tests.sh
         EOF
-        sudo chroot /mnt chown -R user:user /mnt/home/user
+        sudo chroot /mnt chown -R user:user /home/user
     - name: Cleanup mounts
       run: |
         set -eux
