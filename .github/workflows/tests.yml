@@ -37,6 +37,12 @@ jobs:
     needs:
       - archlinux-pkg
     steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - uses: actions/download-artifact@v2
+      with:
+        name: archlinux-pkg
     - name: Install qemu
       run: sudo apt-get install -y qemu-system
     - name: Create empty image
@@ -95,12 +101,6 @@ jobs:
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo poweroff
         EOF
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-    - uses: actions/download-artifact@v2
-      with:
-        name: archlinux-pkg
     - name: Copy files
       run: |
         set -eux
