@@ -49,6 +49,7 @@ jobs:
         sudo chroot /mnt bash -c 'echo root:password | chpasswd'
         sudo chroot /mnt bash -c 'echo user:password | chpasswd'
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
+        echo 'root ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /mnt/etc/sudoers
         echo "archvm" | sudo tee /mnt/etc/hostname
 
         # setup automatic login
