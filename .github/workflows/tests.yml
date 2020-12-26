@@ -86,7 +86,7 @@ jobs:
       run: |
         set -eux
         cd ..
-        sudo qemu-nbd --connect=/dev/nbd0 ../archlinux.qcow2
+        sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
 
         cp /mnt/boot/* .
