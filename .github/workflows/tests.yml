@@ -79,6 +79,7 @@ jobs:
         path: archlinux.qcow2
         retention-days: 1
         if-no-files-found: error
+
   build-vm:
     runs-on: ubuntu-20.04
     needs: build-vm
