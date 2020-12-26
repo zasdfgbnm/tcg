@@ -9,6 +9,7 @@ ls -lah /sys/fs/cgroup/user.slice/user-1000.slice/
 ls -lah /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service
 ls -lah /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/terminals.slice
 mkdir -p /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/terminals.slice/test
+ls -lah /sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/terminals.slice
 mkdir -p build
 cd build
 cmake ..
