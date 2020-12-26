@@ -30,7 +30,7 @@ jobs:
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mkfs.ext4 /dev/nbd0
         sudo mount /dev/nbd0 /mnt
-        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh'
+        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c 'pacman -Sy --noconfirm arch-install-scripts && pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh cmake boost'
 
         # regenerate initramfs with autodetection disabled
         sudo sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
