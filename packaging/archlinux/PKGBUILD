@@ -1,0 +1,38 @@
+pkgname=tcg-git
+_pkgname=tcg
+pkgver=0.1.r8
+_pkgver=0.1
+pkgrel=1
+pkgdesc="cgroups for terminals"
+arch=('x86_64')
+url="https://github.com/zasdfgbnm/tcg"
+license=('MIT')
+depends=('boost-libs')
+makedepends=('git' 'cmake' 'boost')
+source=("git+$url")
+sha256sums=('SKIP')
+
+pkgver () {
+  cd "${_pkgname}"
+  (
+    set -o pipefail
+    rev=$(git rev-list --count HEAD 2>/dev/null)
+    echo $_pkgver.r$rev
+  )
+}
+
+build() {
+  cd "$srcdir/${_pkgname}"
+  git submodule update --init --recursive
+  mkdir -p build
+  cd build
+  cmake --config Release ..
+  make -j
+}
+
+package() {
+  cd "$srcdir/${_pkgname}"
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${_pkgname}/LICENSE"
+  install -Dm644 static/terminals.slice "${pkgdir}/lib/systemd/user/terminals.slice"
+  install -Dm755 build/tcg "${pkgdir}/usr/bin/tcg"
+}
