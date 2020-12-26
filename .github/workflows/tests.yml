@@ -90,4 +90,4 @@ jobs:
         sudo qemu-nbd --connect=/dev/nbd0 ../archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
         FILE=/mnt/home/user/tcg/test_result.json
-        python -c "import sys; import json; j = json.load(open('$FILE')); sys.exit(j['exitcode'])"
+        sudo python -c "import sys; import json; j = json.load(open('$FILE')); sys.exit(j['exitcode'])"
