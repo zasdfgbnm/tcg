@@ -3,3 +3,4 @@ settings.json
 .pytest_cache
 __pycache__
 test_result.json
+/run_tests.sh
