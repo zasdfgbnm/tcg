@@ -34,7 +34,8 @@ jobs:
 
   tests:
     runs-on: ubuntu-20.04
-    needs: archlinux-pkg
+    needs:
+      - archlinux-pkg
     steps:
     - uses: actions/checkout@v2
       with:
@@ -42,36 +43,41 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: archlinux-pkg
-    - name: Prepare environment
+    - name: Install qemu
+      run: sudo apt-get install -y qemu-system
+    - name: Create empty image
       run: |
         set -eux
-
-        # install qemu
-        sudo apt-get install -y qemu-system
-
-        # prepare disk image
         sudo modprobe nbd
         qemu-img create -f qcow2 archlinux.qcow2 10.01G
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mkfs.ext4 /dev/nbd0
         sudo mount /dev/nbd0 /mnt
+    - name: Bootstrap archlinux
+      run: |
+        set -eux
         sudo docker run --privileged -v /mnt:/newroot archlinux bash -c '
           set -eux
-          pacman -Sy --noconfirm arch-install-scripts
+          pacman -Sy --noconfirm wget arch-install-scripts
+          wget https://gitlab.archlinux.org/archlinux/archlinux-docker/-/raw/master/pacman-conf.d-noextract.conf?inline=false -O pacman-conf.d-noextract.conf
+          cat pacman-conf.d-noextract.conf >> /etc/pacman.conf
           pacstrap /newroot base base-devel linux linux-firmware sudo python python-pip python-pytest xonsh cmake boost python-pip
         '
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout
-
-        # regenerate initramfs with autodetection disabled
+        ls /mnt/usr/share/
+    - name: Regenerate initramfs
+      run: |
+        set -eux
         sudo sed -i 's/autodetect //g' /mnt/etc/mkinitcpio.conf
         cat /mnt/etc/mkinitcpio.conf
         sudo mount -t proc proc /mnt/proc
         sudo mount -t sysfs sys /mnt/sys
         sudo mount -o bind /dev /mnt/dev
         sudo chroot /mnt mkinitcpio -P
-
-        # setup users and system
+    - name: Setup users and system
+      run: |
+        set -eux
         sudo chroot /mnt useradd -m user
         sudo chroot /mnt usermod -a -G wheel user
         sudo chroot /mnt bash -c 'echo root:password | chpasswd'
@@ -79,8 +85,9 @@ jobs:
         echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
         echo 'root ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /mnt/etc/sudoers
         echo "archvm" | sudo tee /mnt/etc/hostname
-
-        # setup automatic login
+    - name: Setup autologin
+      run: |
+        set -eux
         # https://wiki.archlinux.org/index.php/Getty#Serial_console
         sudo mkdir -p /mnt/etc/systemd/system/serial-getty@ttyS0.service.d/
         cat << EOF | sudo tee /mnt/etc/systemd/system/serial-getty@ttyS0.service.d/autologin.conf
@@ -88,8 +95,9 @@ jobs:
         ExecStart=
         ExecStart=-/usr/bin/agetty --autologin user -s %I 115200,38400,9600 vt102
         EOF
-
-        # setup autorun of tests scripts
+    - name: Setup autorun of tests
+      run: |
+        set -eux
         cat << EOF | sudo tee /mnt/home/user/.bashrc
         cp -r /test ~
         cd ~/test
@@ -97,13 +105,15 @@ jobs:
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo poweroff
         EOF
-
-        # copy files
+    - name: Copy files
+      run: |
+        set -eux
         cp /mnt/boot/* .
         sudo cp *.pkg.tar.zst /mnt
         sudo cp -r test /mnt/test
-
-        # cleanup
+    - name: Cleanup mounts
+      run: |
+        set -eux
         sudo umount /mnt/proc
         sudo umount /mnt/sys
         sudo umount /mnt/dev
