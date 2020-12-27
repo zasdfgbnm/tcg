@@ -28,7 +28,9 @@ void print_procs(std::shared_ptr<spdlog::logger> logger, std::string name) {
       fmt::print(" ");
     }
     first = false;
-    fmt::print("{}", pid);
+    auto exe = fmt::format("/proc/{}/exe", pid);
+    exe = fs::read_symlink(fs::path(exe)).filename().string();
+    fmt::print("{}", exe);
   }
 }
 
