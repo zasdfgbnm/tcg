@@ -12,12 +12,16 @@ namespace fs = boost::filesystem;
 
 void list() {
   auto logger = spdlog::get("list");
-  logger->debug("List all used names.");
-  fs::path p(root_dir());
+  logger->info("List all existing cgroups.");
+  auto r = root_dir();
+  logger->debug("Root directory is {}, iterating it.", r);
+  fs::path p(r);
   fs::recursive_directory_iterator end;
   for (fs::recursive_directory_iterator i(p); i != end; ++i) {
     if (fs::is_directory(*i)) {
-      fmt::print(i->path().filename().string());
+      auto cg = i->path().filename().string();
+      logger->debug("Found cgroup {}.", cg);
+      fmt::print(cg);
       fmt::print(" ");
     }
   }
