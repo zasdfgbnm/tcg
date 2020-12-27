@@ -17,6 +17,9 @@ bool stdout_is_tty() {
   return isatty(fileno(stdout));
 }
 
+void print_procs(std::string name) {
+}
+
 void list() {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
@@ -24,7 +27,7 @@ void list() {
   logger->info("The stdout {} a tty, {} color.", (tty ? "is" : "is not"), (tty ? "enable" : "disable"));
   fmt::text_style cg_style;
   if (tty) {
-    cg_style = fg(fmt::color::blue) | fmt::emphasis::bold;
+    cg_style = fg(fmt::color::red) | fmt::emphasis::bold;
   }
   auto r = root_dir();
   logger->debug("Root directory is {}, iterating it.", r);
@@ -35,6 +38,8 @@ void list() {
       auto cg = i->path().filename().string();
       logger->debug("Found cgroup {}.", cg);
       fmt::print(cg_style, cg);
+      fmt::print(" ");
+      print_procs(cg);
       fmt::print("\n");
     }
   }
