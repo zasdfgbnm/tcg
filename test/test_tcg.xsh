@@ -125,13 +125,43 @@ def test_list():
     tcg create @(name1)
     tcg create @(name2)
     groups1 = set(list_groups())
-    groups2 = set($(tcg list).strip().split(' '))
-    groups3 = set($(tcg ls).strip().split(' '))
+    groups2 = {x.split()[0] for x in $(tcg list).strip().split('\n')}
+    groups3 = {x.split()[0] for x in $(tcg ls).strip().split('\n')}
     print(groups1)
     print(groups2)
     print(groups3)
     assert groups1 == groups2
     assert groups1 == groups3
+
+
+def test_list_procs():
+    if not CGROUP2_AVAILABLE:
+        pytest.skip("requires cgroup v2")
+
+    name = random_string(10)
+
+    q = multiprocessing.Queue()
+
+    def f(q, name):
+        tcg c @(name)
+        q.put(None)
+        sleep infinity
+
+    p = multiprocessing.Process(target=f, args=(q, name))
+    p.start()
+    assert q.get() == None
+
+    tcg_list = $(tcg ls).strip().split('\n')
+    p.kill()
+
+    procs_list = ""
+    for l in tcg_list:
+        if name in l:
+            procs_list = l
+            break
+
+    assert 'python' in procs_list
+    assert 'sleep' in procs_list
 
 
 def test_freeze_unfreeze_illegal():

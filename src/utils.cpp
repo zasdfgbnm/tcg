@@ -16,7 +16,7 @@ std::string root_dir() {
   auto d = fmt::format("/sys/fs/cgroup/user.slice/user-{0}.slice/"
                        "user@{0}.service/terminals.slice",
                        uid);
-  logger->debug("so the root directory is {}.", d);
+  logger->debug("The root directory is {}.", d);
   if (!fs::is_directory(d)) {
     logger->critical(
         "Slice is not properly set up. "
@@ -46,20 +46,6 @@ std::string name_dir(std::string name, std::optional<bool> assert_existence) {
     logger->debug("Do not check directory existence.");
   }
   return dir;
-}
-
-std::vector<std::string> used_names() {
-  auto logger = spdlog::get("utils");
-  logger->debug("List all used names.");
-  std::vector<std::string> names;
-  fs::path p(root_dir());
-  fs::recursive_directory_iterator end;
-  for (fs::recursive_directory_iterator i(p); i != end; ++i) {
-    if (fs::is_directory(*i)) {
-      names.push_back(i->path().filename().string());
-    }
-  }
-  return names;
 }
 
 bool is_used(std::string name) {
