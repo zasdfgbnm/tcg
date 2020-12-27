@@ -2,24 +2,23 @@
 #include <string>
 #include <vector>
 
+#include <fmt/core.h>
 #include <spdlog/spdlog.h>
+#include <boost/filesystem.hpp>
 
 #include "utils.hpp"
 
-std::ostream &operator<<(std::ostream &os, const std::vector<std::string> &v) {
-  bool first = true;
-  for (auto i : v) {
-    if (!first) {
-      os << " ";
-    }
-    os << i;
-    first = false;
-  }
-  return os;
-}
+namespace fs = boost::filesystem;
 
 void list() {
   auto logger = spdlog::get("list");
-  logger->debug("Listing existing cgroups...");
-  std::cout << used_names() << std::endl;
+  logger->debug("List all used names.");
+  fs::path p(root_dir());
+  fs::recursive_directory_iterator end;
+  for (fs::recursive_directory_iterator i(p); i != end; ++i) {
+    if (fs::is_directory(*i)) {
+      fmt::print(i->path().filename().string());
+      fmt::print(" ");
+    }
+  }
 }

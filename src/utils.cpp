@@ -48,20 +48,6 @@ std::string name_dir(std::string name, std::optional<bool> assert_existence) {
   return dir;
 }
 
-std::vector<std::string> used_names() {
-  auto logger = spdlog::get("utils");
-  logger->debug("List all used names.");
-  std::vector<std::string> names;
-  fs::path p(root_dir());
-  fs::recursive_directory_iterator end;
-  for (fs::recursive_directory_iterator i(p); i != end; ++i) {
-    if (fs::is_directory(*i)) {
-      names.push_back(i->path().filename().string());
-    }
-  }
-  return names;
-}
-
 bool is_used(std::string name) {
   auto logger = spdlog::get("utils");
   auto d = root_dir() + "/" + name;
