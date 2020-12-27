@@ -10,7 +10,7 @@ std::ostream &operator<<(std::ostream &os, const std::vector<std::string> &v) {
   bool first = true;
   for (auto i : v) {
     if (!first) {
-      os << ", ";
+      os << " ";
     }
     os << i;
     first = false;
