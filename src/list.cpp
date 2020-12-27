@@ -6,6 +6,7 @@
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <unistd.h>
 
@@ -31,7 +32,9 @@ void print_procs(std::shared_ptr<spdlog::logger> logger, std::string name) {
     first = false;
     std::ifstream cmdin(fmt::format("/proc/{}/cmdline", pid));
     cmdin >> cmd;
-    fmt::print("{}", cmd);
+    std::vector<std::string> results;
+    boost::split(results, cmd, [](char c){return c == '\0';});
+    fmt::print("{}", results[0]);
   }
 }
 
