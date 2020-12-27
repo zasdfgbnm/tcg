@@ -125,8 +125,8 @@ def test_list():
     tcg create @(name1)
     tcg create @(name2)
     groups1 = set(list_groups())
-    groups2 = set($(tcg list).strip().split())
-    groups3 = set($(tcg ls).strip().split())
+    groups2 = {x.split()[0] for x in $(tcg list).strip().split('\n')}
+    groups3 = {x.split()[0] for x in $(tcg ls).strip().split('\n')}
     print(groups1)
     print(groups2)
     print(groups3)

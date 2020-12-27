@@ -17,7 +17,19 @@ bool stdout_is_tty() {
   return isatty(fileno(stdout));
 }
 
-void print_procs(std::string name) {
+void print_procs(std::shared_ptr<spdlog::logger> logger, std::string name) {
+  auto procs_file = name_dir(name, true) + "/cgroup.procs";
+  logger->debug("Reading process list from {}.", procs_file);
+  std::ifstream in(procs_file);
+  pid_t pid;
+  bool first = true;
+  while (in >> pid) {
+    if (!first) {
+      fmt::print(" ");
+    }
+    first = false;
+    fmt::print("{}", pid);
+  }
 }
 
 void list() {
@@ -38,8 +50,8 @@ void list() {
       auto cg = i->path().filename().string();
       logger->debug("Found cgroup {}.", cg);
       fmt::print(cg_style, cg);
-      fmt::print(" ");
-      print_procs(cg);
+      fmt::print("\t");
+      print_procs(logger, cg);
       fmt::print("\n");
     }
   }
