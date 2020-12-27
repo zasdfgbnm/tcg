@@ -100,12 +100,11 @@ jobs:
       run: |
         set -eux
         cat << EOF | sudo tee /mnt/home/user/.bashrc
-        cp -r /test ~
-        cd ~/test
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo poweroff
         EOF
+        sudo chroot /mnt chown -R user:user /home/user
     - name: Cleanup mounts
       run: |
         set -eux
@@ -147,7 +146,8 @@ jobs:
         sudo mount /dev/nbd0 /mnt
         ls
         sudo cp *.pkg.tar.zst /mnt
-        sudo cp -r test /mnt/test
+        sudo cp -r test /mnt/home/user
+        sudo chroot /mnt chown -R user:user /home/user
         sync
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
@@ -159,5 +159,5 @@ jobs:
         set -eux
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
-        FILE=/mnt/home/user/test/test_result.json
+        FILE=/mnt/home/user/test_result.json
         sudo python -c "import sys; import json; j = json.load(open('$FILE')); sys.exit(j['exitcode'])"
