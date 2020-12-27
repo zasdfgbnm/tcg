@@ -98,6 +98,7 @@ jobs:
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         poweroff
         EOF
+        sudo chroot /mnt chown -R user:user /home/user
     - name: Cleanup mounts
       run: |
         set -eux
