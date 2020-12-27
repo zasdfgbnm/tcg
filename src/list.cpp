@@ -2,11 +2,11 @@
 #include <string>
 #include <vector>
 
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 #include <fmt/color.h>
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
 
 #include <unistd.h>
 
@@ -14,9 +14,7 @@
 
 namespace fs = boost::filesystem;
 
-bool stdout_is_tty() {
-  return isatty(fileno(stdout));
-}
+bool stdout_is_tty() { return isatty(fileno(stdout)); }
 
 void print_procs(std::shared_ptr<spdlog::logger> logger, std::string name) {
   auto procs_file = name_dir(name, true) + "/cgroup.procs";
@@ -33,7 +31,7 @@ void print_procs(std::shared_ptr<spdlog::logger> logger, std::string name) {
     std::ifstream cmdin(fmt::format("/proc/{}/cmdline", pid));
     cmdin >> cmd;
     std::vector<std::string> results;
-    boost::split(results, cmd, [](char c){return c == '\0';});
+    boost::split(results, cmd, [](char c) { return c == '\0'; });
     fmt::print("{}", results[0]);
   }
 }
@@ -42,7 +40,8 @@ void list() {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
   bool tty = stdout_is_tty();
-  logger->info("The stdout {} a tty, {} color.", (tty ? "is" : "is not"), (tty ? "enable" : "disable"));
+  logger->info("The stdout {} a tty, {} color.", (tty ? "is" : "is not"),
+               (tty ? "enable" : "disable"));
   fmt::text_style cg_style;
   if (tty) {
     cg_style = fg(fmt::color::green) | fmt::emphasis::bold;
