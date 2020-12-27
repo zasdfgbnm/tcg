@@ -9,8 +9,7 @@ import queue
 
 uid = os.getuid()
 ROOT = f'/sys/fs/cgroup/user.slice/user-{uid}.slice/user@{uid}.service/terminals.slice/'
-CGROUP_AVAILABLE = os.path.isdir(ROOT)
-print(CGROUP_AVAILABLE)
+CGROUP2_AVAILABLE = os.path.isfile('/sys/fs/cgroup/cgroup.procs')
 
 
 def random_string(length):
@@ -48,7 +47,7 @@ def test_create_illegal():
 
 
 def test_create_builtin_name():
-    if not CGROUP_AVAILABLE:
+    if not CGROUP2_AVAILABLE:
         pytest.xfail("requires cgroup v2")
 
     groups1 = set(list_groups())
@@ -59,7 +58,7 @@ def test_create_builtin_name():
 
 
 def test_create_and_destroy():
-    if not CGROUP_AVAILABLE:
+    if not CGROUP2_AVAILABLE:
         pytest.skip("requires cgroup v2")
 
     name1 = random_string(10)
@@ -118,7 +117,7 @@ def test_list_illegal():
 
 
 def test_list():
-    if not CGROUP_AVAILABLE:
+    if not CGROUP2_AVAILABLE:
         pytest.xfail("requires cgroup v2")
 
     name1 = random_string(10)
@@ -146,7 +145,7 @@ def test_freeze_unfreeze_illegal():
     with pytest.raises(subprocess.CalledProcessError):
         tcg uf @(non_existing_name)
 
-    if not CGROUP_AVAILABLE:
+    if not CGROUP2_AVAILABLE:
         return
 
     name = random_string(10)
@@ -156,7 +155,7 @@ def test_freeze_unfreeze_illegal():
 
 
 def test_freeze_unfreeze():
-    if not CGROUP_AVAILABLE:
+    if not CGROUP2_AVAILABLE:
         pytest.skip("requires cgroup v2")
 
     name = random_string(10)
