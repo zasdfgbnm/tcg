@@ -135,6 +135,9 @@ def test_list():
 
 
 def test_list_procs():
+    if not CGROUP2_AVAILABLE:
+        pytest.skip("requires cgroup v2")
+
     name = random_string(10)
 
     q = multiprocessing.Queue()
