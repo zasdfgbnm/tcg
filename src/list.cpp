@@ -22,6 +22,10 @@ void list() {
   logger->info("List all existing cgroups.");
   bool tty = stdout_is_tty();
   logger->info("The stdout {} a tty, {} color.", (tty ? "is" : "is not"), (tty ? "enable" : "disable"));
+  fmt::text_style cg_style;
+  if (tty) {
+    cg_style = fg(fmt::color::blue) | fmt::emphasis::bold;
+  }
   auto r = root_dir();
   logger->debug("Root directory is {}, iterating it.", r);
   fs::path p(r);
@@ -30,7 +34,7 @@ void list() {
     if (fs::is_directory(*i)) {
       auto cg = i->path().filename().string();
       logger->debug("Found cgroup {}.", cg);
-      fmt::print(fg(fmt::color::blue) | fmt::emphasis::bold, cg);
+      fmt::print(cg_style, cg);
       fmt::print(" ");
     }
   }
