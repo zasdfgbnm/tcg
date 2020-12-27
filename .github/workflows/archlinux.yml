@@ -99,20 +99,12 @@ jobs:
     - name: Setup autorun of tests
       run: |
         set -eux
-        cat << EOF | sudo tee /mnt/home/user/run_tests.sh
-        #!/bin/bash
-        set -eux
-        cp -r /test ~
-        cd ~/test
+        cat << EOF | sudo tee /mnt/home/user/.bashrc
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         systemctl --user start terminals.slice
         export TCG_LOG_LEVEL=debug
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo poweroff
-        EOF
-        sudo chmod +x /mnt/home/user/run_tests.sh
-        cat << EOF | sudo tee /mnt/home/user/.bashrc
-        ~/run_tests.sh
         EOF
         sudo chroot /mnt chown -R user:user /home/user
     - name: Cleanup mounts
@@ -156,8 +148,8 @@ jobs:
         sudo mount /dev/nbd0 /mnt
         ls
         sudo cp *.pkg.tar.zst /mnt
-        sudo cp -r test /mnt/test
-        ls /mnt
+        sudo cp -r test /mnt/home/user
+        sudo chroot /mnt chown -R user:user /home/user
         sync
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
@@ -169,5 +161,5 @@ jobs:
         set -eux
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
-        FILE=/mnt/home/user/test/test_result.json
+        FILE=/mnt/home/user/test_result.json
         sudo python -c "import sys; import json; j = json.load(open('$FILE')); sys.exit(j['exitcode'])"
