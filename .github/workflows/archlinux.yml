@@ -105,9 +105,6 @@ jobs:
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         systemctl --user start terminals.slice
         export TCG_LOG_LEVEL=debug
-        sh -c 'tcg c'
-        tcg c
-        sudo sh -c 'tcg c'
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo poweroff
         EOF
