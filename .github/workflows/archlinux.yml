@@ -90,13 +90,11 @@ jobs:
       run: |
         set -eux
         cat << EOF | sudo tee /mnt/root/.bashrc
-        #!/bin/bash
         set -eux
-        pacman -U --noconfirm *.pkg.tar.zst
+        sudo pacman -U --noconfirm /*.pkg.tar.zst
         systemctl --user start terminals.slice
         export TCG_LOG_LEVEL=debug
-        tcg c
-        # py.test --json-report --json-report-file=test_result.json --timeout=60 -v
+        py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         poweroff
         EOF
     - name: Cleanup mounts
