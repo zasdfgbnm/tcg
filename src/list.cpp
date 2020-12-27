@@ -45,7 +45,7 @@ void list() {
   logger->info("The stdout {} a tty, {} color.", (tty ? "is" : "is not"), (tty ? "enable" : "disable"));
   fmt::text_style cg_style;
   if (tty) {
-    cg_style = fg(fmt::color::red) | fmt::emphasis::bold;
+    cg_style = fg(fmt::color::green) | fmt::emphasis::bold;
   }
   auto r = root_dir();
   logger->debug("Root directory is {}, iterating it.", r);
