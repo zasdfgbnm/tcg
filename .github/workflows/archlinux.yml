@@ -101,6 +101,7 @@ jobs:
     - name: Cleanup mounts
       run: |
         set -eux
+        sync
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - uses: actions/upload-artifact@v2
@@ -139,6 +140,7 @@ jobs:
         ls
         sudo cp -r test *.pkg.tar.zst /mnt/root
         sudo ls /mnt/root
+        sync
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
