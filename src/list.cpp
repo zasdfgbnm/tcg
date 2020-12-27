@@ -22,15 +22,16 @@ void print_procs(std::shared_ptr<spdlog::logger> logger, std::string name) {
   logger->debug("Reading process list from {}.", procs_file);
   std::ifstream in(procs_file);
   pid_t pid;
+  std::string cmd;
   bool first = true;
   while (in >> pid) {
     if (!first) {
       fmt::print(" ");
     }
     first = false;
-    auto exe = fmt::format("/proc/{}/exe", pid);
-    exe = fs::read_symlink(fs::path(exe)).filename().string();
-    fmt::print("{}", exe);
+    std::ifstream cmdin(fmt::format("/proc/{}/cmdline", pid));
+    cmdin >> cmd;
+    fmt::print("{}", cmd);
   }
 }
 
