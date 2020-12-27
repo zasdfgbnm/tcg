@@ -35,7 +35,7 @@ void list() {
       auto cg = i->path().filename().string();
       logger->debug("Found cgroup {}.", cg);
       fmt::print(cg_style, cg);
-      fmt::print(" ");
+      fmt::print("\n");
     }
   }
 }
