@@ -2,17 +2,26 @@
 #include <string>
 #include <vector>
 
+#include <fmt/color.h>
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
 #include <boost/filesystem.hpp>
+
+#include <unistd.h>
 
 #include "utils.hpp"
 
 namespace fs = boost::filesystem;
 
+bool stdout_is_tty() {
+  return isatty(fileno(stdout));
+}
+
 void list() {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
+  bool tty = stdout_is_tty();
+  logger->info("The stdout {} a tty, {} color.", (tty ? "is" : "is not"), (tty ? "enable" : "disable"));
   auto r = root_dir();
   logger->debug("Root directory is {}, iterating it.", r);
   fs::path p(r);
@@ -21,7 +30,7 @@ void list() {
     if (fs::is_directory(*i)) {
       auto cg = i->path().filename().string();
       logger->debug("Found cgroup {}.", cg);
-      fmt::print(cg);
+      fmt::print(fg(fmt::color::blue) | fmt::emphasis::bold, cg);
       fmt::print(" ");
     }
   }

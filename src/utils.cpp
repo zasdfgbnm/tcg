@@ -16,7 +16,7 @@ std::string root_dir() {
   auto d = fmt::format("/sys/fs/cgroup/user.slice/user-{0}.slice/"
                        "user@{0}.service/terminals.slice",
                        uid);
-  logger->debug("so the root directory is {}.", d);
+  logger->debug("The root directory is {}.", d);
   if (!fs::is_directory(d)) {
     logger->critical(
         "Slice is not properly set up. "
