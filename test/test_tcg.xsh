@@ -280,16 +280,16 @@ def test_cpu_weight():
         while True:
             compute()
 
-    p1 = multiprocessing.Process(target=echo, args=(q1, q2, name1))
+    p1 = multiprocessing.Process(target=f, args=(q1, q2, name1))
     p1.start()
-    p2 = multiprocessing.Process(target=echo, args=(q3, q4, name2))
+    p2 = multiprocessing.Process(target=f, args=(q3, q4, name2))
     p2.start()
 
     assert q2.get() == "created"
     assert q4.get() == "created"
 
     tcg set @(name1) cpu.weight 1
-    tcg set @(name2) cpu.weight 10
+    tcg s @(name2) cpu.weight 10
 
     q1.put("start")
     q2.put("start")
