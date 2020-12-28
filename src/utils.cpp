@@ -1,10 +1,8 @@
 #include "utils.hpp"
 
-#include <fmt/color.h>
+#include <boost/filesystem.hpp>
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
-
-#include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
 
