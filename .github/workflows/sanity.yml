@@ -63,8 +63,8 @@ jobs:
         cd build
         cmake ..
         make -j
-        sudo chown root ./build/tcg
-        sudo chmod +s ./build/tcg
+        sudo chown root tcg
+        sudo chmod +s tcg
     - name: Run tests on cgroup v1
       timeout-minutes: 1
       run: |
