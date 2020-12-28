@@ -67,16 +67,16 @@ void create_root_dir() {
   if (!fs::is_directory(p)) {
     logger->debug("{} does not exist, create it.", root_dir);
     fs::create_directory(p);
+    enable_controllers(logger, root_dir);
   }
-  enable_controllers(logger, root_dir);
   auto ud = user_dir();
   logger->debug("Check if {} exist.", ud);
   p = fs::path(ud);
   if (!fs::is_directory(p)) {
     logger->debug("{} does not exist, create it.", ud);
     fs::create_directory(p);
+    enable_controllers(logger, ud);
   }
-  enable_controllers(logger, ud);
 }
 
 void enter_chroot_jail() {
