@@ -1,9 +1,9 @@
+#include <fstream>
 #include <string>
 #include <unistd.h>
-#include <fstream>
 
-#include <spdlog/spdlog.h>
 #include <fmt/core.h>
+#include <spdlog/spdlog.h>
 
 #include "utils.hpp"
 
