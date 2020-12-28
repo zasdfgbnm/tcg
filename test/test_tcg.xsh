@@ -116,6 +116,12 @@ def test_list_illegal():
         tcg list aaa
 
 
+def test_list_empty():
+    if CGROUP2_AVAILABLE:
+        pytest.skip("hard to guarantee empty in this context")
+    assert $(tcg ls).strip() == ''
+
+
 def test_list():
     if not CGROUP2_AVAILABLE:
         pytest.xfail("requires cgroup v2")
