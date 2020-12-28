@@ -46,22 +46,44 @@ void setup_loggers() {
   spdlog::register_logger(std::make_shared<spdlog::logger>("list", sink));
   spdlog::register_logger(std::make_shared<spdlog::logger>("freeze", sink));
   spdlog::register_logger(std::make_shared<spdlog::logger>("utils", sink));
+  spdlog::register_logger(std::make_shared<spdlog::logger>("set", sink));
+}
+
+bool file_contains(std::shared_ptr<spdlog::logger> logger, std::string file,
+                   std::string controller) {
+  logger->debug("Testing if {} already contains {}.", file, controller);
+  std::ifstream in(file);
+  std::string s;
+  while (std::getline(in, s)) {
+    if (s.find(controller) != std::string::npos) {
+      return true;
+    }
+  }
+  return false;
 }
 
 void enable_controllers(std::shared_ptr<spdlog::logger> logger,
                         std::string dir) {
-  logger->debug("Set subtree_control of {}.", dir);
-  auto subtree_control = dir + "/cgroup.subtree_control";
-  auto text = "+cpu";
-  logger->debug("Printting \"{}\" to {}.", text, dir);
-  auto out = fmt::output_file(subtree_control);
-  out.print(text);
-  out.close();
-  logger->debug("Done printting.");
+  const static std::string controllers[] = {"cpu"};
+  for (std::string c : controllers) {
+    auto subtree_control = dir + "/cgroup.subtree_control";
+    if (file_contains(logger, subtree_control, c)) {
+      logger->debug(
+          "The controller {} of {} is already enabled, has nothing to do.", c,
+          dir);
+      continue;
+    }
+    logger->debug("Set subtree_control of {} for controller {}.", dir, c);
+    auto text = "+" + c;
+    logger->debug("Printting \"{}\" to {}.", text, dir);
+    auto out = fmt::output_file(subtree_control);
+    out.print(text);
+    out.close();
+    logger->debug("Done printting.");
+  }
 }
 
-void create_root_dir() {
-  auto logger = spdlog::get("initialize");
+void create_root_dir(std::shared_ptr<spdlog::logger> logger) {
   logger->info("Initialize root directory.");
   enable_controllers(logger, "/sys/fs/cgroup");
   auto p = fs::path(root_dir);
@@ -81,9 +103,8 @@ void create_root_dir() {
   }
 }
 
-void enter_chroot_jail() {
-  auto logger = spdlog::get("initialize");
-  logger->info("Enter chroot jail.");
+void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
+  logger->info("Entering chroot jail...");
   auto ud = user_dir();
   logger->debug("Chdir to {}.", ud);
   if (chdir(ud.c_str()) < 0) {
@@ -96,6 +117,7 @@ void enter_chroot_jail() {
                      std::strerror(errno));
     exit(EXIT_FAILURE);
   }
+  logger->info("Chroot jail entered.");
 }
 
 void initialize() {
@@ -106,7 +128,10 @@ void initialize() {
 bool is_sandbox;
 
 void enter_sandbox() {
-  create_root_dir();
-  enter_chroot_jail();
+  auto logger = spdlog::get("initialize");
+  logger->info("Entering sandbox...");
+  create_root_dir(logger);
+  enter_chroot_jail(logger);
   is_sandbox = true;
+  logger->info("Sandbox entered successfully.");
 }

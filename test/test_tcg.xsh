@@ -5,6 +5,7 @@ import pytest
 import multiprocessing
 import subprocess
 import queue
+import timeit
 
 
 uid = os.getuid()
@@ -250,3 +251,56 @@ def test_freeze_unfreeze():
     assert q1.get() == 9
 
     q2.put("end")
+
+
+def test_cpu_weight():
+    if not CGROUP2_AVAILABLE:
+        pytest.skip("requires cgroup v2")
+
+    name1 = random_string(10)
+    name2 = random_string(10)
+
+    q1 = multiprocessing.Queue()
+    q2 = multiprocessing.Queue()
+    q3 = multiprocessing.Queue()
+    q4 = multiprocessing.Queue()
+
+    def f(q1, q2, name):
+        tcg c @(name)
+        q2.put("created")
+
+        def compute():
+            for i in range(100):
+                hash((0,) * 10000)
+
+        assert q1.get() == "start"
+        compute()
+        start = timeit.default_timer()
+        compute()
+        end = timeit.default_timer()
+        q2.put(end - start)
+        while True:
+            compute()
+
+    p1 = multiprocessing.Process(target=f, args=(q1, q2, name1))
+    p1.start()
+    p2 = multiprocessing.Process(target=f, args=(q3, q4, name2))
+    p2.start()
+
+    assert q2.get() == "created"
+    assert q4.get() == "created"
+
+    os.sched_setaffinity(p1.pid, {0})
+    os.sched_setaffinity(p2.pid, {0})
+
+    tcg set @(name1) cpu.weight 1
+    tcg s @(name2) cpu.weight 20
+
+    q1.put("start")
+    q3.put("start")
+
+    time_ratio = q2.get() / q4.get()
+    p1.kill()
+    p2.kill()
+
+    assert time_ratio > 10
