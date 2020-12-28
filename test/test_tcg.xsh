@@ -268,9 +268,13 @@ def test_cpu_weight():
     def f(q1, q2, name):
         tcg c @(name)
         q2.put("created")
+        return
+
         def compute():
+            return
             for i in range(1000):
-                hash((0,) * 100000)
+                hash((0,) * 10000)
+
         assert q1.get() == "start"
         compute()
         start = timeit.default_timer()
