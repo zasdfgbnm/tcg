@@ -58,7 +58,7 @@ void create_root_dir() {
   }
   auto ud = user_dir();
   logger->debug("Check if {} exist.", ud);
-  p = fs::path();
+  p = fs::path(ud);
   if (!fs::is_directory(p)) {
     logger->debug("{} does not exist, create it.", ud);
     fs::create_directory(p);
