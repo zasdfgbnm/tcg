@@ -271,7 +271,7 @@ def test_cpu_weight():
 
         def compute():
             for i in range(1000):
-                hash((0,) * 10000)
+                hash((0,) * 100000)
 
         assert q1.get() == "start"
         compute()
@@ -291,11 +291,15 @@ def test_cpu_weight():
     assert q4.get() == "created"
 
     tcg set @(name1) cpu.weight 1
-    tcg s @(name2) cpu.weight 10
+    tcg s @(name2) cpu.weight 100
 
     q1.put("start")
-    q2.put("start")
+    q3.put("start")
 
-    assert q4.get() / q2.get() == 10
+    time_ratio = q2.get() / q4.get()
     p1.kill()
     p2.kill()
+
+    print(time_ratio)
+
+    assert time_ratio == 10
