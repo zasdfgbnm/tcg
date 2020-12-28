@@ -1,1 +1,1 @@
-HeaderFilterRegex: '.*(?<!\.txt)'
+HeaderFilterRegex: 'src/.*hpp'
