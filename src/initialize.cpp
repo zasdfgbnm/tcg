@@ -5,9 +5,9 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <fmt/os.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
-#include <fmt/os.h>
 
 #include "utils.hpp"
 
@@ -48,7 +48,8 @@ void setup_loggers() {
   spdlog::register_logger(std::make_shared<spdlog::logger>("utils", sink));
 }
 
-void enable_controllers(std::shared_ptr<spdlog::logger> logger, std::string dir) {
+void enable_controllers(std::shared_ptr<spdlog::logger> logger,
+                        std::string dir) {
   logger->debug("Set subtree_control of {}.", dir);
   auto subtree_control = dir + "/cgroup.subtree_control";
   auto text = "+cpu";
