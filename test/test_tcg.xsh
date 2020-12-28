@@ -304,3 +304,14 @@ def test_cpu_weight():
     p2.kill()
 
     assert time_ratio > 10
+
+
+def test_self():
+    name1 = random_string(10)
+    name2 = random_string(10)
+
+    tcg create @(name1)
+    assert $(tcg self).strip() == name1
+
+    tcg c @(name2)
+    assert $(tcg sf).strip() == name2
