@@ -25,7 +25,7 @@ int main(int argc, const char *argv[]) {
 
   if (command == "list" || command == "ls") {
     // list has to run outside sandbox because
-    // it needs to have access to /proc filesystem
+    // it needs access to /proc filesystem
     check_arg(argc == 2);
     list();
     return 0;
