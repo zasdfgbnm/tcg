@@ -10,6 +10,7 @@ void check_arg(bool condition) {
 }
 
 void initialize();
+void enter_sandbox();
 void help();
 void list();
 void create(std::string name_);
@@ -24,10 +25,16 @@ int main(int argc, const char *argv[]) {
 
   if (command == "help" || command == "h") {
     help();
+    return 0;
   } else if (command == "list" || command == "ls") {
     check_arg(argc == 2);
     list();
-  } else if (command == "create" || command == "c") {
+    return 0;
+  } else {
+    enter_sandbox();
+  }
+
+  if (command == "create" || command == "c") {
     check_arg(argc == 2 || argc == 3);
     if (argc == 2) {
       create("");

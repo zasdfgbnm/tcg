@@ -17,8 +17,12 @@ namespace fs = boost::filesystem;
 bool stdout_is_tty() { return isatty(fileno(stdout)); }
 
 void print_procs(std::shared_ptr<spdlog::logger> logger, std::string name) {
-  auto procs_file = name_dir(name, true) + "/cgroup.procs";
+  auto procs_file = root_dir + ("/" + name) + "/cgroup.procs";
   logger->debug("Reading process list from {}.", procs_file);
+  if (!fs::is_regular_file(fs::path(procs_file))) {
+    logger->critical("Can not find {}.", procs_file);
+    exit(EXIT_FAILURE);
+  }
   std::ifstream in(procs_file);
   pid_t pid;
   std::string cmd;

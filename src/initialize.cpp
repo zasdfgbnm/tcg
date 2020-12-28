@@ -12,8 +12,6 @@
 
 namespace fs = boost::filesystem;
 
-const char *root_dir = "/sys/fs/cgroup/terminals";
-
 std::string user_dir() {
   auto uid = getuid();
   return fmt::format("{}/{}", root_dir, uid);
@@ -67,12 +65,12 @@ void create_root_dir() {
 
 void enter_chroot_jail() {
   auto logger = spdlog::get("initialize");
-  logger->info("Chdir to /proc so we have access to procs information.");
-  if (chdir("/proc") < 0) {
-    logger->critical("Unable to chdir to /proc: {}.", std::strerror(errno));
+  auto ud = user_dir();
+  logger->info("Chdir to {}.", ud);
+  if (chdir(ud.c_str()) < 0) {
+    logger->critical("Unable to chdir to {}: {}.", ud, std::strerror(errno));
     exit(EXIT_FAILURE);
   }
-  auto ud = user_dir();
   logger->info("Entering chroot jail at {}.", ud);
   if (chroot(ud.c_str()) < 0) {
     logger->critical("Unable to chroot to {}: {}.", ud.c_str(), std::strerror(errno));
@@ -83,6 +81,9 @@ void enter_chroot_jail() {
 void initialize() {
   setup_loggers();
   set_log_level();
+}
+
+void enter_sandbox() {
   create_root_dir();
   enter_chroot_jail();
 }
