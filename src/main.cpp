@@ -16,7 +16,7 @@ void list();
 void create(std::string name_);
 void freeze(std::string name);
 void unfreeze(std::string name);
-void limit(std::string name, std::string resource, std::string value);
+void set(std::string name, std::string key, std::string value);
 
 int main(int argc, const char *argv[]) {
   initialize();
@@ -31,7 +31,7 @@ int main(int argc, const char *argv[]) {
     // support
     help();
     return 0;
-  } else if (command == "list" || command == "ls") {
+  } else if (command == "list" || command == "ls" || command == "l") {
     // list has to run outside sandbox because
     // it needs access to /proc filesystem
     check_arg(argc == 2);
@@ -54,9 +54,9 @@ int main(int argc, const char *argv[]) {
   } else if (command == "unfreeze" || command == "uf") {
     check_arg(argc == 3);
     unfreeze(argv[2]);
-  } else if (command == "limit" || command == "l") {
+  } else if (command == "set" || command == "s") {
     check_arg(argc == 5);
-    limit(argv[2], argv[3], argv[4]);
+    set(argv[2], argv[3], argv[4]);
   } else {
     invalid_argument();
   }

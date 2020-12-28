@@ -2,20 +2,19 @@ project(tcg)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/initialize.cpp
     src/utils.cpp
     src/utils.hpp
+    src/names.cpp
     src/create.cpp
     src/freeze.cpp
     src/list.cpp
-    src/limit.cpp
+    src/set.cpp
     src/help.cpp
 )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
-
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
 add_subdirectory(third_party/spdlog EXCLUDE_FROM_ALL)
