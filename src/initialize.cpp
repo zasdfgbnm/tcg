@@ -80,8 +80,7 @@ void enable_controllers(std::shared_ptr<spdlog::logger> logger,
   }
 }
 
-void create_root_dir() {
-  auto logger = spdlog::get("initialize");
+void create_root_dir(std::shared_ptr<spdlog::logger> logger) {
   logger->info("Initialize root directory.");
   enable_controllers(logger, "/sys/fs/cgroup");
   auto p = fs::path(root_dir);
@@ -101,8 +100,7 @@ void create_root_dir() {
   }
 }
 
-void enter_chroot_jail() {
-  auto logger = spdlog::get("initialize");
+void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
   logger->info("Entering chroot jail...");
   auto ud = user_dir();
   logger->debug("Chdir to {}.", ud);
@@ -127,7 +125,9 @@ void initialize() {
 bool is_sandbox;
 
 void enter_sandbox() {
-  create_root_dir();
-  enter_chroot_jail();
+  auto logger = spdlog::get("initialize");
+  create_root_dir(logger);
+  enter_chroot_jail(logger);
   is_sandbox = true;
+  logger->info("Sandbox entered successfully.");
 }
