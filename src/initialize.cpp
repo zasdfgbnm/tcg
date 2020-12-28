@@ -63,6 +63,7 @@ void enable_controllers(std::shared_ptr<spdlog::logger> logger,
 void create_root_dir() {
   auto logger = spdlog::get("initialize");
   logger->info("Initialize root directory.");
+  enable_controllers(logger, "/sys/fs/cgroup");
   auto p = fs::path(root_dir);
   logger->debug("Check if {} exist.", root_dir);
   if (!fs::is_directory(p)) {
