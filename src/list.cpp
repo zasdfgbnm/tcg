@@ -24,12 +24,16 @@ void print_procs(std::shared_ptr<spdlog::logger> logger, std::string name) {
   std::string cmd;
   bool first = true;
   while (in >> pid) {
+    logger->debug("Get pid {} from cgroup.procs", pid);
     if (!first) {
       fmt::print(" ");
     }
     first = false;
-    std::ifstream cmdin(fmt::format("/proc/{}/cmdline", pid));
+    auto cmd_file = fmt::format("/proc/{}/cmdline", pid);
+    logger->debug("Reading {} to get program command line.", cmd_file);
+    std::ifstream cmdin(cmd_file);
     cmdin >> cmd;
+    logger->debug("Command line of pid {} is {}.", pid, cmd);
     std::vector<std::string> results;
     boost::split(results, cmd, [](char c) { return c == '\0'; });
     fmt::print("{}", results[0]);
