@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <unordered_set>
+#include <vector>
 
 #include <boost/filesystem.hpp>
 #include <fmt/os.h>
@@ -15,6 +17,8 @@
 
 namespace fs = boost::filesystem;
 
+extern std::unordered_set<std::string> names;
+
 void validate_name(std::shared_ptr<spdlog::logger> logger,
                    const std::string &name) {
   for (char c : name) {
@@ -25,6 +29,31 @@ void validate_name(std::shared_ptr<spdlog::logger> logger,
     logger->error("Illegal name: can only use letters, digits, or underscore.");
     exit(EXIT_FAILURE);
   }
+}
+
+bool is_used(std::string name) {
+  auto logger = spdlog::get("utils");
+  auto d = user_dir() + name;
+  logger->debug(
+      "Check if name {}, which correspond to directory {} is already used.",
+      name, d);
+  fs::path p(d);
+  return fs::is_directory(p);
+}
+
+std::string new_name() {
+  auto logger = spdlog::get("utils");
+  logger->debug("Getting a new builtin name...");
+  for (auto n : names) {
+    logger->debug("Trying {}...", n);
+    if (!is_used(n)) {
+      logger->debug("Name {} is available, pick it.", n);
+      return n;
+    }
+    logger->debug("Name {} is already used.", n);
+  }
+  logger->error("Run out of names.");
+  exit(EXIT_FAILURE);
 }
 
 void create(std::string name_) {
