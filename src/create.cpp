@@ -17,7 +17,9 @@
 
 namespace fs = boost::filesystem;
 
-extern std::unordered_set<std::string> names;
+std::unordered_set<std::string> names = {
+  #include "names.txt"
+};
 
 void validate_name(std::shared_ptr<spdlog::logger> logger,
                    const std::string &name) {
