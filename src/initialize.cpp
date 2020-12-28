@@ -48,36 +48,47 @@ void setup_loggers() {
   spdlog::register_logger(std::make_shared<spdlog::logger>("utils", sink));
 }
 
-void enable_controllers(std::string dir) {
+void enable_controllers(std::shared_ptr<spdlog::logger> logger, std::string dir) {
+  logger->debug("Set subtree_control of {}.", dir);
   auto subtree_control = dir + "/cgroup.subtree_control";
+  auto text = "+cpu";
+  logger->debug("Printting \"{}\" to {}.", text, dir);
   auto out = fmt::output_file(subtree_control);
-  out.print("+cpu");
+  out.print(text);
   out.close();
+  logger->debug("Done printting.");
 }
 
 void create_root_dir() {
+  auto logger = spdlog::get("initialize");
+  logger->info("Initialize root directory.");
   auto p = fs::path(root_dir);
+  logger->debug("Check if {} exist.", root_dir);
   if (!fs::is_directory(p)) {
+    logger->debug("{} does not exist, create it.", root_dir);
     fs::create_directory(p);
-    enable_controllers(root_dir);
+    enable_controllers(logger, root_dir);
   }
   auto ud = user_dir();
+  logger->debug("Check if {} exist.", ud);
   p = fs::path(ud);
   if (!fs::is_directory(p)) {
+    logger->debug("{} does not exist, create it.", ud);
     fs::create_directory(p);
-    enable_controllers(ud);
+    enable_controllers(logger, ud);
   }
 }
 
 void enter_chroot_jail() {
   auto logger = spdlog::get("initialize");
+  logger->info("Enter chroot jail.");
   auto ud = user_dir();
-  logger->info("Chdir to {}.", ud);
+  logger->debug("Chdir to {}.", ud);
   if (chdir(ud.c_str()) < 0) {
     logger->critical("Unable to chdir to {}: {}.", ud, std::strerror(errno));
     exit(EXIT_FAILURE);
   }
-  logger->info("Entering chroot jail at {}.", ud);
+  logger->debug("Entering chroot jail at {}.", ud);
   if (chroot(ud.c_str()) < 0) {
     logger->critical("Unable to chroot to {}: {}.", ud.c_str(),
                      std::strerror(errno));
