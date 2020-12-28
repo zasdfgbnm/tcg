@@ -270,8 +270,8 @@ def test_cpu_weight():
         q2.put("created")
 
         def compute():
-            for i in range(1000):
-                hash((0,) * 100000)
+            for i in range(100):
+                hash((0,) * 10000)
 
         assert q1.get() == "start"
         compute()
@@ -290,8 +290,11 @@ def test_cpu_weight():
     assert q2.get() == "created"
     assert q4.get() == "created"
 
+    os.sched_setaffinity(p1.pid, {0})
+    os.sched_setaffinity(p2.pid, {0})
+
     tcg set @(name1) cpu.weight 1
-    tcg s @(name2) cpu.weight 100
+    tcg s @(name2) cpu.weight 20
 
     q1.put("start")
     q3.put("start")
@@ -300,6 +303,4 @@ def test_cpu_weight():
     p1.kill()
     p2.kill()
 
-    print(time_ratio)
-
-    assert time_ratio == 10
+    assert time_ratio > 10
