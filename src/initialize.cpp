@@ -1,12 +1,12 @@
-#include <cstdlib>
-#include <unistd.h>
 #include <cerrno>
+#include <cstdlib>
 #include <cstring>
+#include <unistd.h>
 
-#include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 
 #include "utils.hpp"
 
@@ -68,7 +68,8 @@ void enter_chroot_jail() {
   }
   logger->info("Entering chroot jail at {}.", ud);
   if (chroot(ud.c_str()) < 0) {
-    logger->critical("Unable to chroot to {}: {}.", ud.c_str(), std::strerror(errno));
+    logger->critical("Unable to chroot to {}: {}.", ud.c_str(),
+                     std::strerror(errno));
     exit(EXIT_FAILURE);
   }
 }
