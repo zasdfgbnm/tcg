@@ -51,8 +51,8 @@ void enter_chroot_jail() {
   auto logger = spdlog::get("initialize");
   auto d = root_dir() + "/";
   logger->info("Entering chroot jail at {}.", d);
-  if (chdir(d.c_str()) < 0) {
-    logger->critical("Unable to chdir to {}: {}.", d, std::strerror(errno));
+  if (chdir("/proc") < 0) {
+    logger->critical("Unable to chdir to /proc.", d, std::strerror(errno));
     exit(EXIT_FAILURE);
   }
   if (chroot(d.c_str()) < 0) {
@@ -64,5 +64,5 @@ void enter_chroot_jail() {
 void initialize() {
   setup_loggers();
   set_log_level();
-  // enter_chroot_jail();
+  enter_chroot_jail();
 }
