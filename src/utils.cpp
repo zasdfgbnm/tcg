@@ -8,27 +8,20 @@
 
 namespace fs = boost::filesystem;
 
-std::string root_dir() {
-  auto logger = spdlog::get("utils");
-  logger->debug("Getting root directory...");
-  auto uid = getuid();
-  logger->debug("User id is {},", uid);
-  auto d = fmt::format("/sys/fs/cgroup/user.slice/user-{0}.slice/"
-                       "user@{0}.service/terminals.slice",
-                       uid);
-  logger->debug("The root directory is {}.", d);
-  if (!fs::is_directory(d)) {
-    logger->critical(
-        "Slice is not properly set up. "
-        "Please refer to https://example.com on how to setup slice.");
+extern bool is_sandbox;
+
+std::string user_dir() {
+  if (is_sandbox) {
+    return "/";
   }
-  return d;
+  auto uid = getuid();
+  return fmt::format("{}/{}/", root_dir, uid);
 }
 
 std::string name_dir(std::string name, std::optional<bool> assert_existence) {
   auto logger = spdlog::get("utils");
   logger->debug("Getting directory for {}...", name);
-  auto dir = root_dir() + "/" + name;
+  auto dir = user_dir() + name;
   logger->debug("The directory should be {}.", dir);
   if (assert_existence.has_value()) {
     bool v = assert_existence.value();
@@ -50,7 +43,7 @@ std::string name_dir(std::string name, std::optional<bool> assert_existence) {
 
 bool is_used(std::string name) {
   auto logger = spdlog::get("utils");
-  auto d = root_dir() + "/" + name;
+  auto d = user_dir() + name;
   logger->debug(
       "Check if name {}, which correspond to directory {} is already used.",
       name, d);

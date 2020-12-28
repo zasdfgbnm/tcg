@@ -8,7 +8,7 @@ import queue
 
 
 uid = os.getuid()
-ROOT = f'/sys/fs/cgroup/user.slice/user-{uid}.slice/user@{uid}.service/terminals.slice/'
+ROOT = f'/sys/fs/cgroup/terminals/{uid}/'
 CGROUP2_AVAILABLE = os.path.isfile('/sys/fs/cgroup/cgroup.procs')
 
 
