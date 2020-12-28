@@ -50,7 +50,7 @@ void list() {
   if (tty) {
     cg_style = fg(fmt::color::green) | fmt::emphasis::bold;
   }
-  auto r = root_dir();
+  auto r = user_dir();
   logger->debug("Root directory is {}, iterating it.", r);
   fs::path p(r);
   fs::recursive_directory_iterator end;
