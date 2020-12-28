@@ -1,7 +1,7 @@
 #include <string>
 
-#include <spdlog/spdlog.h>
 #include <fmt/os.h>
+#include <spdlog/spdlog.h>
 
 #include "utils.hpp"
 
