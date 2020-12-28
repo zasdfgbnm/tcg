@@ -23,10 +23,9 @@ int main(int argc, const char *argv[]) {
 
   std::string command = argv[1];
 
-  if (command == "help" || command == "h") {
-    help();
-    return 0;
-  } else if (command == "list" || command == "ls") {
+  if (command == "list" || command == "ls") {
+    // list has to run outside sandbox because
+    // it needs to have access to /proc filesystem
     check_arg(argc == 2);
     list();
     return 0;
@@ -34,7 +33,10 @@ int main(int argc, const char *argv[]) {
     enter_sandbox();
   }
 
-  if (command == "create" || command == "c") {
+  if (command == "help" || command == "h") {
+    help();
+    return 0;
+  } else if (command == "create" || command == "c") {
     check_arg(argc == 2 || argc == 3);
     if (argc == 2) {
       create("");

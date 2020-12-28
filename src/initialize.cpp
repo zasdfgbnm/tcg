@@ -12,11 +12,6 @@
 
 namespace fs = boost::filesystem;
 
-std::string user_dir() {
-  auto uid = getuid();
-  return fmt::format("{}/{}", root_dir, uid);
-}
-
 void set_log_level() {
   auto logger = spdlog::get("initialize");
   const char *l = std::getenv("TCG_LOG_LEVEL");
@@ -83,7 +78,10 @@ void initialize() {
   set_log_level();
 }
 
+bool is_sandbox;
+
 void enter_sandbox() {
   create_root_dir();
   enter_chroot_jail();
+  is_sandbox = true;
 }
