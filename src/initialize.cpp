@@ -49,8 +49,8 @@ void setup_loggers() {
   spdlog::register_logger(std::make_shared<spdlog::logger>("set", sink));
 }
 
-bool file_contains(std::shared_ptr<spdlog::logger> logger,
-                   std::string file, std::string controller) {
+bool file_contains(std::shared_ptr<spdlog::logger> logger, std::string file,
+                   std::string controller) {
   logger->debug("Testing if {} already contains {}.", file, controller);
   std::ifstream in(file);
   std::string s;
@@ -68,7 +68,9 @@ void enable_controllers(std::shared_ptr<spdlog::logger> logger,
   for (std::string c : controllers) {
     auto subtree_control = dir + "/cgroup.subtree_control";
     if (file_contains(logger, subtree_control, c)) {
-      logger->debug("The controller {} of {} is already enabled, has nothing to do.", c, dir);
+      logger->debug(
+          "The controller {} of {} is already enabled, has nothing to do.", c,
+          dir);
       continue;
     }
     logger->debug("Set subtree_control of {} for controller {}.", dir, c);
@@ -127,6 +129,7 @@ bool is_sandbox;
 
 void enter_sandbox() {
   auto logger = spdlog::get("initialize");
+  logger->info("Entering sandbox...");
   create_root_dir(logger);
   enter_chroot_jail(logger);
   is_sandbox = true;
