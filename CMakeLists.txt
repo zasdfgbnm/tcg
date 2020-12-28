@@ -9,7 +9,7 @@ add_executable(${PROJECT_NAME}
     src/initialize.cpp
     src/utils.cpp
     src/utils.hpp
-    src/names.cpp
+    src/names.txt
     src/create.cpp
     src/freeze.cpp
     src/list.cpp
