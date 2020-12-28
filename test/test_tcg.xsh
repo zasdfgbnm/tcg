@@ -307,6 +307,9 @@ def test_cpu_weight():
 
 
 def test_self():
+    if not CGROUP2_AVAILABLE:
+        pytest.xfail("requires cgroup v2")
+
     name1 = random_string(10)
     name2 = random_string(10)
 
