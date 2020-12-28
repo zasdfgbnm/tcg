@@ -48,25 +48,33 @@ void setup_loggers() {
 }
 
 void create_root_dir() {
+  auto logger = spdlog::get("initialize");
+  logger->info("Initialize root directory.");
   auto p = fs::path(root_dir);
+  logger->debug("Check if {} exist.", root_dir);
   if (!fs::is_directory(p)) {
+    logger->debug("{} does not exist, create it.", root_dir);
     fs::create_directory(p);
   }
-  p = fs::path(user_dir());
+  auto ud = user_dir();
+  logger->debug("Check if {} exist.", ud);
+  p = fs::path(ud);
   if (!fs::is_directory(p)) {
+    logger->debug("{} does not exist, create it.", ud);
     fs::create_directory(p);
   }
 }
 
 void enter_chroot_jail() {
   auto logger = spdlog::get("initialize");
+  logger->info("Enter chroot jail.");
   auto ud = user_dir();
-  logger->info("Chdir to {}.", ud);
+  logger->debug("Chdir to {}.", ud);
   if (chdir(ud.c_str()) < 0) {
     logger->critical("Unable to chdir to {}: {}.", ud, std::strerror(errno));
     exit(EXIT_FAILURE);
   }
-  logger->info("Entering chroot jail at {}.", ud);
+  logger->debug("Entering chroot jail at {}.", ud);
   if (chroot(ud.c_str()) < 0) {
     logger->critical("Unable to chroot to {}: {}.", ud.c_str(),
                      std::strerror(errno));
