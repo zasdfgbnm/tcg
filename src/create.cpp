@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include <boost/filesystem.hpp>
@@ -16,7 +17,7 @@
 
 namespace fs = boost::filesystem;
 
-extern const std::vector<std::string> names;
+extern std::unordered_set<std::string> names;
 
 void validate_name(std::shared_ptr<spdlog::logger> logger,
                    const std::string &name) {

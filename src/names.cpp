@@ -1,7 +1,7 @@
 #include <string>
-#include <vector>
+#include <unordered_set>
 
-const std::vector<std::string> names = {
+std::unordered_set<std::string> names = {
     "newton",   "einstein", "schrodinger", "feynman", "fermi",      "noether",
     "dirac",    "kepler",   "ampere",      "pauli",   "heisenberg", "hilbert",
     "poincare", "maxwell",  "boltzmann",   "gibbs",   "hawking",    "lorentz",
