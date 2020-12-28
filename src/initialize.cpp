@@ -46,6 +46,7 @@ void setup_loggers() {
   spdlog::register_logger(std::make_shared<spdlog::logger>("list", sink));
   spdlog::register_logger(std::make_shared<spdlog::logger>("freeze", sink));
   spdlog::register_logger(std::make_shared<spdlog::logger>("utils", sink));
+  spdlog::register_logger(std::make_shared<spdlog::logger>("set", sink));
 }
 
 bool file_contains(std::shared_ptr<spdlog::logger> logger,
