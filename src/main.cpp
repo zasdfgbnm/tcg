@@ -13,6 +13,7 @@ void initialize();
 void enter_sandbox();
 void help();
 void list();
+void self();
 void create(std::string name_);
 void freeze(std::string name);
 void unfreeze(std::string name);
@@ -36,6 +37,11 @@ int main(int argc, const char *argv[]) {
     // it needs access to /proc filesystem
     check_arg(argc == 2);
     list();
+    return 0;
+  } else if (command == "self" || command == "sf") {
+    // self has to run outside sandbox because
+    // it needs access to /proc filesystem
+    self();
     return 0;
   } else {
     enter_sandbox();
