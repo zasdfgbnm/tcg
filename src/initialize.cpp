@@ -7,6 +7,7 @@
 #include <boost/filesystem.hpp>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
+#include <fmt/os.h>
 
 #include "utils.hpp"
 
@@ -47,14 +48,24 @@ void setup_loggers() {
   spdlog::register_logger(std::make_shared<spdlog::logger>("utils", sink));
 }
 
+void enable_controllers(std::string dir) {
+  auto subtree_control = dir + "/cgroup.subtree_control";
+  auto out = fmt::output_file(subtree_control);
+  out.print("+cpu");
+  out.close();
+}
+
 void create_root_dir() {
   auto p = fs::path(root_dir);
   if (!fs::is_directory(p)) {
     fs::create_directory(p);
+    enable_controllers(root_dir);
   }
-  p = fs::path(user_dir());
+  auto ud = user_dir();
+  p = fs::path(ud);
   if (!fs::is_directory(p)) {
     fs::create_directory(p);
+    enable_controllers(ud);
   }
 }
 
