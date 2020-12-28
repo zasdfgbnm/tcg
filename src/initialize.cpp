@@ -103,7 +103,7 @@ void create_root_dir() {
 
 void enter_chroot_jail() {
   auto logger = spdlog::get("initialize");
-  logger->info("Enter chroot jail.");
+  logger->info("Entering chroot jail...");
   auto ud = user_dir();
   logger->debug("Chdir to {}.", ud);
   if (chdir(ud.c_str()) < 0) {
@@ -116,6 +116,7 @@ void enter_chroot_jail() {
                      std::strerror(errno));
     exit(EXIT_FAILURE);
   }
+  logger->info("Chroot jail entered.");
 }
 
 void initialize() {
