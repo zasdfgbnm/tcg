@@ -5,6 +5,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <fmt/os.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
@@ -47,14 +48,28 @@ void setup_loggers() {
   spdlog::register_logger(std::make_shared<spdlog::logger>("utils", sink));
 }
 
+void enable_controllers(std::shared_ptr<spdlog::logger> logger,
+                        std::string dir) {
+  logger->debug("Set subtree_control of {}.", dir);
+  auto subtree_control = dir + "/cgroup.subtree_control";
+  auto text = "+cpu";
+  logger->debug("Printting \"{}\" to {}.", text, dir);
+  auto out = fmt::output_file(subtree_control);
+  out.print(text);
+  out.close();
+  logger->debug("Done printting.");
+}
+
 void create_root_dir() {
   auto logger = spdlog::get("initialize");
   logger->info("Initialize root directory.");
+  enable_controllers(logger, "/sys/fs/cgroup");
   auto p = fs::path(root_dir);
   logger->debug("Check if {} exist.", root_dir);
   if (!fs::is_directory(p)) {
     logger->debug("{} does not exist, create it.", root_dir);
     fs::create_directory(p);
+    enable_controllers(logger, root_dir);
   }
   auto ud = user_dir();
   logger->debug("Check if {} exist.", ud);
@@ -62,6 +77,7 @@ void create_root_dir() {
   if (!fs::is_directory(p)) {
     logger->debug("{} does not exist, create it.", ud);
     fs::create_directory(p);
+    enable_controllers(logger, ud);
   }
 }
 

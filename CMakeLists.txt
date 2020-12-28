@@ -11,6 +11,7 @@ add_executable(${PROJECT_NAME}
     src/create.cpp
     src/freeze.cpp
     src/list.cpp
+    src/limit.cpp
     src/help.cpp
 )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
