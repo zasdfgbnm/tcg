@@ -48,12 +48,19 @@ void setup_loggers() {
 }
 
 void create_root_dir() {
+  auto logger = spdlog::get("initialize");
+  logger->info("Initializing root directory...");
   auto p = fs::path(root_dir);
+  logger->info("Check if {} exist.", root_dir);
   if (!fs::is_directory(p)) {
+    logger->info("{} does not exist, create it.", root_dir);
     fs::create_directory(p);
   }
-  p = fs::path(user_dir());
+  auto ud = user_dir();
+  logger->info("Check if {} exist.", ud);
+  p = fs::path();
   if (!fs::is_directory(p)) {
+    logger->info("{} does not exist, create it.", ud);
     fs::create_directory(p);
   }
 }
