@@ -18,6 +18,7 @@ void create(std::string name_);
 void freeze(std::string name);
 void unfreeze(std::string name);
 void set(std::string name, std::string key, std::string value);
+void show(std::string name, std::string key);
 
 int main(int argc, const char *argv[]) {
   initialize();
@@ -60,9 +61,12 @@ int main(int argc, const char *argv[]) {
   } else if (command == "unfreeze" || command == "uf") {
     check_arg(argc == 3);
     unfreeze(argv[2]);
-  } else if (command == "set" || command == "s") {
+  } else if (command == "set") {
     check_arg(argc == 5);
     set(argv[2], argv[3], argv[4]);
+  } else if (command == "show") {
+    check_arg(argc == 4);
+    show(argv[2], argv[3]);
   } else {
     invalid_argument();
   }
