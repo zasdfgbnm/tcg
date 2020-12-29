@@ -294,7 +294,7 @@ def test_cpu_weight():
     os.sched_setaffinity(p2.pid, {0})
 
     tcg set @(name1) cpu.weight 1
-    tcg s @(name2) cpu.weight 20
+    tcg set @(name2) cpu.weight 20
 
     q1.put("start")
     q3.put("start")

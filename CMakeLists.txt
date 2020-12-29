@@ -14,6 +14,7 @@ add_executable(${PROJECT_NAME}
     src/freeze.cpp
     src/list.cpp
     src/set.cpp
+    src/show.cpp
     src/self.cpp
     src/help.cpp
 )
