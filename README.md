@@ -53,9 +53,11 @@ Your cgroup is poincare.
 gaoxiang@sunnyvale ~ $
 ```
 
+The above example is a shell from ssh, and is assigned a cgroup named `poincare`.
+
 ## Freeze and unfreeze
 
-I start to compile PyTorch, and the CPU usage of my system easily reaches 100%. Before that compilation job finishes, I decided that I want to benchmark something. To be accurate on my benchmark, I want to pause my compilation for a few minutes. To do so, I can easily do:
+I start to compile PyTorch in the shell, and the CPU usage of my system easily reaches 100%. Before that compilation job finishes, I decided that I want to benchmark something. To be accurate on my benchmark, I want to pause my compilation for a few minutes. To do so, I can easily do:
 ```
 tcg freeze poincare
 ```
