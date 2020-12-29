@@ -65,3 +65,18 @@ And when I am ready to put my compilation back to work, I just need to:
 tcg unfreeze poincare
 ```
 and the compilation will continue its work again.
+
+## Limit maximum CPU usage
+
+Letting the compilation job to use 100% of my CPU is not always a good idea. Because this sometimes makes my computer's response time slow. To solve this problem, I can simply do
+```
+tcg set poincare cpu.max "550000 10000"
+```
+to limit the CPU usage to about 90% on my computer. Please note that the two numbers depend on the number of cores in your computer, so don't just copy and paste the number above!
+
+
+To relax this limit, simply do:
+```
+tcg set poincare cpu.max max
+```
+this will allow the compilation job to run at 100% CPU usage
