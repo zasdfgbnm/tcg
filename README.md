@@ -84,4 +84,17 @@ this will allow the compilation job to run at 100% CPU usage
 
 For detailed information, please check [Linux kernel's cgroup v2 documentation](https://www.kernel.org/doc/Documentation/cgroup-v2.txt).
 
-## 
+## Setting the priority of tasks
+
+Let's say I have two compilation jobs, one at cgroup `poincare`, another at cgroup `pauli`. I want these two jobs togeter uses as much CPU as possible, but I think `poincare` is 10x more important than `pauli`. To let `poincare` get 10x more CPU time than `pauli`, I can do:
+```
+tcg set pauli cpu.weight 100
+tcg set poincare cpu.weight 1000
+```
+or even simpler
+```
+tcg set poincare cpu.weight 1000
+```
+The `tcg set pauli cpu.weight 100` can be omitted because the default `cpu.weight` value for cgroups are 100.
+
+For detailed information, please check [Linux kernel's cgroup v2 documentation](https://www.kernel.org/doc/Documentation/cgroup-v2.txt).
