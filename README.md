@@ -74,13 +74,12 @@ tcg set poincare cpu.max "550000 10000"
 ```
 to limit the CPU usage to about 90% on my computer. *Please note that the two numbers depend on the number of cores in your computer, so don't just copy and paste the number above!* The above `550000 10000` means, for every 10000 periods, the cgroup are allowed to use at most 550000 periods. My computer has 32 cores and 64 threads, so it can use at most 640000 for every 10000 periods. Limiting it to 550000 will allow 90000 spare periods for other tasks.
 
-For detailed information, please check [Linux kernel's cgroup v2 documentation](https://www.kernel.org/doc/Documentation/cgroup-v2.txt).
-
-
 To relax this limit, simply do:
 ```
 tcg set poincare cpu.max max
 ```
 this will allow the compilation job to run at 100% CPU usage
+
+For detailed information, please check [Linux kernel's cgroup v2 documentation](https://www.kernel.org/doc/Documentation/cgroup-v2.txt).
 
 ## 
