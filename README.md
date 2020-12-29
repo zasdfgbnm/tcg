@@ -43,8 +43,15 @@ sudo chmod +s tcg
 
 In my daily job, I often need to compile [PyTorch](https://github.com/pytorch/pytorch), which will take 100% of my CPU for a long time.
 
-Since I added `tcg create` to my `.xonshrc`, everytime when I open a shell, I will get a cgroup containing the shell together with all commands I run in that shell. The name will be displayed on the shell:
+Since I added `tcg create` to my `.xonshrc`, everytime when I open a shell, I will get a cgroup containing the shell together with all the commands I run in that shell. The name will be displayed on the shell:
 ```
+gaoxiang@XiangdeMacBook-Pro ~ $ ssh xxxxxxxx
 Last login: Mon Dec 28 19:05:50 2020 from 2600:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx
 Your cgroup is poincare.
+gaoxiang@sunnyvale ~ $
+```
+
+I start to compile PyTorch, and the CPU usage of my system easily reaches 100%. Before that compilation job finishes, I decided that I want to benchmark something. To be accurate on my benchmark, I want to pause my compilation for a few minutes. To do so, I can easily do:
+```
+tcg freeze poincare
 ```
