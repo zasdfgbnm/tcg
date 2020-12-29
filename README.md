@@ -97,4 +97,6 @@ tcg set poincare cpu.weight 1000
 ```
 The `tcg set pauli cpu.weight 100` can be omitted because the default `cpu.weight` value for cgroups are 100.
 
+Setting the `cpu.weight` value tells Linux kernel to control the number of CPU cycles taskes inside each cgroup when scheduling.
+
 For detailed information, please check [Linux kernel's cgroup v2 documentation](https://www.kernel.org/doc/Documentation/cgroup-v2.txt).
