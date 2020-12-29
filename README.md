@@ -86,7 +86,7 @@ For detailed information, please check [Linux kernel's cgroup v2 documentation](
 
 ## Setting the priority of tasks
 
-Let's say I have two compilation jobs, one at cgroup `poincare`, another at cgroup `pauli`. I want these two jobs togeter uses as much CPU as possible, but I think `poincare` is 10x more important than `pauli`. To let `poincare` get 10x more CPU time than `pauli`, I can do:
+Let's say I have two compilation jobs, one at cgroup `poincare`, another at cgroup `pauli`. I want these two jobs togeter use as much CPU as possible, but I think `poincare` is 10x more important than `pauli`. To let `poincare` get 10x more CPU time than `pauli`, I can do:
 ```
 tcg set pauli cpu.weight 100
 tcg set poincare cpu.weight 1000
