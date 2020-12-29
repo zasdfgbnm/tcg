@@ -11,6 +11,12 @@ Terminal cgroup, short for `tcg`, is a tool to help people manage system's resou
 
 # Install
 
-TODO
+`tcg` requires boost, you need to install boost on your system first.
+
+To clone `tcg` from github, run the following command:
+```
+git clone --recursive https://github.com/zasdfgbnm/tcg.git
+```
+Make sure you use the `--recursive` in your command line, so that submodules will be available when you build. If you have already cloned without `--recursive`, you can go to your repository and do `git submodule update --init --recursive`
 
 # Example use case
