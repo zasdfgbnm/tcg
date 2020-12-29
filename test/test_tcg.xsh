@@ -294,7 +294,7 @@ def test_cpu_weight():
     os.sched_setaffinity(p2.pid, {0})
 
     tcg set @(name1) cpu.weight 1
-    tcg s @(name2) cpu.weight 20
+    tcg set @(name2) cpu.weight 20
 
     q1.put("start")
     q3.put("start")
@@ -318,3 +318,13 @@ def test_self():
 
     tcg c @(name2)
     assert $(tcg sf).strip() == name2
+
+
+def test_show():
+    if not CGROUP2_AVAILABLE:
+        pytest.xfail("requires cgroup v2")
+
+    name = random_string(10)
+    tcg create @(name)
+    tcg set @(name) cpu.weight 1234
+    assert $(tcg show @(name) cpu.weight).strip() == "1234"
