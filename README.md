@@ -91,7 +91,7 @@ Let's say I have two compilation jobs, one at cgroup `poincare`, another at cgro
 tcg set pauli cpu.weight 100
 tcg set poincare cpu.weight 1000
 ```
-or even simpler
+or even simpler:
 ```
 tcg set poincare cpu.weight 1000
 ```
