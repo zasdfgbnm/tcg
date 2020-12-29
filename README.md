@@ -55,3 +55,9 @@ I start to compile PyTorch, and the CPU usage of my system easily reaches 100%. 
 ```
 tcg freeze poincare
 ```
+
+And when I am ready to put my compilation back to work, I just need to:
+```
+tcg unfreeze poincare
+```
+and the compilation will continue its work again.
