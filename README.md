@@ -45,7 +45,6 @@ In my daily job, I often need to compile [PyTorch](https://github.com/pytorch/py
 
 Since I added `tcg create` to my `.xonshrc`, everytime when I open a shell, I will get a cgroup containing the shell together with all commands I run in that shell. The name will be displayed on the shell:
 ```
-gaoxiang@XiangdeMacBook-Pro ~ $ ssh sunnyvale.ipv6.ai
 Last login: Mon Dec 28 19:05:50 2020 from 2600:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx
 Your cgroup is poincare.
 ```
