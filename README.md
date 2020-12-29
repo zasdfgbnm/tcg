@@ -41,4 +41,4 @@ sudo chmod +s tcg
 
 # Example use case
 
-In my daily job, I often need to compile [PyTorch](https://github.com/pytorch/pytorch)
+In my daily job, I often need to compile [PyTorch](https://github.com/pytorch/pytorch), which takes lots of CPU and is very time consuming.
