@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - name: Install qemu
-      run: ｜
+      run: |
         sudo apt-get update
         sudo apt-get install -y qemu-system
     - name: Create empty image
