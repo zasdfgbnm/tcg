@@ -59,6 +59,8 @@ jobs:
         cd tcg-git
         rm -rf *
         cp ../packaging/archlinux/{PKGBUILD,.SRCINFO} .
+        git config --global user.email "aur-tcg@emailaddress.biz"
+        git config --global user.name "tcg"
         git add .
         git commit -m "version bump"
-        git push -u origin master
+        git push
