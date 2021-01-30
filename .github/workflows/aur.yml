@@ -30,6 +30,11 @@ jobs:
         ssh-keygen -p -m PEM -f ~/.ssh/id_rsa
         ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
         cat ~/.ssh/id_rsa.pub
+        cat <<<EOF > ~/.ssh/config
+        Host aur.archlinux.org
+          IdentityFile ~/.ssh/id_rsa
+          User aur
+        EOF
     - name: update PKGBUILD
       run: |
         set -eux
