@@ -20,15 +20,16 @@ jobs:
       env:
         sshkey: ${{ secrets.AUR_PRIVATE_KEY }}
       run: |
-        set -x
+        set -eux
         echo "-----BEGIN OPENSSH PRIVATE KEY-----" > /tmp/id_rsa
         echo $sshkey >> /tmp/id_rsa
         echo "-----END OPENSSH PRIVATE KEY-----" >> /tmp/id_rsa
         wc -l /tmp/id_rsa
     - name: update PKGBUILD
       run: |
-        set -x
+        set -eux
         cd packaging/archlinux
         rev=$(git rev-list --count HEAD 2>/dev/null)
         source PKGBUILD
         echo $rev
+        sed "s/pkgver=$pkgver/pkgver=$_pkgver.r$rev/g" PKGBUILD
