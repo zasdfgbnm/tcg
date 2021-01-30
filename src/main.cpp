@@ -44,14 +44,18 @@ int main(int argc, const char *argv[]) {
     check_arg(argc == 2);
     list();
     return 0;
-  } else if (command == "self" || command == "sf") {
+  }
+
+  check_cgroup_mount();
+
+  if (command == "self" || command == "sf") {
     // self has to run outside sandbox because
     // it needs access to /proc filesystem
     self();
     return 0;
-  } else {
-    enter_sandbox();
   }
+
+  enter_sandbox();
 
   if (command == "create" || command == "c") {
     check_arg(argc == 2 || argc == 3);
