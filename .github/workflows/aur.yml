@@ -35,6 +35,7 @@ jobs:
           IdentityFile ~/.ssh/id_rsa
           User aur
         EOF
+        ssh-keyscan -H aur.archlinux.org >> ~/.ssh/known_hosts
     - name: update PKGBUILD
       run: |
         set -eux
