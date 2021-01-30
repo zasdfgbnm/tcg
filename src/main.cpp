@@ -10,7 +10,6 @@ void check_arg(bool condition) {
 }
 
 void initialize_logger();
-void check_cgroup_mount();
 void enter_sandbox();
 void help();
 void list();
@@ -34,21 +33,13 @@ int main(int argc, const char *argv[]) {
     // support
     help();
     return 0;
-  }
-
-  check_cgroup_mount();
-
-  if (command == "list" || command == "ls" || command == "l") {
+  } else if (command == "list" || command == "ls" || command == "l") {
     // list has to run outside sandbox because
     // it needs access to /proc filesystem
     check_arg(argc == 2);
     list();
     return 0;
-  }
-
-  check_cgroup_mount();
-
-  if (command == "self" || command == "sf") {
+  } else if (command == "self" || command == "sf") {
     // self has to run outside sandbox because
     // it needs access to /proc filesystem
     self();
