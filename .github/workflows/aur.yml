@@ -16,5 +16,10 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
-    - name: build
-      run: echo hello world
+    - name: setup key
+      with:
+        sshkey: ${{ secrets.AUR_PRIVATE_KEY }}
+      run: |
+        set -x
+        echo $sshkey > ~/.ssh/id_rsa
+        wc -l ~/.ssh/id_rsa
