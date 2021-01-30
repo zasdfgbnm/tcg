@@ -28,8 +28,8 @@ jobs:
     - name: update PKGBUILD
       run: |
         set -eux
-        cd packaging/archlinux
         rev=$(git rev-list --count HEAD 2>/dev/null)
+        cd packaging/archlinux
         source PKGBUILD
         echo $rev
         sed "s/pkgver=$pkgver/pkgver=$_pkgver.r$rev/g" PKGBUILD
