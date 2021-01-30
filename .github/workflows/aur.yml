@@ -35,7 +35,7 @@ jobs:
           IdentityFile ~/.ssh/id_rsa
           User aur
         EOF
-        ssh-keyscan -H aur.archlinux.org >> ~/.ssh/known_hosts
+        ssh-keyscan -H aur.archlinux.org | tee -a ~/.ssh/known_hosts
     - name: update PKGBUILD
       run: |
         set -eux
@@ -55,7 +55,6 @@ jobs:
     - name: push
       run: |
         set -eux
-        ssh aur@aur.archlinux.org exit
         git clone ssh://aur@aur.archlinux.org/tcg-git.git
         cd tcg-git
         rm -rf *
