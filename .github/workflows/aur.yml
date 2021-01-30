@@ -25,3 +25,11 @@ jobs:
         echo $sshkey >> /tmp/id_rsa
         echo "-----END OPENSSH PRIVATE KEY-----" >> /tmp/id_rsa
         wc -l /tmp/id_rsa
+        - name: build
+    - name: update PKGBUILD
+      run: |
+        set -x
+        cd packaging/archlinux
+        rev=$(git rev-list --count HEAD 2>/dev/null)
+        source PKGBUILD
+        echo $rev
