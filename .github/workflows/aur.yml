@@ -58,5 +58,7 @@ jobs:
         git clone ssh://aur@aur.archlinux.org/tcg-git.git
         cd tcg-git
         rm -rf *
-        cp ../packaging/archlinux/* .
-        ls
+        cp ../packaging/archlinux/{PKGBUILD,.SRCINFO} .
+        git add .
+        git commit -m "version bump"
+        git push -u origin master
