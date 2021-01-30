@@ -2,9 +2,9 @@
 #include <string>
 #include <unistd.h>
 
+#include <boost/filesystem.hpp>
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
-#include <boost/filesystem.hpp>
 
 #include "utils.hpp"
 
