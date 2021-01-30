@@ -54,6 +54,7 @@ jobs:
     - name: push
       run: |
         set -eux
+        ssh aur@aur.archlinux.org exit
         git clone ssh://aur@aur.archlinux.org/tcg-git.git
         cd tcg-git
         rm -rf *
