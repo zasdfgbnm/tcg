@@ -46,4 +46,9 @@ jobs:
         '
     - name: push
       run: |
-        git clone 
+        set -eux
+        git clone ssh://aur@aur.archlinux.org/tcg-git.git
+        cd tcg-git
+        rm -rf *
+        cp ../packaging/archlinux/* .
+        ls
