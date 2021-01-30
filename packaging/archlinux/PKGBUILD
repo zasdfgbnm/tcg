@@ -1,6 +1,8 @@
+# Maintainer: tcg <tcg@emailaddress.biz>
+
 pkgname=tcg-git
 _pkgname=tcg
-pkgver=0.1.r8
+pkgver=0.1.0
 _pkgver=0.1
 pkgrel=1
 pkgdesc="cgroups for terminals"
@@ -11,15 +13,6 @@ depends=('boost-libs')
 makedepends=('git' 'cmake' 'boost')
 source=("git+$url")
 sha256sums=('SKIP')
-
-pkgver () {
-  cd "${_pkgname}"
-  (
-    set -o pipefail
-    rev=$(git rev-list --count HEAD 2>/dev/null)
-    echo $_pkgver.r$rev
-  )
-}
 
 build() {
   cd "$srcdir/${_pkgname}"
