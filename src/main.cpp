@@ -9,7 +9,8 @@ void check_arg(bool condition) {
   invalid_argument();
 }
 
-void initialize();
+void initialize_logger();
+void check_cgroup_mount();
 void enter_sandbox();
 void help();
 void list();
@@ -21,7 +22,7 @@ void set(std::string name, std::string key, std::string value);
 void show(std::string name, std::string key);
 
 int main(int argc, const char *argv[]) {
-  initialize();
+  initialize_logger();
   check_arg(argc >= 2);
 
   std::string command = argv[1];
@@ -33,7 +34,11 @@ int main(int argc, const char *argv[]) {
     // support
     help();
     return 0;
-  } else if (command == "list" || command == "ls" || command == "l") {
+  }
+
+  check_cgroup_mount();
+
+  if (command == "list" || command == "ls" || command == "l") {
     // list has to run outside sandbox because
     // it needs access to /proc filesystem
     check_arg(argc == 2);

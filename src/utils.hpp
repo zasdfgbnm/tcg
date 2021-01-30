@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+constexpr const char *cgroup_procs = "/sys/fs/cgroup/cgroup.procs";
 constexpr const char *root_dir = "/sys/fs/cgroup/terminals";
 
 std::string user_dir();

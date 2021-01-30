@@ -4,14 +4,21 @@
 
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
+#include <boost/filesystem.hpp>
 
 #include "utils.hpp"
+
+namespace fs = boost::filesystem;
 
 void self() {
   auto logger = spdlog::get("self");
   logger->info("Getting the cgroup for the current shell");
   auto pid = getpid();
   auto cg = fmt::format("/proc/{}/cgroup", pid);
+  if (!fs::exists(fs::path(cg))) {
+    logger->critical("Procfs not mounted, or cgroup not enabled");
+    exit(1);
+  }
   logger->debug("Reading {}...", cg);
   auto uid = getuid();
   auto userdir = fmt::format("/terminals/{}/", uid);

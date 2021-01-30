@@ -122,9 +122,19 @@ void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
   logger->info("Chroot jail entered.");
 }
 
-void initialize() {
+void initialize_logger() {
   setup_loggers();
   set_log_level();
+}
+
+void check_cgroup_mount() {
+  auto logger = spdlog::get("initialize");
+  auto p = fs::path(cgroup_procs);
+  if (fs::exists(p)) {
+    return;
+  }
+  logger->critical("Cgroup v2 not mounted");
+  exit(1);
 }
 
 bool is_sandbox;
