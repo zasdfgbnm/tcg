@@ -49,7 +49,7 @@ jobs:
       run: |
         set -eux
         cd packaging/archlinux
-        docker run -v $PWD:/w -w /w zasdfgbnm/archlinux-yaourt makepkg --printsrcinfo | sudo tee .SRCINFO
+        docker run -v $PWD:/w -w /w zasdfgbnm/archlinux-yaourt makepkg --printsrcinfo | tee .SRCINFO
     - name: push
       run: |
         set -eux
