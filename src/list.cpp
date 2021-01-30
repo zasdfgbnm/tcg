@@ -53,6 +53,10 @@ void list() {
   auto r = user_dir();
   logger->debug("Root directory is {}, iterating it.", r);
   fs::path p(r);
+  if (!fs::exists(p)) {
+    logger->debug("Root directory does not exist, showing empty list.");
+    return;
+  }
   fs::recursive_directory_iterator end;
   for (fs::recursive_directory_iterator i(p); i != end; ++i) {
     if (fs::is_directory(*i)) {
