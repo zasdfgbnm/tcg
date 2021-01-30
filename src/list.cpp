@@ -54,7 +54,7 @@ void list() {
   logger->debug("Root directory is {}, iterating it.", r);
   fs::path p(r);
   if (!fs::exists(p)) {
-    logger->debug("Root directory does not exist, showing empty list.");
+    logger->info("Root directory does not exist, showing empty list.");
     return;
   }
   fs::recursive_directory_iterator end;

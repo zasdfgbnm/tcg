@@ -16,7 +16,7 @@ void self() {
   auto pid = getpid();
   auto cg = fmt::format("/proc/{}/cgroup", pid);
   if (!fs::exists(fs::path(cg))) {
-    logger->critical("Procfs not mounted, or cgroup not enabled");
+    logger->info("Procfs not mounted, or cgroup not enabled");
     exit(1);
   }
   logger->debug("Reading {}...", cg);
