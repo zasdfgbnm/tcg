@@ -21,6 +21,7 @@ jobs:
         sshkey: ${{ secrets.AUR_PRIVATE_KEY }}
       run: |
         set -eux
+        ls /
         mkdir -p ~/.ssh/
         echo "-----BEGIN OPENSSH PRIVATE KEY-----" > ~/.ssh/id_rsa
         echo $sshkey >> ~/.ssh/id_rsa
