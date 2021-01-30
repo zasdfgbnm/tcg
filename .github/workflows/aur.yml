@@ -36,7 +36,7 @@ jobs:
         cat PKGBUILD
     - name: prepare srcinfo
       run: |
-        docker run -v $PWD:/workspace archlinux bash -c '
+        docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
           set -eux
           cd /workspace/packaging/archlinux
           makepkg --printsrcinfo > .SRCINFO
