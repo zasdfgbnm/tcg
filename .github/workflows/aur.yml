@@ -48,11 +48,8 @@ jobs:
     - name: prepare srcinfo
       run: |
         set -eux
-        sudo docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
-          set -eux
-          cd /workspace/packaging/archlinux
-          makepkg --printsrcinfo | sudo tee .SRCINFO
-        '
+        cd packaging/archlinux
+        docker run -v $PWD:/w -w /w zasdfgbnm/archlinux-yaourt makepkg --printsrcinfo | sudo tee .SRCINFO
     - name: push
       run: |
         set -eux
