@@ -34,3 +34,10 @@ jobs:
         echo $rev
         sed -i "s/pkgver=$pkgver/pkgver=$pkgver.$rev/g" PKGBUILD
         cat PKGBUILD
+    - name: prepare srcinfo
+      run: |
+        docker run -v $PWD:/workspace archlinux bash -c '
+          set -eux
+          cd /workspace/packaging/archlinux
+          makepkg --printsrcinfo > .SRCINFO
+        '
