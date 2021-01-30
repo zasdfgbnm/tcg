@@ -32,5 +32,5 @@ jobs:
         cd packaging/archlinux
         source PKGBUILD
         echo $rev
-        sed -i "s/pkgver=$pkgver/pkgver=$_pkgver.r$rev/g" PKGBUILD
+        sed -i "s/pkgver=$pkgver/pkgver=$pkgver.$rev/g" PKGBUILD
         cat PKGBUILD
