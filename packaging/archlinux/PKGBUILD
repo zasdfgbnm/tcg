@@ -1,7 +1,7 @@
+# Maintainer: tcg <aur-tcg@emailaddress.biz>
+
 pkgname=tcg-git
-_pkgname=tcg
-pkgver=0.1.r8
-_pkgver=0.1
+pkgver=0.1
 pkgrel=1
 pkgdesc="cgroups for terminals"
 arch=('x86_64')
@@ -12,17 +12,8 @@ makedepends=('git' 'cmake' 'boost')
 source=("git+$url")
 sha256sums=('SKIP')
 
-pkgver () {
-  cd "${_pkgname}"
-  (
-    set -o pipefail
-    rev=$(git rev-list --count HEAD 2>/dev/null)
-    echo $_pkgver.r$rev
-  )
-}
-
 build() {
-  cd "$srcdir/${_pkgname}"
+  cd "$srcdir/tcg"
   git submodule update --init --recursive
   mkdir -p build
   cd build
@@ -31,7 +22,7 @@ build() {
 }
 
 package() {
-  cd "$srcdir/${_pkgname}"
+  cd "$srcdir/tcg"
   install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
   install -Dm4755 build/tcg "${pkgdir}/usr/bin/tcg"
 }

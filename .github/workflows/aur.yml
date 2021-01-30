@@ -1,0 +1,65 @@
+name: aur
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  push-aur:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: setup key
+      env:
+        sshkey: ${{ secrets.AUR_PRIVATE_KEY }}
+      run: |
+        set -eux
+        mkdir -p ~/.ssh/
+        echo "-----BEGIN OPENSSH PRIVATE KEY-----" > ~/.ssh/id_rsa
+        echo $sshkey >> ~/.ssh/id_rsa
+        echo "-----END OPENSSH PRIVATE KEY-----" >> ~/.ssh/id_rsa
+        wc -l ~/.ssh/id_rsa
+        chmod -R 700 ~/.ssh/id_rsa
+        ssh-keygen -p -m PEM -f ~/.ssh/id_rsa
+        ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
+        cat ~/.ssh/id_rsa.pub
+        cat << EOF | tee ~/.ssh/config
+        Host aur.archlinux.org
+          IdentityFile ~/.ssh/id_rsa
+          User aur
+        EOF
+        ssh-keyscan -H aur.archlinux.org | tee -a ~/.ssh/known_hosts
+    - name: update PKGBUILD
+      run: |
+        set -eux
+        rev=$(date +%s)
+        cd packaging/archlinux
+        source PKGBUILD
+        echo $rev
+        sed -i "s/pkgver=$pkgver/pkgver=$pkgver.$rev/g" PKGBUILD
+        cat PKGBUILD
+    - name: prepare srcinfo
+      run: |
+        set -eux
+        cd packaging/archlinux
+        docker run -v $PWD:/w -w /tmp zasdfgbnm/archlinux-yaourt bash -c '
+          cp -r /w .
+          cd w
+          makepkg --printsrcinfo
+        ' | tee .SRCINFO
+    - name: push
+      run: |
+        set -eux
+        git clone ssh://aur@aur.archlinux.org/tcg-git.git
+        cd tcg-git
+        rm -rf *
+        cp ../packaging/archlinux/{PKGBUILD,.SRCINFO} .
+        git config --global user.email "aur-tcg@emailaddress.biz"
+        git config --global user.name "tcg"
+        git add .
+        git commit -m "version bump"
+        git push
