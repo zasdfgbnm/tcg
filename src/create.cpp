@@ -8,6 +8,8 @@
 #include <fmt/os.h>
 #include <spdlog/spdlog.h>
 
+#ifdef __linux__
+
 #include <sys/inotify.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -157,3 +159,9 @@ void create(std::string name_) {
     }
   }
 }
+
+#else
+
+void create(std::string) {}
+
+#endif

@@ -122,9 +122,18 @@ void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
   logger->info("Chroot jail entered.");
 }
 
-void initialize() {
+void initialize_logger() {
   setup_loggers();
   set_log_level();
+}
+
+void check_cgroup_mount(std::shared_ptr<spdlog::logger> logger) {
+  auto p = fs::path(cgroup_procs);
+  if (fs::exists(p)) {
+    return;
+  }
+  logger->critical("Cgroup v2 not mounted");
+  exit(1);
 }
 
 bool is_sandbox;
@@ -132,6 +141,7 @@ bool is_sandbox;
 void enter_sandbox() {
   auto logger = spdlog::get("initialize");
   logger->info("Entering sandbox...");
+  check_cgroup_mount(logger);
   create_root_dir(logger);
   enter_chroot_jail(logger);
   is_sandbox = true;

@@ -9,7 +9,7 @@ void check_arg(bool condition) {
   invalid_argument();
 }
 
-void initialize();
+void initialize_logger();
 void enter_sandbox();
 void help();
 void list();
@@ -21,7 +21,7 @@ void set(std::string name, std::string key, std::string value);
 void show(std::string name, std::string key);
 
 int main(int argc, const char *argv[]) {
-  initialize();
+  initialize_logger();
   check_arg(argc >= 2);
 
   std::string command = argv[1];
@@ -44,9 +44,9 @@ int main(int argc, const char *argv[]) {
     // it needs access to /proc filesystem
     self();
     return 0;
-  } else {
-    enter_sandbox();
   }
+
+  enter_sandbox();
 
   if (command == "create" || command == "c") {
     check_arg(argc == 2 || argc == 3);
