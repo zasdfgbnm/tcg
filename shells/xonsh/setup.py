@@ -16,6 +16,7 @@ setup(
         'root': '../../',
         'relative_to': __file__,
         'version_scheme': get_version,
+        'local_scheme': None,
     },
     setup_requires=['setuptools_scm'],
     license='MIT',
