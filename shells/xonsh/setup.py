@@ -7,7 +7,8 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 def get_version(version):
-    v = f'{str(version.tag)}.{version.distance}'
+    distance = version.distance if version.distance is not None else 0
+    v = f'{str(version.tag)}.{distance}'
     return v
 
 setup(
