@@ -6,12 +6,16 @@ from setuptools import setup
 with open('README.md', 'r') as fh:
     long_description = fh.read()
 
+def get_version(version):
+    v = f'{version.tag.major}.{version.tag.minor}.{version.distance}'
+    return v
+
 setup(
     name='xonsh-tcg',
     use_scm_version={
         'root': '../../',
         'relative_to': __file__,
-        'version_scheme': 'post-release',
+        'version_scheme': get_version,
     },
     setup_requires=['setuptools_scm'],
     license='MIT',
