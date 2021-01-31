@@ -9,7 +9,9 @@ with open('README.md', 'r') as fh:
 setup(
     name='xonsh-tcg',
     use_scm_version={
-        'root': "../../"
+        'root': '../../',
+        'version_scheme': 'post-release',
+        # 'local_scheme': 'dirty-tag',
     },
     setup_requires=['setuptools_scm'],
     license='MIT',
