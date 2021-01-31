@@ -1,4 +1,4 @@
-name: aur
+name: deploy
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  push-aur:
+  archlinux-aur:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
