@@ -103,7 +103,6 @@ jobs:
       run: |
         set -eux
         cat << EOF | sudo tee /mnt/home/user/.bashrc
-        set -eux
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         export TCG_LOG_LEVEL=debug
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
