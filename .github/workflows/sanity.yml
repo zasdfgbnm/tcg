@@ -71,6 +71,31 @@ jobs:
         export PATH=$PATH:$PWD/build
         pytest -v
 
+  version-consistency:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 0
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: install dependencies
+      run: |
+        set -eux
+        python -m pip install --upgrade pip
+        pip install xonsh
+    - name: check consistency
+      run: |
+        set -eux
+        cd packaging/archlinux
+        source PKGBUILD
+        rev=$(git rev-list --count $pkgver..HEAD)
+        cd ../../shells/xonsh
+        ver=$(python setup.py --version)
+        [[ "$pkgver.$rev" == "$ver" ]]
+
   xonsh-test-pypi:
     runs-on: ubuntu-20.04
     steps:
