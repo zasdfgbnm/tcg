@@ -16,7 +16,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
-        fetch-depth: 0
     - name: Lint with clang-format
       run: |
         find src -name '*.cpp' -o -name '*.h' -o -name '*.hpp'| xargs clang-format -i
@@ -72,12 +71,13 @@ jobs:
         export PATH=$PATH:$PWD/build
         pytest -v
 
-  xonsh-pypi:
+  xonsh-test-pypi:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
+        fetch-depth: 0
     - uses: actions/setup-python@v2
       with:
         python-version: '3.x'

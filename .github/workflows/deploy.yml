@@ -63,3 +63,26 @@ jobs:
         git add .
         git commit -m "version bump"
         git push
+
+  xonsh-pypi:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 0
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: install dependencies
+      run: |
+        set -eux
+        python -m pip install --upgrade pip
+        pip install twine wheel xonsh
+    - name: build and upload
+      run: |
+        set -eux
+        cd shells/xonsh
+        rm -rf dist/*
+        python setup.py sdist bdist_wheel
+        twine upload -u zasdfgbnm-bot -p ${{secrets.ZASDFGBNM_BOT_PYPI_PASSWORD}} dist/*
