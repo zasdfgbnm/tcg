@@ -82,5 +82,11 @@ jobs:
         python-version: '3.x'
     - name: install dependencies
       run: |
-        which pip
         pip install xonsh
+    - name: install dependencies
+      run: |
+        set -eux
+        cd shells/xonsh
+        rm -rf dist/*
+        python setup.py sdist bdist_wheel
+        twine upload --repository-url https://test.pypi.org/legacy/ -u zasdfgbnm-bot -p ${{secrets.zasdfgbnm_bot_test_pypi_password}} dist/*
