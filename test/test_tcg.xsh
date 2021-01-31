@@ -328,3 +328,16 @@ def test_show():
     tcg create @(name)
     tcg set @(name) cpu.weight 1234
     assert $(tcg show @(name) cpu.weight).strip() == "1234"
+
+
+def test_xontrib():
+    if not CGROUP2_AVAILABLE:
+        pytest.xfail("requires cgroup v2")
+
+    path = os.path.dirname(__file__)
+    path = os.path.join(path, '../shells/xonsh')
+    cd @(path)
+    python setup.py bdist_wheel
+    xpip install dist/*.whl
+    xontrib load tcg
+    assert $(tcg self).strip() == $TERMINAL_CGROUP

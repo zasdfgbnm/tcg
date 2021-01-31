@@ -77,7 +77,7 @@ jobs:
           pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs
         '
         sudo cp /etc/resolv.conf /mnt/etc
-        sudo chroot /mnt pip install pytest-json-report pytest-timeout
+        sudo chroot /mnt pip install pytest-json-report pytest-timeout wheel setuptools_scm
         ls /mnt/usr/share/
     - name: Setup users and system
       run: |
@@ -103,7 +103,6 @@ jobs:
       run: |
         set -eux
         cat << EOF | sudo tee /mnt/home/user/.bashrc
-        set -eux
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         export TCG_LOG_LEVEL=debug
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
@@ -153,14 +152,14 @@ jobs:
         sudo mount /dev/nbd0 /mnt
         ls
         sudo cp *.pkg.tar.zst /mnt
-        sudo cp -r test /mnt/home/user
+        sudo cp -r test shells /mnt/home/user
         sudo chroot /mnt chown -R user:user /home/user
         sync
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
     - name: Run tests in qemu
       timeout-minutes: 30
-      run: qemu-system-x86_64 -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "systemd.unified_cgroup_hierarchy=1 cgroup_no_v1=all console=ttyS0 root=/dev/sda rw" -monitor vc -serial stdio -nographic -m 2048
+      run: qemu-system-x86_64 -no-reboot -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "systemd.unified_cgroup_hierarchy=1 cgroup_no_v1=all console=ttyS0 root=/dev/sda rw" -monitor vc -serial stdio -nographic -m 2048
     - name: Check test results
       run: |
         set -eux
