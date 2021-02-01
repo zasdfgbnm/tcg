@@ -27,8 +27,8 @@ public:
 struct Command {
   std::string name;
   std::vector<std::string> alias;
-  std::string description;
-  std::string body;
+  std::string short_description;
+  std::string long_description;
 
   static const Command &get(const std::string &name) {
     return RegisterCommand::cmd_registry[RegisterCommand::alias_registry[name]];

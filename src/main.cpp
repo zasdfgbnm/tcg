@@ -1,5 +1,7 @@
 #include <string>
 
+#include "utils.hpp"
+
 void invalid_argument();
 
 void check_arg(bool condition) {
@@ -33,7 +35,7 @@ int main(int argc, const char *argv[]) {
     command = argv[1];
   }
 
-  if (command == "help" || command == "h") {
+  if (Command::get(command).name == "help") {
     // help should run without sandbox because
     // this will allow users to read docs about
     // this software on a machine without cgroup v2
