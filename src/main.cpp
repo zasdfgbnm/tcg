@@ -29,11 +29,13 @@ int main(int argc, const char *argv[]) {
 
   std::string command;
   if (argc == 1) {
-    command = "help";
-  } else {
-    check_arg(argc >= 2);
-    command = argv[1];
+    help();
+    return 0;
   }
+
+  command = "help";
+  check_arg(argc >= 2);
+  command = argv[1];
 
   if (Command::get(command).name == "help") {
     // help should run without sandbox because

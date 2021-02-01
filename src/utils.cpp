@@ -54,3 +54,25 @@ RegisterCommand::RegisterCommand(const Command &info) {
     alias_registry[i] = info.name;
   }
 }
+
+void invalid_argument();
+
+void handler::call(const char *args[]) {
+  assert(args[num_arg] == nullptr);
+  switch (num_arg) {
+  case 0:
+    f0();
+    return;
+  case 1:
+    f1(args[0]);
+    return;
+  case 2:
+    f2(args[0], args[1]);
+    return;
+  case 3:
+    f3(args[0], args[1], args[2]);
+    return;
+  default:
+    invalid_argument();
+  }
+}

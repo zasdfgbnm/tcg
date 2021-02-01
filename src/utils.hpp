@@ -26,12 +26,22 @@ public:
 
 class handler {
   uint8_t num_arg;
+  using f0_t = void (*)();
+  using f1_t = void (*)(const std::string &);
+  using f2_t = void (*)(const std::string &, const std::string &);
+  using f3_t = void (*)(const std::string &, const std::string &, const std::string &);
   union {
-    void (*f0)();
-    void (*f1)(const std::string &);
-    void (*f2)(const std::string &, const std::string &);
-    void (*f3)(const std::string &, const std::string &, const std::string &);
+    f0_t f0;
+    f1_t f1;
+    f2_t f2;
+    f3_t f3;
   };
+public:
+  handler(f0_t f0): num_arg(0), f0(f0) {}
+  handler(f1_t f1): num_arg(1), f1(f1) {}
+  handler(f2_t f2): num_arg(2), f2(f2) {}
+  handler(f3_t f3): num_arg(3), f3(f3) {}
+  void call(const char *args[]);
 };
 
 struct Command {
