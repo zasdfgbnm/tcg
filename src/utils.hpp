@@ -34,5 +34,7 @@ struct Command {
     return RegisterCommand::cmd_registry[RegisterCommand::alias_registry[name]];
   }
 
-  static const std::map<std::string, Command> &all() { return RegisterCommand::cmd_registry; }
+  static const std::map<std::string, Command> &all() {
+    return RegisterCommand::cmd_registry;
+  }
 };

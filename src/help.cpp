@@ -6,10 +6,10 @@
 
 #include "utils.hpp"
 
-static RegisterCommand _("help", {
-  .alias = {"h"},
-  .short_description = "display help information",
-  .long_description = R"body(
+static RegisterCommand _("help",
+                         {.alias = {"h"},
+                          .short_description = "display help information",
+                          .long_description = R"body(
 There are two ways of using help:
   - tcg help
   - tcg help <command>
