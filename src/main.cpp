@@ -37,7 +37,7 @@ int main(int argc, const char *argv[]) {
     // this will allow users to read docs about
     // this software on a machine without cgroup v2
     // support
-    if (argc == 2) {
+    if (argc <= 2) {
       help();
     } else {
       check_arg(argc == 3);

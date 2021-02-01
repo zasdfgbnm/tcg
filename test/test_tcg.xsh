@@ -34,6 +34,7 @@ def test_invalid_argument():
 def test_help():
     tcg help
     tcg h
+    tcg
 
 
 def test_create_illegal():
