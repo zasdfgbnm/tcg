@@ -169,10 +169,10 @@ void create1(const std::string &) {}
 
 #endif
 
-static RegisterCommand
-    _({.name = "create",
-       .alias = {"c"},
-       .short_description = "create a new cgroup containing the current shell",
-       .long_description = R"body(
+static Command command(
+    /*name =*/"create",
+    /*alias =*/{"c"},
+    /*short_description =*/"create a new cgroup containing the current shell",
+    /*long_description =*/R"body(
 This command will create a new cgroup and add the current shell to it. TODO)body",
-       .handlers = {create0, create1}});
+    /*handlers =*/{create0, create1});

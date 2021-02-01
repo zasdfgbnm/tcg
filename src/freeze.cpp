@@ -29,14 +29,14 @@ void unfreeze(const std::string &name) {
   logger->info("Done unfreezing {}.", name);
 }
 
-static RegisterCommand _1({.name = "freeze",
-                           .alias = {"f"},
-                           .short_description = "TODO: Add doc",
-                           .long_description = R"body(TODO: Add doc)body",
-                           .handlers = {freeze}});
+static Command command_f(/*name =*/"freeze",
+                         /*alias =*/{"f"},
+                         /*short_description =*/"TODO: Add doc",
+                         /*long_description =*/R"body(TODO: Add doc)body",
+                         /*handlers =*/{freeze});
 
-static RegisterCommand _2({.name = "unfreeze",
-                           .alias = {"uf"},
-                           .short_description = "TODO: Add doc",
-                           .long_description = R"body(TODO: Add doc)body",
-                           .handlers = {unfreeze}});
+static Command command_uf(/*name =*/"unfreeze",
+                          /*alias =*/{"uf"},
+                          /*short_description =*/"TODO: Add doc",
+                          /*long_description =*/R"body(TODO: Add doc)body",
+                          /*handlers =*/{unfreeze});

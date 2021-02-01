@@ -1,5 +1,4 @@
 #include "utils.hpp"
-
 #include <boost/filesystem.hpp>
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
@@ -40,20 +39,7 @@ std::string name_dir(const std::string &name,
   return dir;
 }
 
-std::map<std::string, Command> RegisterCommand::cmd_registry;
-std::map<std::string, std::string> RegisterCommand::alias_registry;
-
-RegisterCommand::RegisterCommand(const Command &info) {
-  cmd_registry[info.name] = info;
-  alias_registry[info.name] = info.name;
-  for (auto &i : info.alias) {
-    if (alias_registry.find(i) != alias_registry.end()) {
-      throw std::runtime_error(
-          std::string("Conflicting alias. Please report a bug at: ") + url);
-    }
-    alias_registry[i] = info.name;
-  }
-}
+std::map<std::string, const Command *> Command::registry;
 
 void invalid_argument();
 
@@ -75,6 +61,40 @@ void handler::call(const char *args[]) const {
   default:
     invalid_argument();
   }
+}
+
+Command::Command(const std::string &name, const std::vector<std::string> &alias,
+                 const std::string &short_description,
+                 const std::string &long_description,
+                 const std::vector<handler> &handlers, bool sandbox)
+    : name(name), alias(alias), short_description(short_description),
+      long_description(long_description), handlers(handlers), sandbox(sandbox) {
+  if (registry.find(name) != registry.end()) {
+    throw std::runtime_error(
+        std::string("Conflicting name. Please report a bug at: ") + url);
+  }
+  registry[name] = this;
+  for (auto &a : alias) {
+    if (registry.find(a) != registry.end()) {
+      throw std::runtime_error(
+          std::string("Conflicting alias. Please report a bug at: ") + url);
+    }
+    registry[a] = this;
+  }
+}
+
+class UndefinedCommand final : public Command {
+public:
+  UndefinedCommand() : Command({}, {}, {}, {}, {}) {}
+  bool defined() const override { return false; }
+} undefined_command;
+
+const Command *Command::get(const std::string &name) {
+  auto i = registry.find(name);
+  if (i == registry.end()) {
+    return &undefined_command;
+  }
+  return registry[name];
 }
 
 void Command::call(const char *args[]) const {

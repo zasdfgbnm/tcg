@@ -17,8 +17,8 @@ void set(const std::string &name, const std::string &key,
   logger->debug("Done printting.");
 }
 
-static RegisterCommand _({.name = "set",
-                          .alias = {},
-                          .short_description = "TODO: Add doc",
-                          .long_description = R"body(TODO: Add doc)body",
-                          .handlers = {set}});
+static Command command(/*name =*/"set",
+                       /*alias =*/{},
+                       /*short_description =*/"TODO: Add doc",
+                       /*long_description =*/R"body(TODO: Add doc)body",
+                       /*handlers =*/{set});
