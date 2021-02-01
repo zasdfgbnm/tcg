@@ -3,7 +3,7 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 
-const auto name_format = fg(fmt::color::azure);
+const auto name_format = fg(fmt::color::cornflower_blue);
 const auto error_format = fg(fmt::color::red) | fmt::emphasis::bold;
 const auto code_format = fmt::emphasis::underline;
 const auto title_format = fmt::emphasis::bold;
