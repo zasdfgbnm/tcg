@@ -50,14 +50,16 @@ void help(const std::string &command) {
   fmt::print("\n\n");
 
   // alias
-  fmt::print(title_format, "Alias: ");
-  bool first = true;
-  for (auto &i : info.alias) {
-    if (!first) {
-      fmt::print(", ");
+  if (info.alias.size() > 0) {
+    fmt::print(title_format, "Alias: ");
+    bool first = true;
+    for (auto &i : info.alias) {
+      if (!first) {
+        fmt::print(", ");
+      }
+      fmt::print(name_format, i);
+      first = false;
     }
-    fmt::print(name_format, i);
-    first = false;
   }
 
   // long description

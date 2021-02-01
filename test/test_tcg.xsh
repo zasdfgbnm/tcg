@@ -40,7 +40,13 @@ def test_invalid_argument():
 def test_help():
     known_commands = {
         "help": ["h"],
+        "list": ["ls", "l"],
+        "self": ["sf"],
         "create": ["c"],
+        "freeze": ["f"],
+        "unfreeze": ["uf"],
+        "set": [],
+        "show": [],
     }
 
     # help for the entire tool
