@@ -82,7 +82,8 @@ void Command::call(const char *args[]) const {
     invalid_argument();
   }
   uint8_t num_arg = 0;
-  while (args[num_arg] != nullptr) num_arg++;
+  while (args[num_arg] != nullptr)
+    num_arg++;
   for (auto &h : handlers) {
     if (h.num_arg() == num_arg) {
       h.call(args);

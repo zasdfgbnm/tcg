@@ -77,5 +77,4 @@ There are two ways of using help:
   - tcg help <command>
 The former shows the help information for the entire tcg tool, and the latter
 shows the help for a specific command.)body",
-.handlers = { help0, help1 }
-});
+       .handlers = {help0, help1}});

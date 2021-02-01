@@ -60,7 +60,7 @@ std::string new_name() {
   exit(EXIT_FAILURE);
 }
 
-void create(const std::string &name_) {
+void create1(const std::string &name_) {
   auto logger = spdlog::get("create");
   logger->info("Start creating a new cgroup");
   std::string name;
@@ -160,9 +160,12 @@ void create(const std::string &name_) {
   }
 }
 
+void create0() { create1(""); }
+
 #else
 
-void create(const std::string &) {}
+void create0() {}
+void create1(const std::string &) {}
 
 #endif
 
@@ -172,5 +175,4 @@ static RegisterCommand
        .short_description = "create a new cgroup containing the current shell",
        .long_description = R"body(
 This command will create a new cgroup and add the current shell to it. TODO)body",
-.handlers = {create}
-});
+       .handlers = {create0, create1}});
