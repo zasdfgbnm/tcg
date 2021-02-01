@@ -18,7 +18,8 @@ void self();
 void create(const std::string &name_);
 void freeze(const std::string &name);
 void unfreeze(const std::string &name);
-void set(const std::string &name, const std::string &key, const std::string &value);
+void set(const std::string &name, const std::string &key,
+         const std::string &value);
 void show(const std::string &name, const std::string &key);
 
 int main(int argc, const char *argv[]) {

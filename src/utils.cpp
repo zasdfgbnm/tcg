@@ -16,7 +16,8 @@ std::string user_dir() {
   return fmt::format("{}/{}/", root_dir, uid);
 }
 
-std::string name_dir(const std::string &name, std::optional<bool> assert_existence) {
+std::string name_dir(const std::string &name,
+                     std::optional<bool> assert_existence) {
   auto logger = spdlog::get("utils");
   logger->debug("Getting directory for {}...", name);
   auto dir = user_dir() + name;

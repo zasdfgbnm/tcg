@@ -1,8 +1,8 @@
 #pragma once
 
+#include <map>
 #include <optional>
 #include <string>
-#include <map>
 #include <vector>
 
 constexpr const char *cgroup_procs = "/sys/fs/cgroup/cgroup.procs";
@@ -19,17 +19,14 @@ struct HelpInfo {
   class reg {
     static std::map<std::string, HelpInfo> registry;
     friend class HelpInfo;
+
   public:
-    reg(std::string name, const HelpInfo &info) {
-        registry[name] = info;
-    }
+    reg(std::string name, const HelpInfo &info) { registry[name] = info; }
   };
 
   static const HelpInfo &get(const std::string &name) {
     return reg::registry[name];
   }
 
-  static const std::map<std::string, HelpInfo> &all() {
-    return reg::registry;
-  }
+  static const std::map<std::string, HelpInfo> &all() { return reg::registry; }
 };

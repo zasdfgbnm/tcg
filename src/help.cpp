@@ -6,10 +6,10 @@
 
 #include "utils.hpp"
 
-static HelpInfo::reg ister("help", {
-  .description = "display help information",
-  .body = ""
-});
+static HelpInfo::reg ister("help", {.description = "display help information",
+                                    .body = R"body(
+There are two ways of using
+)body"});
 
 const auto name_format = fg(fmt::color::cornflower_blue);
 const auto error_format = fg(fmt::color::red) | fmt::emphasis::bold;
@@ -31,6 +31,10 @@ void help() {
 
 void help(const std::string &command) {
   const auto &info = HelpInfo::get(command);
+  if (info.description.size() == 0) {
+    fmt::print(error_format, "Unknown command.");
+    return;
+  }
   fmt::print(title_format | name_format, command + ": ");
   fmt::print(title_format, info.description);
   fmt::print("\n\n");
@@ -40,6 +44,6 @@ void invalid_argument() {
   fmt::print(error_format, "Invalid arguments.\n");
   fmt::print("Run ");
   fmt::print(code_format, "tcg help");
-  fmt::print(" for more information.\n");
+  fmt::print(" for more information.");
   exit(EXIT_FAILURE);
 }

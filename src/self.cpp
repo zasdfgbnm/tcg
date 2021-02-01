@@ -17,7 +17,7 @@ void self() {
   auto cg = fmt::format("/proc/{}/cgroup", pid);
   if (!fs::exists(fs::path(cg))) {
     logger->info("Procfs not mounted, or cgroup not enabled");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   logger->debug("Reading {}...", cg);
   auto uid = getuid();
