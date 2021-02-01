@@ -22,9 +22,14 @@ void show(std::string name, std::string key);
 
 int main(int argc, const char *argv[]) {
   initialize_logger();
-  check_arg(argc >= 2);
 
-  std::string command = argv[1];
+  std::string command;
+  if (argc == 1) {
+    command = "help";
+  } else {
+    check_arg(argc >= 2);
+    command = argv[1];
+  }
 
   if (command == "help" || command == "h") {
     // help should run without sandbox because
