@@ -16,7 +16,8 @@ namespace fs = boost::filesystem;
 
 bool stdout_is_tty() { return isatty(fileno(stdout)); }
 
-void print_procs(std::shared_ptr<spdlog::logger> logger, std::string name) {
+void print_procs(std::shared_ptr<spdlog::logger> logger,
+                 const std::string &name) {
   auto procs_file = name_dir(name, true) + "/cgroup.procs";
   logger->debug("Reading process list from {}.", procs_file);
   std::ifstream in(procs_file);

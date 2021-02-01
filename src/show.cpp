@@ -6,7 +6,7 @@
 
 #include "utils.hpp"
 
-void show(std::string name, std::string key) {
+void show(const std::string &name, const std::string &key) {
   auto logger = spdlog::get("show");
   logger->info("Showing cgroup {}'s {}...", name, key);
   auto d = name_dir(name, true) + "/" + key;
