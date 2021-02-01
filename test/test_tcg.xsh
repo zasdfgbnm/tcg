@@ -62,7 +62,7 @@ def test_help():
 
     # help for known command
     for cmd, alias in known_commands.items():
-        desc = remove_ansi_escape($(tcg h @(cmd)))
+        desc = $(tcg h @(cmd))
         assert cmd + ": " in desc
 
         head = "Alias:"
