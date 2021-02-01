@@ -63,6 +63,40 @@ void handler::call(const char *args[]) const {
   }
 }
 
+Command::Command(const std::string &name, const std::vector<std::string> &alias,
+                 const std::string &short_description,
+                 const std::string &long_description,
+                 const std::vector<handler> &handlers, bool sandbox)
+    : name(name), alias(alias), short_description(short_description),
+      long_description(long_description), handlers(handlers), sandbox(sandbox) {
+  if (registry.find(name) != registry.end()) {
+    throw std::runtime_error(
+        std::string("Conflicting name. Please report a bug at: ") + url);
+  }
+  registry[name] = this;
+  for (auto &a : alias) {
+    if (registry.find(a) != registry.end()) {
+      throw std::runtime_error(
+          std::string("Conflicting alias. Please report a bug at: ") + url);
+    }
+    registry[a] = this;
+  }
+}
+
+class UndefinedCommand final : public Command {
+public:
+  UndefinedCommand() : Command({}, {}, {}, {}, {}) {}
+  bool defined() const override { return false; }
+} undefined_command;
+
+const Command *Command::get(const std::string &name) {
+  auto i = registry.find(name);
+  if (i == registry.end()) {
+    return &undefined_command;
+  }
+  return registry[name];
+}
+
 void Command::call(const char *args[]) const {
   uint8_t num_arg = 0;
   while (args[num_arg] != nullptr)

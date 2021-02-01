@@ -37,9 +37,10 @@ public:
   void call(const char *args[]) const;
 };
 
-struct Command {
+class Command {
   static std::map<std::string, const Command *> registry;
 
+public:
   std::string name;
   std::vector<std::string> alias;
   std::string short_description;
@@ -50,25 +51,11 @@ struct Command {
   Command(const std::string &name, const std::vector<std::string> &alias,
           const std::string &short_description,
           const std::string &long_description,
-          const std::vector<handler> &handlers, bool sandbox = true)
-      : name(name), alias(alias), short_description(short_description),
-        long_description(long_description), handlers(handlers),
-        sandbox(sandbox) {
-    if (registry.find(name) != registry.end()) {
-      throw std::runtime_error(
-          std::string("Conflicting name. Please report a bug at: ") + url);
-    }
-    registry[name] = this;
-    for (auto &a : alias) {
-      if (registry.find(a) != registry.end()) {
-        throw std::runtime_error(
-            std::string("Conflicting alias. Please report a bug at: ") + url);
-      }
-      registry[a] = this;
-    }
-  }
+          const std::vector<handler> &handlers, bool sandbox = true);
 
-  static const Command *get(const std::string &name) { return registry[name]; }
+  virtual bool defined() const { return true; }
+
+  static const Command *get(const std::string &name);
 
   static const std::map<std::string, const Command *> &all() {
     return registry;
