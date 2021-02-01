@@ -29,7 +29,7 @@ void help0() {
 
 void help1(const std::string &command) {
   auto c = Command::get(command);
-  if (c->defined()) {
+  if (!c->defined()) {
     fmt::print(error_format, "Unknown command.");
     return;
   }

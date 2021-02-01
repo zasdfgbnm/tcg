@@ -380,6 +380,6 @@ def test_xontrib():
     path = os.path.join(path, '../shells/xonsh')
     cd @(path)
     python setup.py bdist_wheel
-    xpip install dist/*.whl
+    xpip install --force-reinstall dist/*.whl
     xontrib load tcg
     assert $(tcg self).strip() == $TERMINAL_CGROUP
