@@ -103,6 +103,9 @@ jobs:
       run: |
         set -eux
         cat << EOF | sudo tee /mnt/home/user/.bashrc
+        # Can not use "set -e", because this will create infinite loop of crash and relogin
+        # when test fails
+        set -ux
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         export TCG_LOG_LEVEL=debug
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
