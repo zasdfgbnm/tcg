@@ -6,11 +6,17 @@ import multiprocessing
 import subprocess
 import queue
 import timeit
+import re
 
 
 uid = os.getuid()
 ROOT = f'/sys/fs/cgroup/terminals/{uid}/'
 CGROUP2_AVAILABLE = os.path.isfile('/sys/fs/cgroup/cgroup.procs')
+
+def remove_ansi_escape(text):
+    # https://stackoverflow.com/a/14693789
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    return ansi_escape.sub('', text)
 
 
 def random_string(length):
@@ -50,7 +56,20 @@ def test_help():
 
     # help for known command
     for cmd, alias in known_commands.items():
-        assert cmd + ": " in $(tcg h @(cmd))
+        desc = remove_ansi_escape($(tcg h @(cmd)))
+        assert cmd + ": " in desc
+
+        head = "Alias:"
+        for l in desc.split('\n'):
+            if l.startswith(head):
+                alias_line = l[len(head):]
+                break
+        else:
+            alias_line = ""
+        print(alias_line)
+        for a in alias:
+            assert a in alias_line
+
         for a in alias:
             assert cmd + ": " in $(tcg h @(a))
 
