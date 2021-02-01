@@ -6,8 +6,8 @@
 
 #include "utils.hpp"
 
-static RegisterCommand _("help",
-                         {.alias = {"h"},
+static RegisterCommand _({.name = "help",
+                          .alias = {"h"},
                           .short_description = "display help information",
                           .long_description = R"body(
 There are two ways of using help:

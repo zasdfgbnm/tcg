@@ -147,6 +147,8 @@ def test_create_and_destroy():
 
 def test_list_illegal():
     with pytest.raises(subprocess.CalledProcessError):
+        tcg l aaa
+    with pytest.raises(subprocess.CalledProcessError):
         tcg ls aaa
     with pytest.raises(subprocess.CalledProcessError):
         tcg list aaa
@@ -169,11 +171,10 @@ def test_list():
     groups1 = set(list_groups())
     groups2 = {x.split()[0] for x in $(tcg list).strip().split('\n')}
     groups3 = {x.split()[0] for x in $(tcg ls).strip().split('\n')}
-    print(groups1)
-    print(groups2)
-    print(groups3)
+    groups4 = {x.split()[0] for x in $(tcg l).strip().split('\n')}
     assert groups1 == groups2
     assert groups1 == groups3
+    assert groups1 == groups4
 
 
 def test_list_procs():

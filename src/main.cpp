@@ -47,13 +47,13 @@ int main(int argc, const char *argv[]) {
       help(argv[2]);
     }
     return 0;
-  } else if (command == "list" || command == "ls" || command == "l") {
+  } else if (Command::get(command).name == "list") {
     // list has to run outside sandbox because
     // it needs access to /proc filesystem
     check_arg(argc == 2);
     list();
     return 0;
-  } else if (command == "self" || command == "sf") {
+  } else if (Command::get(command).name == "self") {
     // self has to run outside sandbox because
     // it needs access to /proc filesystem
     self();
@@ -62,23 +62,23 @@ int main(int argc, const char *argv[]) {
 
   enter_sandbox();
 
-  if (command == "create" || command == "c") {
+  if (Command::get(command).name == "create") {
     check_arg(argc == 2 || argc == 3);
     if (argc == 2) {
       create("");
     } else {
       create(argv[2]);
     }
-  } else if (command == "freeze" || command == "f") {
+  } else if (Command::get(command).name == "freeze") {
     check_arg(argc == 3);
     freeze(argv[2]);
-  } else if (command == "unfreeze" || command == "uf") {
+  } else if (Command::get(command).name == "unfreeze") {
     check_arg(argc == 3);
     unfreeze(argv[2]);
-  } else if (command == "set") {
+  } else if (Command::get(command).name == "set") {
     check_arg(argc == 5);
     set(argv[2], argv[3], argv[4]);
-  } else if (command == "show") {
+  } else if (Command::get(command).name == "show") {
     check_arg(argc == 4);
     show(argv[2], argv[3]);
   } else {

@@ -21,7 +21,7 @@ class RegisterCommand {
   friend class Command;
 
 public:
-  RegisterCommand(const std::string &name, const Command &info);
+  RegisterCommand(const Command &info);
 };
 
 struct Command {

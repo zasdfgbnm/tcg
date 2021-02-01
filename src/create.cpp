@@ -18,8 +18,8 @@
 #include "utils.hpp"
 
 static RegisterCommand
-    _("create",
-      {.alias = {"c"},
+    _({.name = "create",
+       .alias = {"c"},
        .short_description = "create a new cgroup containing the current shell",
        .long_description = R"body(
 This command will create a new cgroup and add the current shell to it. TODO)body"});

@@ -12,6 +12,11 @@
 
 #include "utils.hpp"
 
+static RegisterCommand _({.name = "list",
+                          .alias = {"l", "ls"},
+                          .short_description = "TODO",
+                          .long_description = R"body(TODO)body"});
+
 namespace fs = boost::filesystem;
 
 bool stdout_is_tty() { return isatty(fileno(stdout)); }
