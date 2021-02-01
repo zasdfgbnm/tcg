@@ -5,11 +5,6 @@
 
 #include "utils.hpp"
 
-static RegisterCommand _({.name = "set",
-                          .alias = {},
-                          .short_description = "TODO",
-                          .long_description = R"body(TODO)body"});
-
 void set(const std::string &name, const std::string &key,
          const std::string &value) {
   auto logger = spdlog::get("set");
@@ -21,3 +16,9 @@ void set(const std::string &name, const std::string &key,
   out.close();
   logger->debug("Done printting.");
 }
+
+static RegisterCommand _({.name = "set",
+                          .alias = {},
+                          .short_description = "TODO: Add doc",
+                          .long_description = R"body(TODO: Add doc)body",
+                          .handlers = {set}});

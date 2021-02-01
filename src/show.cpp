@@ -6,11 +6,6 @@
 
 #include "utils.hpp"
 
-static RegisterCommand _({.name = "show",
-                          .alias = {},
-                          .short_description = "TODO",
-                          .long_description = R"body(TODO)body"});
-
 void show(const std::string &name, const std::string &key) {
   auto logger = spdlog::get("show");
   logger->info("Showing cgroup {}'s {}...", name, key);
@@ -23,3 +18,9 @@ void show(const std::string &name, const std::string &key) {
   }
   logger->debug("Done printting.");
 }
+
+static RegisterCommand _({.name = "show",
+                          .alias = {},
+                          .short_description = "TODO: Add doc",
+                          .long_description = R"body(TODO: Add doc)body",
+                          .handlers = {show}});
