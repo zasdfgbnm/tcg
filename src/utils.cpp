@@ -86,7 +86,7 @@ Command::Command(const std::string &name, const std::vector<std::string> &alias,
 class UndefinedCommand final : public Command {
 public:
   UndefinedCommand() : Command({}, {}, {}, {}, {}) {}
-  virtual bool defined() const override { return false; }
+  bool defined() const override { return false; }
 } undefined_command;
 
 const Command *Command::get(const std::string &name) {
