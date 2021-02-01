@@ -32,7 +32,7 @@ def test_invalid_argument():
 
 
 def test_help():
-    known_commands = ["help"]
+    known_commands = ["help", "create"]
 
     # help for the entire tool
     assert "Usage" in $(tcg help)

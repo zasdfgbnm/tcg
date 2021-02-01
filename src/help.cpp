@@ -12,8 +12,7 @@ There are two ways of using help:
   - tcg help
   - tcg help <command>
 The former shows the help information for the entire tcg tool, and the latter
-shows the help for a specific command.
-)body"});
+shows the help for a specific command.)body"});
 
 const auto name_format = fg(fmt::color::cornflower_blue);
 const auto error_format = fg(fmt::color::red) | fmt::emphasis::bold;
