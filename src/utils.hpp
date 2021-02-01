@@ -47,6 +47,7 @@ public:
 struct Command {
   std::string name;
   std::vector<std::string> alias;
+  bool sandbox = true;
   std::string short_description;
   std::string long_description;
 
