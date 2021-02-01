@@ -12,17 +12,48 @@ const auto code_format = fmt::emphasis::underline;
 const auto title_format = fmt::emphasis::bold;
 
 void help0() {
+  // title
   fmt::print(title_format, "Usage:\n");
   fmt::print("tcg <command> [<args>]\n\n");
+
+  // help
   fmt::print(title_format, "To get help for command:\n");
   fmt::print("tcg help <command>\n\n");
-  fmt::print(title_format, "Available commands:\n");
+
+  // commands
+  fmt::print(title_format, "Available Commands:\n");
   for (auto &i : Command::all()) {
+    if (!i.second->defined() || i.first != i.second->name) {
+      continue;
+    }
     fmt::print(name_format, i.first + ": ");
     fmt::print(i.second->short_description);
     fmt::print("\n");
   }
   fmt::print("\n");
+
+  // alias
+  fmt::print(title_format, "Aliases of Commands:\n");
+  for (auto &i : Command::all()) {
+    if (!i.second->defined() || i.first != i.second->name) {
+      continue;
+    }
+    if (i.second->alias.size() > 0) {
+      fmt::print(name_format, i.first + ": ");
+      bool first = true;
+      for (auto &a : i.second->alias) {
+        if (!first) {
+          fmt::print(", ");
+        }
+        fmt::print(a);
+        first = false;
+      }
+      fmt::print("\n");
+    }
+  }
+  fmt::print("\n");
+
+  // more info
   fmt::print(title_format, "For more information, go to:\n");
   fmt::print(url);
 }
