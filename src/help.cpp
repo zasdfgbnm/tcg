@@ -6,11 +6,13 @@
 
 #include "utils.hpp"
 
-static RegisterCommand _({.name = "help",
-                          .alias = {"h"},
-                          .sandbox = false, // disable sandbox to allow users to read docs on systems without cgroup v2
-                          .short_description = "display help information",
-                          .long_description = R"body(
+static RegisterCommand
+    _({.name = "help",
+       .alias = {"h"},
+       .sandbox = false, // disable sandbox to allow users to read docs on
+                         // systems without cgroup v2
+       .short_description = "display help information",
+       .long_description = R"body(
 There are two ways of using help:
   - tcg help
   - tcg help <command>
