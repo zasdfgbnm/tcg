@@ -35,7 +35,7 @@ void validate_name(std::shared_ptr<spdlog::logger> logger,
   }
 }
 
-bool is_used(std::string name) {
+bool is_used(const std::string &name) {
   auto logger = spdlog::get("utils");
   auto d = user_dir() + name;
   logger->debug(
@@ -60,7 +60,7 @@ std::string new_name() {
   exit(EXIT_FAILURE);
 }
 
-void create(std::string name_) {
+void create(const std::string &name_) {
   auto logger = spdlog::get("create");
   logger->info("Start creating a new cgroup");
   std::string name;
@@ -162,6 +162,6 @@ void create(std::string name_) {
 
 #else
 
-void create(std::string) {}
+void create(const std::string &) {}
 
 #endif

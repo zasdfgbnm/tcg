@@ -5,7 +5,7 @@
 
 #include "utils.hpp"
 
-void set(std::string name, std::string key, std::string value) {
+void set(const std::string &name, const std::string &key, const std::string &value) {
   auto logger = spdlog::get("set");
   logger->info("Setting cgroup {}'s {} to {}...", name, key, value);
   auto d = name_dir(name, true) + "/" + key;

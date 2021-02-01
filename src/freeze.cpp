@@ -5,7 +5,7 @@
 
 #include "utils.hpp"
 
-void freeze(std::string name) {
+void freeze(const std::string &name) {
   auto logger = spdlog::get("freeze");
   logger->info("Will freeze {}.", name);
   auto dir = name_dir(name, true);
@@ -17,7 +17,7 @@ void freeze(std::string name) {
   logger->info("Done freezing {}.", name);
 }
 
-void unfreeze(std::string name) {
+void unfreeze(const std::string &name) {
   auto logger = spdlog::get("freeze");
   logger->info("Will unfreeze {}.", name);
   auto dir = name_dir(name, true);

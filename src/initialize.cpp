@@ -51,8 +51,8 @@ void setup_loggers() {
   spdlog::register_logger(std::make_shared<spdlog::logger>("show", sink));
 }
 
-bool file_contains(std::shared_ptr<spdlog::logger> logger, std::string file,
-                   std::string controller) {
+bool file_contains(std::shared_ptr<spdlog::logger> logger, const std::string &file,
+                   const std::string &controller) {
   logger->debug("Testing if {} already contains {}.", file, controller);
   std::ifstream in(file);
   std::string s;
@@ -65,7 +65,7 @@ bool file_contains(std::shared_ptr<spdlog::logger> logger, std::string file,
 }
 
 void enable_controllers(std::shared_ptr<spdlog::logger> logger,
-                        std::string dir) {
+                        const std::string &dir) {
   const static std::string controllers[] = {"cpu"};
   for (std::string c : controllers) {
     auto subtree_control = dir + "/cgroup.subtree_control";

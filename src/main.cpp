@@ -12,14 +12,14 @@ void check_arg(bool condition) {
 void initialize_logger();
 void enter_sandbox();
 void help();
-void help(std::string command);
+void help(const std::string &command);
 void list();
 void self();
-void create(std::string name_);
-void freeze(std::string name);
-void unfreeze(std::string name);
-void set(std::string name, std::string key, std::string value);
-void show(std::string name, std::string key);
+void create(const std::string &name_);
+void freeze(const std::string &name);
+void unfreeze(const std::string &name);
+void set(const std::string &name, const std::string &key, const std::string &value);
+void show(const std::string &name, const std::string &key);
 
 int main(int argc, const char *argv[]) {
   initialize_logger();

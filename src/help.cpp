@@ -6,8 +6,9 @@
 
 #include "utils.hpp"
 
-static RegisterHelpInfo info("name", {
-  .description = "Display help information."
+static HelpInfo::reg ister("help", {
+  .description = "display help information",
+  .body = ""
 });
 
 const auto name_format = fg(fmt::color::cornflower_blue);
@@ -21,10 +22,18 @@ void help() {
   fmt::print(title_format, "To get help for command:\n");
   fmt::print("tcg help <command>\n\n");
   fmt::print(title_format, "Available commands:\n");
+  for (auto &i : HelpInfo::all()) {
+    fmt::print(name_format, i.first + ": ");
+    fmt::print(i.second.description);
+    fmt::print("\n");
+  }
 }
 
-void help(std::string command) {
-  fmt::print(error_format, "Not supported yet\n");
+void help(const std::string &command) {
+  const auto &info = HelpInfo::get(command);
+  fmt::print(title_format | name_format, command + ": ");
+  fmt::print(title_format, info.description);
+  fmt::print("\n\n");
 }
 
 void invalid_argument() {
