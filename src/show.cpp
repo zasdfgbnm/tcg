@@ -6,6 +6,11 @@
 
 #include "utils.hpp"
 
+static RegisterCommand _({.name = "show",
+                          .alias = {},
+                          .short_description = "TODO",
+                          .long_description = R"body(TODO)body"});
+
 void show(const std::string &name, const std::string &key) {
   auto logger = spdlog::get("show");
   logger->info("Showing cgroup {}'s {}...", name, key);

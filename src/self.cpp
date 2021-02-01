@@ -8,6 +8,11 @@
 
 #include "utils.hpp"
 
+static RegisterCommand _({.name = "self",
+                          .alias = {"sf"},
+                          .short_description = "TODO",
+                          .long_description = R"body(TODO)body"});
+
 namespace fs = boost::filesystem;
 
 void self() {

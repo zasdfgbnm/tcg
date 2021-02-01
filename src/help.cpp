@@ -6,8 +6,10 @@
 
 #include "utils.hpp"
 
-RegisterHelpInfo("help",
-                 {.description = "display help information", .body = R"body(
+static RegisterCommand _({.name = "help",
+                          .alias = {"h"},
+                          .short_description = "display help information",
+                          .long_description = R"body(
 There are two ways of using help:
   - tcg help
   - tcg help <command>
@@ -25,23 +27,44 @@ void help() {
   fmt::print(title_format, "To get help for command:\n");
   fmt::print("tcg help <command>\n\n");
   fmt::print(title_format, "Available commands:\n");
-  for (auto &i : HelpInfo::all()) {
+  for (auto &i : Command::all()) {
     fmt::print(name_format, i.first + ": ");
-    fmt::print(i.second.description);
+    fmt::print(i.second.short_description);
     fmt::print("\n");
   }
+  fmt::print("\n");
+  fmt::print(title_format, "For more information, go to:\n");
+  fmt::print(url);
 }
 
 void help(const std::string &command) {
-  const auto &info = HelpInfo::get(command);
-  if (info.description.size() == 0) {
+  const auto &info = Command::get(command);
+  if (info.name.size() == 0) {
     fmt::print(error_format, "Unknown command.");
     return;
   }
-  fmt::print(title_format | name_format, command + ": ");
-  fmt::print(title_format, info.description);
+
+  // title
+  fmt::print(title_format | name_format, info.name + ": ");
+  fmt::print(title_format, info.short_description);
+  fmt::print("\n\n");
+
+  // alias
+  if (info.alias.size() > 0) {
+    fmt::print(title_format, "Alias: ");
+    bool first = true;
+    for (auto &i : info.alias) {
+      if (!first) {
+        fmt::print(", ");
+      }
+      fmt::print(name_format, i);
+      first = false;
+    }
+  }
+
+  // long description
   fmt::print("\n");
-  fmt::print(info.body);
+  fmt::print(info.long_description);
 }
 
 void invalid_argument() {
