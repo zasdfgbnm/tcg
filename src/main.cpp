@@ -24,5 +24,5 @@ int main(int argc, const char *argv[]) {
     enter_sandbox();
   }
 
-  cmd.call(argv + 1);
+  cmd.call(argv + 2);
 }

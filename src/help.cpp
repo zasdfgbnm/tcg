@@ -50,10 +50,10 @@ void help1(const std::string &command) {
       fmt::print(name_format, i);
       first = false;
     }
+    fmt::print("\n");
   }
 
   // long description
-  fmt::print("\n");
   fmt::print(info.long_description);
 }
 
