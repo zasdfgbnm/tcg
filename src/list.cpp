@@ -71,9 +71,10 @@ void list() {
   }
 }
 
-static RegisterCommand _({.name = "list",
-                          .alias = {"l", "ls"},
-                          .sandbox = false, // disable sandbox to access /proc
-                          .short_description = "TODO: Add doc",
-                          .long_description = R"body(TODO: Add doc)body",
-                          .handlers = {list}});
+static Command command(/*name =*/"list",
+                       /*alias =*/{"l", "ls"},
+                       /*short_description =*/"TODO: Add doc",
+                       /*long_description =*/R"body(TODO: Add doc)body",
+                       /*handlers =*/{list},
+                       /*sandbox =*/false // disable sandbox to access /proc
+);

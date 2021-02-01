@@ -2,6 +2,7 @@
 
 #include <map>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -12,17 +13,6 @@ constexpr const char *root_dir = "/sys/fs/cgroup/terminals";
 std::string user_dir();
 std::string name_dir(const std::string &name,
                      std::optional<bool> assert_existence = std::nullopt);
-
-class Command;
-
-class RegisterCommand {
-  static std::map<std::string, Command> cmd_registry;
-  static std::map<std::string, std::string> alias_registry;
-  friend class Command;
-
-public:
-  RegisterCommand(const Command &info);
-};
 
 class handler {
   uint8_t num_arg_;
@@ -48,19 +38,40 @@ public:
 };
 
 struct Command {
+  static std::map<std::string, const Command *> registry;
+
   std::string name;
   std::vector<std::string> alias;
-  bool sandbox = true;
   std::string short_description;
   std::string long_description;
   std::vector<handler> handlers;
+  bool sandbox = true;
 
-  static const Command &get(const std::string &name) {
-    return RegisterCommand::cmd_registry[RegisterCommand::alias_registry[name]];
+  Command(const std::string &name, const std::vector<std::string> &alias,
+          const std::string &short_description,
+          const std::string &long_description,
+          const std::vector<handler> &handlers, bool sandbox = true)
+      : name(name), alias(alias), short_description(short_description),
+        long_description(long_description), handlers(handlers),
+        sandbox(sandbox) {
+    if (registry.find(name) != registry.end()) {
+      throw std::runtime_error(
+          std::string("Conflicting name. Please report a bug at: ") + url);
+    }
+    registry[name] = this;
+    for (auto &a : alias) {
+      if (registry.find(a) != registry.end()) {
+        throw std::runtime_error(
+            std::string("Conflicting alias. Please report a bug at: ") + url);
+      }
+      registry[a] = this;
+    }
   }
 
-  static const std::map<std::string, Command> &all() {
-    return RegisterCommand::cmd_registry;
+  static const Command *get(const std::string &name) { return registry[name]; }
+
+  static const std::map<std::string, const Command *> &all() {
+    return registry;
   }
 
   void call(const char *args[]) const;

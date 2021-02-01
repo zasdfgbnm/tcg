@@ -19,8 +19,8 @@ void show(const std::string &name, const std::string &key) {
   logger->debug("Done printting.");
 }
 
-static RegisterCommand _({.name = "show",
-                          .alias = {},
-                          .short_description = "TODO: Add doc",
-                          .long_description = R"body(TODO: Add doc)body",
-                          .handlers = {show}});
+static Command command(/*name =*/"show",
+                       /*alias =*/{},
+                       /*short_description =*/"TODO: Add doc",
+                       /*long_description =*/R"body(TODO: Add doc)body",
+                       /*handlers =*/{show});

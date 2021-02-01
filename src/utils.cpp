@@ -1,5 +1,4 @@
 #include "utils.hpp"
-
 #include <boost/filesystem.hpp>
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
@@ -40,20 +39,7 @@ std::string name_dir(const std::string &name,
   return dir;
 }
 
-std::map<std::string, Command> RegisterCommand::cmd_registry;
-std::map<std::string, std::string> RegisterCommand::alias_registry;
-
-RegisterCommand::RegisterCommand(const Command &info) {
-  cmd_registry[info.name] = info;
-  alias_registry[info.name] = info.name;
-  for (auto &i : info.alias) {
-    if (alias_registry.find(i) != alias_registry.end()) {
-      throw std::runtime_error(
-          std::string("Conflicting alias. Please report a bug at: ") + url);
-    }
-    alias_registry[i] = info.name;
-  }
-}
+std::map<std::string, const Command *> Command::registry;
 
 void invalid_argument();
 

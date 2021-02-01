@@ -19,7 +19,7 @@ void help0() {
   fmt::print(title_format, "Available commands:\n");
   for (auto &i : Command::all()) {
     fmt::print(name_format, i.first + ": ");
-    fmt::print(i.second.short_description);
+    fmt::print(i.second->short_description);
     fmt::print("\n");
   }
   fmt::print("\n");
@@ -28,22 +28,22 @@ void help0() {
 }
 
 void help1(const std::string &command) {
-  const auto &info = Command::get(command);
-  if (info.name.size() == 0) {
+  auto c = Command::get(command);
+  if (c->name.size() == 0) {
     fmt::print(error_format, "Unknown command.");
     return;
   }
 
   // title
-  fmt::print(title_format | name_format, info.name + ": ");
-  fmt::print(title_format, info.short_description);
+  fmt::print(title_format | name_format, c->name + ": ");
+  fmt::print(title_format, c->short_description);
   fmt::print("\n\n");
 
   // alias
-  if (info.alias.size() > 0) {
+  if (c->alias.size() > 0) {
     fmt::print(title_format, "Alias: ");
     bool first = true;
-    for (auto &i : info.alias) {
+    for (auto &i : c->alias) {
       if (!first) {
         fmt::print(", ");
       }
@@ -54,7 +54,7 @@ void help1(const std::string &command) {
   }
 
   // long description
-  fmt::print(info.long_description);
+  fmt::print(c->long_description);
 }
 
 void invalid_argument() {
@@ -65,16 +65,17 @@ void invalid_argument() {
   exit(EXIT_FAILURE);
 }
 
-static RegisterCommand
-    _({.name = "help",
-       .alias = {"h"},
-       .sandbox = false, // disable sandbox to allow users to read docs on
-                         // systems without cgroup v2
-       .short_description = "display help information",
-       .long_description = R"body(
+static Command
+    command(/*name =*/"help",
+            /*alias =*/{"h"},
+            /*short_description =*/"display help information",
+            /*long_description =*/R"body(
 There are two ways of using help:
   - tcg help
   - tcg help <command>
 The former shows the help information for the entire tcg tool, and the latter
 shows the help for a specific command.)body",
-       .handlers = {help0, help1}});
+            /*handlers =*/{help0, help1},
+            /*sandbox =*/false // disable sandbox to allow users to read docs
+                               // on systems without cgroup v2
+    );

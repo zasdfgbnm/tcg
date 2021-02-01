@@ -16,9 +16,9 @@ int main(int argc, const char *argv[]) {
 
   auto cmd = Command::get(argv[1]);
 
-  if (cmd.sandbox) {
+  if (cmd->sandbox) {
     enter_sandbox();
   }
 
-  cmd.call(argv + 2);
+  cmd->call(argv + 2);
 }
