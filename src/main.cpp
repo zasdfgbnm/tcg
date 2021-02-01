@@ -2,8 +2,6 @@
 
 #include "utils.hpp"
 
-void invalid_argument();
-
 void initialize_logger();
 void enter_sandbox();
 void help0();
@@ -11,9 +9,7 @@ void help0();
 int main(int argc, const char *argv[]) {
   initialize_logger();
 
-  if (argc < 1) {
-    invalid_argument();
-  } else if (argc == 1) {
+  if (argc < 2) {
     help0();
     return 0;
   }
