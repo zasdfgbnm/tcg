@@ -12,6 +12,7 @@ void check_arg(bool condition) {
 void initialize_logger();
 void enter_sandbox();
 void help();
+void help(std::string command);
 void list();
 void self();
 void create(std::string name_);
@@ -36,7 +37,12 @@ int main(int argc, const char *argv[]) {
     // this will allow users to read docs about
     // this software on a machine without cgroup v2
     // support
-    help();
+    if (argc == 2) {
+      help();
+    } else {
+      check_arg(argc == 3);
+      help(argv[2]);
+    }
     return 0;
   } else if (command == "list" || command == "ls" || command == "l") {
     // list has to run outside sandbox because

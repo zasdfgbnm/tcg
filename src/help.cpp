@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <unordered_map>
 
 #include <fmt/color.h>
 #include <fmt/core.h>
@@ -12,10 +13,16 @@ const char *help_description = "display help information";
 
 void help() {
   fmt::print(title_format, "Usage:\n");
-  fmt::print("tcg command [args...]\n\n");
+  fmt::print("tcg <command> [<args>]\n\n");
+  fmt::print(title_format, "To get help for command:\n");
+  fmt::print("tcg help <command>\n\n");
   fmt::print(title_format, "Available commands:\n");
   fmt::print(name_format, "help: ");
   fmt::print(help_description);
+}
+
+void help(std::string command) {
+  fmt::print(error_format, "Not supported yet\n");
 }
 
 void invalid_argument() {
@@ -24,5 +31,4 @@ void invalid_argument() {
   fmt::print(code_format, "tcg help");
   fmt::print(" for more information.\n");
   exit(EXIT_FAILURE);
-  ;
 }
