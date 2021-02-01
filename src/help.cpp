@@ -6,19 +6,6 @@
 
 #include "utils.hpp"
 
-static RegisterCommand
-    _({.name = "help",
-       .alias = {"h"},
-       .sandbox = false, // disable sandbox to allow users to read docs on
-                         // systems without cgroup v2
-       .short_description = "display help information",
-       .long_description = R"body(
-There are two ways of using help:
-  - tcg help
-  - tcg help <command>
-The former shows the help information for the entire tcg tool, and the latter
-shows the help for a specific command.)body"});
-
 const auto name_format = fg(fmt::color::cornflower_blue);
 const auto error_format = fg(fmt::color::red) | fmt::emphasis::bold;
 const auto code_format = fmt::emphasis::underline;
@@ -77,3 +64,16 @@ void invalid_argument() {
   fmt::print(" for more information.\n");
   exit(EXIT_FAILURE);
 }
+
+static RegisterCommand
+    _({.name = "help",
+       .alias = {"h"},
+       .sandbox = false, // disable sandbox to allow users to read docs on
+                         // systems without cgroup v2
+       .short_description = "display help information",
+       .long_description = R"body(
+There are two ways of using help:
+  - tcg help
+  - tcg help <command>
+The former shows the help information for the entire tcg tool, and the latter
+shows the help for a specific command.)body"});

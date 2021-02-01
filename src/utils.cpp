@@ -57,9 +57,9 @@ RegisterCommand::RegisterCommand(const Command &info) {
 
 void invalid_argument();
 
-void handler::call(const char *args[]) {
-  assert(args[num_arg] == nullptr);
-  switch (num_arg) {
+void handler::call(const char *args[]) const {
+  assert(args[num_arg_] == nullptr);
+  switch (num_arg_) {
   case 0:
     f0();
     return;
@@ -75,4 +75,16 @@ void handler::call(const char *args[]) {
   default:
     invalid_argument();
   }
+}
+
+void Command::call(const char *args[]) const {
+  uint8_t num_arg = 0;
+  while (args[num_arg] != nullptr) num_arg++;
+  for (auto &h : handlers) {
+    if (h.num_arg() == num_arg) {
+      h.call(args);
+      return;
+    }
+  }
+  invalid_argument();
 }
