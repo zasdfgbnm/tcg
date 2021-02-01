@@ -17,13 +17,6 @@
 
 #include "utils.hpp"
 
-static RegisterCommand
-    _({.name = "create",
-       .alias = {"c"},
-       .short_description = "create a new cgroup containing the current shell",
-       .long_description = R"body(
-This command will create a new cgroup and add the current shell to it. TODO)body"});
-
 namespace fs = boost::filesystem;
 
 std::unordered_set<std::string> names = {
@@ -172,3 +165,12 @@ void create(const std::string &name_) {
 void create(const std::string &) {}
 
 #endif
+
+static RegisterCommand
+    _({.name = "create",
+       .alias = {"c"},
+       .short_description = "create a new cgroup containing the current shell",
+       .long_description = R"body(
+This command will create a new cgroup and add the current shell to it. TODO)body",
+.handlers = {create}
+});

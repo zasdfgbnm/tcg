@@ -11,7 +11,7 @@ const auto error_format = fg(fmt::color::red) | fmt::emphasis::bold;
 const auto code_format = fmt::emphasis::underline;
 const auto title_format = fmt::emphasis::bold;
 
-void help() {
+void help0() {
   fmt::print(title_format, "Usage:\n");
   fmt::print("tcg <command> [<args>]\n\n");
   fmt::print(title_format, "To get help for command:\n");
@@ -27,7 +27,7 @@ void help() {
   fmt::print(url);
 }
 
-void help(const std::string &command) {
+void help1(const std::string &command) {
   const auto &info = Command::get(command);
   if (info.name.size() == 0) {
     fmt::print(error_format, "Unknown command.");
@@ -76,4 +76,6 @@ There are two ways of using help:
   - tcg help
   - tcg help <command>
 The former shows the help information for the entire tcg tool, and the latter
-shows the help for a specific command.)body"});
+shows the help for a specific command.)body",
+.handlers = { help0, help1 }
+});

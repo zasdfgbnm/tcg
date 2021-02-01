@@ -5,16 +5,6 @@
 
 #include "utils.hpp"
 
-static RegisterCommand _1({.name = "freeze",
-                           .alias = {"f"},
-                           .short_description = "TODO",
-                           .long_description = R"body(TODO)body"});
-
-static RegisterCommand _2({.name = "unfreeze",
-                           .alias = {"uf"},
-                           .short_description = "TODO",
-                           .long_description = R"body(TODO)body"});
-
 void freeze(const std::string &name) {
   auto logger = spdlog::get("freeze");
   logger->info("Will freeze {}.", name);
@@ -38,3 +28,15 @@ void unfreeze(const std::string &name) {
   out.close();
   logger->info("Done unfreezing {}.", name);
 }
+
+static RegisterCommand _1({.name = "freeze",
+                           .alias = {"f"},
+                           .short_description = "TODO",
+                           .long_description = R"body(TODO)body",
+                           .handlers = {freeze}});
+
+static RegisterCommand _2({.name = "unfreeze",
+                           .alias = {"uf"},
+                           .short_description = "TODO",
+                           .long_description = R"body(TODO)body",
+                           .handlers = {unfreeze}});
