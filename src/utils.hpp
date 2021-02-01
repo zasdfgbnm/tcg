@@ -24,6 +24,16 @@ public:
   RegisterCommand(const Command &info);
 };
 
+class handler {
+  uint8_t num_arg;
+  union {
+    void (*f0)();
+    void (*f1)(const std::string &);
+    void (*f2)(const std::string &, const std::string &);
+    void (*f3)(const std::string &, const std::string &, const std::string &);
+  };
+};
+
 struct Command {
   std::string name;
   std::vector<std::string> alias;
