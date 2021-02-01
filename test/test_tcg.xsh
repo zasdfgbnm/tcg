@@ -28,8 +28,6 @@ def list_processes(group):
 
 def test_invalid_argument():
     with pytest.raises(subprocess.CalledProcessError):
-        tcg
-    with pytest.raises(subprocess.CalledProcessError):
         tcg aaa
 
 
