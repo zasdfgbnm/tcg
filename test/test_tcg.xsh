@@ -379,6 +379,7 @@ def test_xontrib():
     path = os.path.dirname(__file__)
     path = os.path.join(path, '../shells/xonsh')
     cd @(path)
+    rm -rf dist
     python setup.py bdist_wheel
     xpip install --force-reinstall dist/*.whl
     xontrib load tcg
