@@ -8,13 +8,9 @@
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
 
-#include <unistd.h>
-
 #include "utils.hpp"
 
 namespace fs = boost::filesystem;
-
-bool stdout_is_tty() { return isatty(fileno(stdout)); }
 
 void print_procs(std::shared_ptr<spdlog::logger> logger,
                  const std::string &name) {
@@ -44,13 +40,8 @@ void print_procs(std::shared_ptr<spdlog::logger> logger,
 void list() {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
-  bool tty = stdout_is_tty();
-  logger->info("The stdout {} a tty, {} color.", (tty ? "is" : "is not"),
-               (tty ? "enable" : "disable"));
-  fmt::text_style cg_style;
-  if (tty) {
-    cg_style = fg(fmt::color::green) | fmt::emphasis::bold;
-  }
+  fmt::text_style cg_style =
+      maybe_style(fg(fmt::color::green) | fmt::emphasis::bold);
   auto r = user_dir();
   logger->debug("Root directory is {}, iterating it.", r);
   fs::path p(r);
