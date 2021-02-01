@@ -40,4 +40,17 @@ std::string name_dir(const std::string &name,
   return dir;
 }
 
-std::map<std::string, HelpInfo> HelpInfo::reg::registry;
+std::map<std::string, Command> RegisterCommand::cmd_registry;
+std::map<std::string, std::string> RegisterCommand::alias_registry;
+
+RegisterCommand::RegisterCommand(const std::string &name, const Command &info) {
+  cmd_registry[name] = info;
+  cmd_registry[name].name = name;
+  alias_registry[name] = name;
+  for (auto &i : info.alias) {
+    if (alias_registry.find(i) != alias_registry.end()) {
+      throw std::runtime_error("Conflicting alias. Please report a bug at: https://github.com/zasdfgbnm/tcg");
+    }
+    alias_registry[i] = name;
+  }
+}

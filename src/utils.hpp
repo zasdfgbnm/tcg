@@ -12,23 +12,26 @@ std::string user_dir();
 std::string name_dir(const std::string &name,
                      std::optional<bool> assert_existence = std::nullopt);
 
-struct HelpInfo {
+class Command;
+
+class RegisterCommand {
+  static std::map<std::string, Command> cmd_registry;
+  static std::map<std::string, std::string> alias_registry;
+  friend class Command;
+
+public:
+  RegisterCommand(const std::string &name, const Command &info);
+};
+
+struct Command {
+  std::string name;
+  std::vector<std::string> alias;
   std::string description;
   std::string body;
 
-  class reg {
-    static std::map<std::string, HelpInfo> registry;
-    friend class HelpInfo;
-
-  public:
-    reg(std::string name, const HelpInfo &info) { registry[name] = info; }
-  };
-
-  static const HelpInfo &get(const std::string &name) {
-    return reg::registry[name];
+  static const Command &get(const std::string &name) {
+    return RegisterCommand::cmd_registry[RegisterCommand::alias_registry[name]];
   }
 
-  static const std::map<std::string, HelpInfo> &all() { return reg::registry; }
+  static const std::map<std::string, Command> &all() { return RegisterCommand::cmd_registry; }
 };
-
-#define RegisterHelpInfo(...) static HelpInfo::reg ister(__VA_ARGS__)

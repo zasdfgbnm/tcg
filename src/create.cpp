@@ -17,7 +17,7 @@
 
 #include "utils.hpp"
 
-RegisterHelpInfo(
+static RegisterCommand _(
     "create",
     {.description = "create a new cgroup containing the current shell",
      .body = R"body(

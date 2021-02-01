@@ -6,7 +6,7 @@
 
 #include "utils.hpp"
 
-RegisterHelpInfo("help",
+static RegisterCommand _("help",
                  {.description = "display help information", .body = R"body(
 There are two ways of using help:
   - tcg help
@@ -25,7 +25,7 @@ void help() {
   fmt::print(title_format, "To get help for command:\n");
   fmt::print("tcg help <command>\n\n");
   fmt::print(title_format, "Available commands:\n");
-  for (auto &i : HelpInfo::all()) {
+  for (auto &i : Command::all()) {
     fmt::print(name_format, i.first + ": ");
     fmt::print(i.second.description);
     fmt::print("\n");
@@ -33,7 +33,7 @@ void help() {
 }
 
 void help(const std::string &command) {
-  const auto &info = HelpInfo::get(command);
+  const auto &info = Command::get(command);
   if (info.description.size() == 0) {
     fmt::print(error_format, "Unknown command.");
     return;
