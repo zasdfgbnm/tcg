@@ -49,7 +49,7 @@ RegisterCommand::RegisterCommand(const std::string &name, const Command &info) {
   alias_registry[name] = name;
   for (auto &i : info.alias) {
     if (alias_registry.find(i) != alias_registry.end()) {
-      throw std::runtime_error("Conflicting alias. Please report a bug at: https://github.com/zasdfgbnm/tcg");
+      throw std::runtime_error(std::string("Conflicting alias. Please report a bug at: ") + url);
     }
     alias_registry[i] = name;
   }

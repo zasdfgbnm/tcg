@@ -30,6 +30,9 @@ void help() {
     fmt::print(i.second.description);
     fmt::print("\n");
   }
+  fmt::print("\n");
+  fmt::print(title_format, "For more information, go to:\n");
+  fmt::print(url);
 }
 
 void help(const std::string &command) {
