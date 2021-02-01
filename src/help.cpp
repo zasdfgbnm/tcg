@@ -8,7 +8,11 @@
 
 static HelpInfo::reg ister("help", {.description = "display help information",
                                     .body = R"body(
-There are two ways of using
+There are two ways of using help:
+  - tcg help
+  - tcg help <command>
+The former shows the help information for the entire tcg tool, and the latter
+shows the help for a specific command.
 )body"});
 
 const auto name_format = fg(fmt::color::cornflower_blue);
@@ -37,13 +41,14 @@ void help(const std::string &command) {
   }
   fmt::print(title_format | name_format, command + ": ");
   fmt::print(title_format, info.description);
-  fmt::print("\n\n");
+  fmt::print("\n");
+  fmt::print(info.body);
 }
 
 void invalid_argument() {
   fmt::print(error_format, "Invalid arguments.\n");
   fmt::print("Run ");
   fmt::print(code_format, "tcg help");
-  fmt::print(" for more information.");
+  fmt::print(" for more information.\n");
   exit(EXIT_FAILURE);
 }
