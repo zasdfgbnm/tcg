@@ -17,11 +17,11 @@
 
 #include "utils.hpp"
 
-static HelpInfo::reg ister("create", {
-  .description = "create a new cgroup and add the current shell to it",
-  .body = R"body(
-This command will create a new cgroup and add the current shell to it. TODO)body"
-});
+RegisterHelpInfo(
+    "create",
+    {.description = "create a new cgroup containing the current shell",
+     .body = R"body(
+This command will create a new cgroup and add the current shell to it. TODO)body"});
 
 namespace fs = boost::filesystem;
 

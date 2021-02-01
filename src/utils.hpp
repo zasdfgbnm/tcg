@@ -30,3 +30,5 @@ struct HelpInfo {
 
   static const std::map<std::string, HelpInfo> &all() { return reg::registry; }
 };
+
+#define RegisterHelpInfo(...) static HelpInfo::reg ister(__VA_ARGS__)

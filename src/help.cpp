@@ -6,8 +6,8 @@
 
 #include "utils.hpp"
 
-static HelpInfo::reg ister("help", {.description = "display help information",
-                                    .body = R"body(
+RegisterHelpInfo("help",
+                 {.description = "display help information", .body = R"body(
 There are two ways of using help:
   - tcg help
   - tcg help <command>
