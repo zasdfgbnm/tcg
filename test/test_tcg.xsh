@@ -32,9 +32,22 @@ def test_invalid_argument():
 
 
 def test_help():
-    tcg help
-    tcg h
-    tcg
+    known_commands = ["help"]
+
+    # help for the entire tool
+    assert "Usage" in $(tcg help)
+    assert "Usage" in $(tcg h)
+    assert "Usage" in $(tcg)
+
+    for cmd in known_commands:
+        assert cmd in $(tcg h)
+
+    # help for illegal command
+    assert "Unknown command" in $(tcg h aaaa)
+
+    # help for known command
+    for cmd in known_commands:
+        assert cmd + ": " in $(tcg h @(cmd))
 
 
 def test_create_illegal():
