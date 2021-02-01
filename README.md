@@ -12,6 +12,12 @@ Terminal cgroup, short for `tcg`, is a tool to help people manage system's resou
 
 # Install
 
+`tcg` is available on [Archlinux AUR](https://aur.archlinux.org/packages/tcg-git/), you can install from there.
+
+If you use [Xonsh](https://xon.sh), we have a xontrib, see [shells/xonsh/README.md](shells/xonsh/README.md) for more information.
+
+## Install from source
+
 `tcg` requires boost, you need to install boost on your system first.
 
 
