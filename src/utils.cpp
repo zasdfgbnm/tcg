@@ -38,3 +38,5 @@ std::string name_dir(std::string name, std::optional<bool> assert_existence) {
   }
   return dir;
 }
+
+std::map<std::string, HelpInfo> RegisterHelpInfo::registry;

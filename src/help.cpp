@@ -4,12 +4,16 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 
+#include "utils.hpp"
+
+static RegisterHelpInfo info("name", {
+  .description = "Display help information."
+});
+
 const auto name_format = fg(fmt::color::cornflower_blue);
 const auto error_format = fg(fmt::color::red) | fmt::emphasis::bold;
 const auto code_format = fmt::emphasis::underline;
 const auto title_format = fmt::emphasis::bold;
-
-const char *help_description = "display help information";
 
 void help() {
   fmt::print(title_format, "Usage:\n");
@@ -17,8 +21,6 @@ void help() {
   fmt::print(title_format, "To get help for command:\n");
   fmt::print("tcg help <command>\n\n");
   fmt::print(title_format, "Available commands:\n");
-  fmt::print(name_format, "help: ");
-  fmt::print(help_description);
 }
 
 void help(std::string command) {
