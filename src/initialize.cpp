@@ -140,7 +140,8 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
   if (geteuid() == 0) {
     return;
   }
-  logger->critical("The tcg executable need to be owned by root and has suid permission.");
+  logger->critical(
+      "The tcg executable need to be owned by root and has suid permission.");
   exit(EXIT_FAILURE);
 }
 
