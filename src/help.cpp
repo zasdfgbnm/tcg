@@ -6,10 +6,11 @@
 
 #include "utils.hpp"
 
-const auto name_format = fg(fmt::color::cornflower_blue);
-const auto error_format = fg(fmt::color::red) | fmt::emphasis::bold;
-const auto code_format = fmt::emphasis::underline;
-const auto title_format = fmt::emphasis::bold;
+const auto name_format = maybe_style(fg(fmt::color::cornflower_blue));
+const auto error_format =
+    maybe_style(fg(fmt::color::red) | fmt::emphasis::bold);
+const auto code_format = maybe_style(fmt::emphasis::underline);
+const auto title_format = maybe_style(fmt::emphasis::bold);
 
 void help0() {
   // title

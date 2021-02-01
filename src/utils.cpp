@@ -2,10 +2,20 @@
 #include <boost/filesystem.hpp>
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
+#include <unistd.h>
 
 namespace fs = boost::filesystem;
 
 extern bool is_sandbox;
+
+bool stdout_is_tty() { return isatty(fileno(stdout)); }
+
+fmt::text_style maybe_style(fmt::text_style style) {
+  if (stdout_is_tty()) {
+    return style;
+  }
+  return {};
+}
 
 std::string user_dir() {
   if (is_sandbox) {
