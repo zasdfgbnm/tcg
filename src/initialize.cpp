@@ -136,12 +136,22 @@ void check_cgroup_mount(std::shared_ptr<spdlog::logger> logger) {
   exit(EXIT_FAILURE);
 }
 
+void check_euid(std::shared_ptr<spdlog::logger> logger) {
+  if (geteuid() == 0) {
+    return;
+  }
+  logger->critical(
+      "The tcg executable need to be owned by root and has suid permission.");
+  exit(EXIT_FAILURE);
+}
+
 bool is_sandbox;
 
 void enter_sandbox() {
   auto logger = spdlog::get("initialize");
   logger->info("Entering sandbox...");
   check_cgroup_mount(logger);
+  check_euid(logger);
   create_root_dir(logger);
   enter_chroot_jail(logger);
   is_sandbox = true;
