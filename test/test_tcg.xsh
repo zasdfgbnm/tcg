@@ -66,7 +66,6 @@ def test_help():
                 break
         else:
             alias_line = ""
-        print(alias_line)
         for a in alias:
             assert a in alias_line
 
