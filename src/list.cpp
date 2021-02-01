@@ -74,6 +74,6 @@ void list() {
 static RegisterCommand _({.name = "list",
                           .alias = {"l", "ls"},
                           .sandbox = false, // disable sandbox to access /proc
-                          .short_description = "TODO",
-                          .long_description = R"body(TODO)body",
+                          .short_description = "TODO: Add doc",
+                          .long_description = R"body(TODO: Add doc)body",
                           .handlers = {list}});

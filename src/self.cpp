@@ -37,6 +37,6 @@ void self() {
 static RegisterCommand _({.name = "self",
                           .alias = {"sf"},
                           .sandbox = false, // disable sandbox to access /proc
-                          .short_description = "TODO",
-                          .long_description = R"body(TODO)body",
+                          .short_description = "TODO: Add doc",
+                          .long_description = R"body(TODO: Add doc)body",
                           .handlers = {self}});

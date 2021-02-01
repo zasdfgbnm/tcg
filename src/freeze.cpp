@@ -31,12 +31,12 @@ void unfreeze(const std::string &name) {
 
 static RegisterCommand _1({.name = "freeze",
                            .alias = {"f"},
-                           .short_description = "TODO",
-                           .long_description = R"body(TODO)body",
+                           .short_description = "TODO: Add doc",
+                           .long_description = R"body(TODO: Add doc)body",
                            .handlers = {freeze}});
 
 static RegisterCommand _2({.name = "unfreeze",
                            .alias = {"uf"},
-                           .short_description = "TODO",
-                           .long_description = R"body(TODO)body",
+                           .short_description = "TODO: Add doc",
+                           .long_description = R"body(TODO: Add doc)body",
                            .handlers = {unfreeze}});

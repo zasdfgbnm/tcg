@@ -19,6 +19,6 @@ void set(const std::string &name, const std::string &key,
 
 static RegisterCommand _({.name = "set",
                           .alias = {},
-                          .short_description = "TODO",
-                          .long_description = R"body(TODO)body",
+                          .short_description = "TODO: Add doc",
+                          .long_description = R"body(TODO: Add doc)body",
                           .handlers = {set}});
