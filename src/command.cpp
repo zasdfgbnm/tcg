@@ -93,15 +93,16 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
   auto max_length = narg(
       *std::max_element(handlers.begin(), handlers.end(),
                         [&](auto a, auto b) { return narg(a) > narg(b); }));
-  std::vector<const Handler *> handlers_by_narg(max_length, nullptr);
+  std::vector<const Handler *> handlers_by_narg(max_length + 1, nullptr);
+  fmt::print("debug 0.1, max_length={}\n", max_length);
   for (auto h : handlers) {
     BOOST_ASSERT_MSG(handlers_by_narg[narg(h)] == nullptr, LL1_ERROR);
     handlers_by_narg[narg(h)] = h;
   }
-  for (int64_t i = 0; i < max_length; i++) {
-    fmt::print("debug 0.1, i={}\n", i);
+  for (int64_t i = 0; i <= max_length; i++) {
+    fmt::print("debug 0.2, i={}\n", i);
     std::string name;
-    for (int64_t j = i; j < max_length; j++) {
+    for (int64_t j = i; j <= max_length; j++) {
       auto h = handlers_by_narg[j];
       if (h == nullptr) {
         continue;
