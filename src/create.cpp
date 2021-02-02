@@ -162,17 +162,13 @@ static Command command(
     /*long_description =*/R"body(
 This command will create a new cgroup and add the current shell to it. TODO)body");
 
-static struct CreateHandler final : public Handler {
-  CreateHandler(Command &command) : Handler(command, {}) {}
-  void operator()(
-      const std::unordered_map<std::string, std::string> &args) const override {
-    auto logger = spdlog::get("create");
-    logger->info("Start creating a new cgroup");
-    std::string name = new_name();
-    logger->info("Name not specified, use builtin name {}", name);
-    create(logger, name);
-  }
-} create_handler(command);
+DEFINE_HANDLER(command, {}, {
+  auto logger = spdlog::get("create");
+  logger->info("Start creating a new cgroup");
+  std::string name = new_name();
+  logger->info("Name not specified, use builtin name {}", name);
+  create(logger, name);
+});
 
 DEFINE_HANDLER(command, {"name"_var}, {
   auto logger = spdlog::get("create");
