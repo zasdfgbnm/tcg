@@ -37,10 +37,11 @@ inline Argument operator""_var(const char *name) { return {name}; }
 
 class Command;
 
+using arg_map_t = std::unordered_map<std::string, std::string>;
+
 struct Handler {
   std::vector<Argument> arguments;
-  virtual void operator()(
-      const std::unordered_map<std::string, std::string> &args) const = 0;
+  virtual void operator()(const arg_map_t &args) const = 0;
   Handler(Command &, const std::vector<Argument> &);
 };
 

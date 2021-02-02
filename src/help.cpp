@@ -105,3 +105,17 @@ shows the help for a specific command.)body",
             /*sandbox =*/false // disable sandbox to allow users to read docs
                                // on systems without cgroup v2
     );
+
+static struct HelpHandler final : public Handler {
+  HelpHandler(Command &command): Handler(command, {}) {}
+  void operator()(const std::unordered_map<std::string, std::string> &args) cosnt override {
+    help0();
+  }
+} help_handler(command);
+
+static struct HelpCommandHandler final : public Handler {
+  HelpCommandHandler(Command &command): Handler(command, {"command"_var}) {}
+  void operator()(const std::unordered_map<std::string, std::string> &args) const override {
+    help1(args["command"]);
+  }
+} help_command_handler(command);
