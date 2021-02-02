@@ -81,6 +81,10 @@ Handler::Handler(Command &command, const std::vector<Argument> &arguments):
 
 class HandlerExecutor {
   bool compiled_ = false;
+  class State {
+    void feed(std::string) {}
+    void finalize() {}
+  };
 public:
   HandlerExecutor() = default;
   void compile(const std::vector<Handler *> &handlers) {
@@ -88,6 +92,9 @@ public:
   }
   bool compiled() {
     return compiled_;
+  }
+  State start() {
+    return {};
   }
 };
 
@@ -143,11 +150,11 @@ void Command::operator()(const char *args[]) const {
     if (executor->compiled()) {
       executor->compile(new_handlers);
     }
-    // auto state = executor.start();
-    // auto arg = args;
-    // while (*arg != nullptr) {
-    //   state.feed(*(arg++));
-    // }
-    // state.finalize();
+    auto state = executor.start();
+    auto arg = args;
+    while (*arg != nullptr) {
+      state.feed(*(arg++));
+    }
+    state.finalize();
   }
 }
