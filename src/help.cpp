@@ -57,6 +57,7 @@ void help0() {
   // more info
   fmt::print(title_format, "For more information, go to:\n");
   fmt::print(url);
+  fmt::print("\n");
 }
 
 void help1(const std::string &command) {
