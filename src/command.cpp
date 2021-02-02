@@ -96,26 +96,35 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
   std::vector<const Handler *> handlers_by_narg(max_length + 1, nullptr);
   fmt::print("debug 0.1, max_length={}, handlers.size()={}\n", max_length, handlers.size());
   for (auto h : handlers) {
-    BOOST_ASSERT_MSG(handlers_by_narg[narg(h)] == nullptr, LL1_ERROR);
-    handlers_by_narg[narg(h)] = h;
+    auto n = narg(h);
+    fmt::print("debug 0.1, n={}\n", n);
+    BOOST_ASSERT_MSG(handlers_by_narg[n] == nullptr, LL1_ERROR);
+    handlers_by_narg[n] = h;
   }
   for (int64_t i = 0; i <= max_length; i++) {
     fmt::print("debug 0.2, i={}\n", i);
-    std::string name;
-    for (int64_t j = i; j <= max_length; j++) {
-      fmt::print("debug 0.3, j={}\n", j);
-      auto h = handlers_by_narg[j];
-      if (h == nullptr) {
-        continue;
+    if (i > 0) {
+      std::string name;
+      for (int64_t j = i; j <= max_length; j++) {
+        fmt::print("debug 0.3, j={}\n", j);
+        auto h = handlers_by_narg[j];
+        if (h == nullptr) {
+          fmt::print("debug 0.4, j={}\n", j);
+          continue;
+        }
+        if (name.size() == 0) {
+          fmt::print("debug 0.5, j={}\n", j);
+          h->arguments[i - 1];
+          fmt::print("debug 0.5, h->arguments[i].name={}\n", h->arguments[i].name);
+          name = h->arguments[i - 1].name;
+          fmt::print("debug 0.6, j={}\n", j);
+        } else {
+          BOOST_ASSERT_MSG(name == h->arguments[i - 1].name, LL1_ERROR);
+        }
       }
-      if (name.size() == 0) {
-        name = h->arguments[i].name;
-      } else {
-        BOOST_ASSERT_MSG(name == h->arguments[i].name, LL1_ERROR);
-      }
+      fmt::print("debug 0.7, i={}, name={}\n", i, name);
+      names[i] = name;
     }
-    fmt::print("debug 0.4, i={}, name={}\n", i, name);
-    names[i] = name;
     if (handlers_by_narg[i] != nullptr) {
       state_handlers[i] = handlers_by_narg[i];
     }
