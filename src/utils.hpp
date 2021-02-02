@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <memory>
 
 constexpr const char *url = "https://github.com/zasdfgbnm/tcg";
 constexpr const char *cgroup_procs = "/sys/fs/cgroup/cgroup.procs";
@@ -45,17 +46,23 @@ struct Argument {
   std::string name;
 };
 
-Argument operator ""_var(const char *name) {
+inline Argument operator ""_var(const char *name) {
   return {name};
 }
 
+class Command;
+
 struct Handler {
   std::vector<Argument> arguments;
-  virtual operator(const char *args[]) const = 0;
+  virtual void operator()(const std::vector<std::string> &args) const = 0;
+  Handler(Command &, const std::vector<Argument> &);
 };
+
+class HandlerExecutor;
 
 class Command {
   static std::map<std::string, const Command *> registry;
+  std::shared_ptr<HandlerExecutor> executor;
 
 public:
   std::string name;
@@ -63,7 +70,7 @@ public:
   std::string short_description;
   std::string long_description;
   std::vector<handler> handlers;
-  std::vector<Handler> new_handlers;
+  std::vector<Handler *> new_handlers;
   bool sandbox = true;
 
   Command(const std::string &name, const std::vector<std::string> &alias,

@@ -73,11 +73,29 @@ void handler::operator()(const char *args[]) const {
   }
 }
 
+Handler::Handler(Command &command, const std::vector<Argument> &arguments):
+  arguments(arguments)
+{
+  command.new_handlers.push_back(this);
+}
+
+class HandlerExecutor {
+  bool compiled_ = false;
+public:
+  HandlerExecutor() = default;
+  void compile(const std::vector<Handler *> &handlers) {
+    compiled_ = true;
+  }
+  bool compiled() {
+    return compiled_;
+  }
+};
+
 Command::Command(const std::string &name, const std::vector<std::string> &alias,
                  const std::string &short_description,
                  const std::string &long_description,
                  const std::vector<handler> &handlers, bool sandbox)
-    : name(name), alias(alias), short_description(short_description),
+    : executor(std::make_shared<HandlerExecutor>()), name(name), alias(alias), short_description(short_description),
       long_description(long_description), handlers(handlers), sandbox(sandbox) {
   if (registry.find(name) != registry.end()) {
     throw std::runtime_error(
@@ -108,14 +126,28 @@ const Command *Command::get(const std::string &name) {
 }
 
 void Command::operator()(const char *args[]) const {
-  uint8_t num_arg = 0;
-  while (args[num_arg] != nullptr)
-    num_arg++;
-  for (auto &h : handlers) {
-    if (h.num_arg() == num_arg) {
-      h(args);
-      return;
+  if (new_handlers.size() == 0) {
+    assert(handers.size() > 0);
+    uint8_t num_arg = 0;
+    while (args[num_arg] != nullptr)
+      num_arg++;
+    for (auto &h : handlers) {
+      if (h.num_arg() == num_arg) {
+        h(args);
+        return;
+      }
     }
+    invalid_argument();
+  } else {
+    assert(handers.size() == 0);
+    if (executor->compiled()) {
+      executor->compile(new_handlers);
+    }
+    // auto state = executor.start();
+    // auto arg = args;
+    // while (*arg != nullptr) {
+    //   state.feed(*(arg++));
+    // }
+    // state.finalize();
   }
-  invalid_argument();
 }
