@@ -45,31 +45,27 @@ static Command command(/*name =*/"list",
                        /*sandbox =*/false // disable sandbox to access /proc
 );
 
-static struct ListHandler final : public Handler {
-  ListHandler(Command &command) : Handler(command, {}) {}
-  void operator()(
-      const std::unordered_map<std::string, std::string> &args) const override {
-    auto logger = spdlog::get("list");
-    logger->info("List all existing cgroups.");
-    fmt::text_style cg_style =
-        maybe_style(fg(fmt::color::green) | fmt::emphasis::bold);
-    auto r = user_dir();
-    logger->debug("Root directory is {}, iterating it.", r);
-    fs::path p(r);
-    if (!fs::exists(p)) {
-      logger->info("Root directory does not exist, showing empty list.");
-      return;
-    }
-    fs::recursive_directory_iterator end;
-    for (fs::recursive_directory_iterator i(p); i != end; ++i) {
-      if (fs::is_directory(*i)) {
-        auto cg = i->path().filename().string();
-        logger->debug("Found cgroup {}.", cg);
-        fmt::print(cg_style, cg);
-        fmt::print("\t");
-        print_procs(logger, cg);
-        fmt::print("\n");
-      }
+DEFINE_HANDLER(command, {}, {
+  auto logger = spdlog::get("list");
+  logger->info("List all existing cgroups.");
+  fmt::text_style cg_style =
+      maybe_style(fg(fmt::color::green) | fmt::emphasis::bold);
+  auto r = user_dir();
+  logger->debug("Root directory is {}, iterating it.", r);
+  fs::path p(r);
+  if (!fs::exists(p)) {
+    logger->info("Root directory does not exist, showing empty list.");
+    return;
+  }
+  fs::recursive_directory_iterator end;
+  for (fs::recursive_directory_iterator i(p); i != end; ++i) {
+    if (fs::is_directory(*i)) {
+      auto cg = i->path().filename().string();
+      logger->debug("Found cgroup {}.", cg);
+      fmt::print(cg_style, cg);
+      fmt::print("\t");
+      print_procs(logger, cg);
+      fmt::print("\n");
     }
   }
-} handler(command);
+});
