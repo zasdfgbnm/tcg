@@ -13,9 +13,9 @@ Command command(/*name =*/"freeze",
                 /*short_description =*/"TODO: Add doc",
                 /*additional_note =*/R"body(TODO: Add doc)body");
 
-DEFINE_HANDLER({"name"_var}, "freeze the specified cgroup", {
+DEFINE_HANDLER({"cgroup_name"_var}, "freeze the specified cgroup", {
   auto logger = spdlog::get("freeze");
-  std::string name = args.at("name");
+  std::string name = args.at("cgroup_name");
   logger->info("Will freeze {}.", name);
   auto dir = name_dir(name, true);
   auto freeze_file = dir + "/cgroup.freeze";
@@ -35,9 +35,9 @@ Command command(/*name =*/"unfreeze",
                 /*short_description =*/"TODO: Add doc",
                 /*additional_note =*/R"body(TODO: Add doc)body");
 
-DEFINE_HANDLER({"name"_var}, "unfreeze the specified cgroup", {
+DEFINE_HANDLER({"cgroup_name"_var}, "unfreeze the specified cgroup", {
   auto logger = spdlog::get("freeze");
-  std::string name = args.at("name");
+  std::string name = args.at("cgroup_name");
   logger->info("Will unfreeze {}.", name);
   auto dir = name_dir(name, true);
   auto freeze_file = dir + "/cgroup.freeze";
