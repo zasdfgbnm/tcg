@@ -11,7 +11,7 @@ static Command command_f(/*name =*/"freeze",
                          /*short_description =*/"TODO: Add doc",
                          /*long_description =*/R"body(TODO: Add doc)body");
 
-DEFINE_HANDLER(command_f, {"name"_var}), {
+DEFINE_HANDLER(command_f, {"name"_var}, {
   auto logger = spdlog::get("freeze");
   std::string name = args.at("name");
   logger->info("Will freeze {}.", name);
