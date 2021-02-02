@@ -31,8 +31,7 @@ static struct FreezeHandler final : public Handler {
 static Command command_uf(/*name =*/"unfreeze",
                           /*alias =*/{"uf"},
                           /*short_description =*/"TODO: Add doc",
-                          /*long_description =*/R"body(TODO: Add doc)body",
-                          /*handlers =*/{});
+                          /*long_description =*/R"body(TODO: Add doc)body");
 
 static struct UnfreezeHandler final : public Handler {
   UnfreezeHandler(Command &command) : Handler(command, {"name"_var}) {}
