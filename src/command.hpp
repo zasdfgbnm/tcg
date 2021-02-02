@@ -2,9 +2,9 @@
 
 #include <map>
 #include <memory>
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 class handler {
   uint8_t num_arg_;
@@ -33,7 +33,9 @@ struct Argument {
   std::string name;
 };
 
-inline Argument operator""_var(const char *name) { return {name}; }
+inline Argument operator""_var(const char *name) {
+  return {Argument::VARIABLE, name};
+}
 
 class Command;
 

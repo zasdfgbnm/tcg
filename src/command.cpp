@@ -31,15 +31,21 @@ Handler::Handler(Command &command, const std::vector<Argument> &arguments)
 class HandlerExecutor {
   bool compiled_ = false;
   std::unordered_map<int64_t, Handler *> handlers;
-  std::unordered_map<int64_t, int64_t> next;
+  std::unordered_map<int64_t, int64_t> arg_next;
+  std::unordered_map<int64_t, int64_t> opt_next;
 
   class State {
     int64_t id;
     std::unordered_map<std::string, std::string> args;
     const std::unordered_map<int64_t, Handler *> &handlers;
+    const std::unordered_map<int64_t, int64_t> &arg_next;
+    const std::unordered_map<int64_t, int64_t> &opt_next;
 
   public:
-    State(const std::unordered_map<int64_t, Handler *> &handlers): handlers(handlers) {}
+    State(const std::unordered_map<int64_t, Handler *> &handlers,
+          const std::unordered_map<int64_t, int64_t> &arg_next,
+          const std::unordered_map<int64_t, int64_t> &opt_next)
+        : handlers(handlers), arg_next(arg_next), opt_next(opt_next) {}
     void feed(std::string) {}
     void finalize() const {
       const Handler *handler = handlers.at(id);
