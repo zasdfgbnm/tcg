@@ -88,8 +88,9 @@ void HandlerExecutor::compile(const std::vector<Handler *> &handlers) {
   auto max_length = narg(
       *std::max_element(handlers.begin(), handlers.end(),
                         [&](auto a, auto b) { return narg(a) > narg(b); }));
-  std::vector<Handler *> handlers_by_narg(max_length);
+  std::vector<Handler *> handlers_by_narg(max_length, nullptr);
   for (auto h : handlers) {
+    assert(handlers_by_narg[narg(h)] == nullptr);
     handlers_by_narg[narg(h)] = h;
   }
 }
