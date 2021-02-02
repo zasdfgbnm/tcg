@@ -2,7 +2,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assert.hpp>
 #include <stdexcept>
-#include <fmt/core.h>  // TODO: remove after debugging
 
 #include "command.hpp"
 #include "utils.hpp"
@@ -71,9 +70,7 @@ class HandlerExecutor {
       }
     }
     void finalize() const {
-      fmt::print("debug 3.1\n");
       auto handler = get(state_handlers, id);
-      fmt::print("debug 3.2\n");
       (*handler)(args);
     }
   };
@@ -94,35 +91,25 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
       *std::max_element(handlers.begin(), handlers.end(),
                         [&](auto a, auto b) { return narg(a) < narg(b); }));
   std::vector<const Handler *> handlers_by_narg(max_length + 1, nullptr);
-  fmt::print("debug 0.1, max_length={}, handlers.size()={}\n", max_length, handlers.size());
   for (auto h : handlers) {
     auto n = narg(h);
-    fmt::print("debug 0.1, n={}\n", n);
     BOOST_ASSERT_MSG(handlers_by_narg[n] == nullptr, LL1_ERROR);
     handlers_by_narg[n] = h;
   }
   for (int64_t i = 0; i <= max_length; i++) {
-    fmt::print("debug 0.2, i={}\n", i);
     if (i > 0) {
       std::string name;
       for (int64_t j = i; j <= max_length; j++) {
-        fmt::print("debug 0.3, j={}\n", j);
         auto h = handlers_by_narg[j];
         if (h == nullptr) {
-          fmt::print("debug 0.4, j={}\n", j);
           continue;
         }
         if (name.size() == 0) {
-          fmt::print("debug 0.5, j={}\n", j);
-          h->arguments[i - 1];
-          fmt::print("debug 0.5, h->arguments[i].name={}\n", h->arguments[i].name);
           name = h->arguments[i - 1].name;
-          fmt::print("debug 0.6, j={}\n", j);
         } else {
           BOOST_ASSERT_MSG(name == h->arguments[i - 1].name, LL1_ERROR);
         }
       }
-      fmt::print("debug 0.7, i={}, name={}\n", i, name);
       names[i] = name;
     }
     if (handlers_by_narg[i] != nullptr) {
@@ -190,14 +177,10 @@ void Command::operator()(const char *args[]) const {
       executor->compile(new_handlers);
     }
     auto state = executor->start();
-    fmt::print("debug 1\n");
     auto arg = args;
     while (*arg != nullptr) {
       state.feed(*(arg++));
-      fmt::print("debug 2\n");
     }
-    fmt::print("debug 3\n");
     state.finalize();
-    fmt::print("debug 4\n");
   }
 }
