@@ -53,10 +53,18 @@ public:
   void operator()(const char *args[]) const;
 };
 
+// boiler-plate to create unique name:
+// https://stackoverflow.com/a/2419720
+#define _CONCATENATE_DETAIL(x, y) x##y
+#define _CONCATENATE(x, y) _CONCATENATE_DETAIL(x, y)
+#define _MAKE_UNIQUE(x) _CONCATENATE(x, __COUNTER__)
+
+#define _DEFINE_HANDLER(name, command, variables, code)                        \
+  static struct name final : public Handler{                                   \
+    name(Command & command) : Handler(command, variables){} void               \
+    operator()(const std::unordered_map<std::string, std::string> &args)       \
+        const override code                                                    \
+  } _MAKE_UNIQUE(handler)(command)
+
 #define DEFINE_HANDLER(command, variables, code)                               \
-  static struct Handler##__COUNTER__ final : public Handler{                   \
-    Handler##__COUNTER__(Command & command) :                                  \
-        Handler(command, variables){} void                                     \
-        operator()(const std::unordered_map<std::string, std::string> &args)   \
-            const override code                                                \
-  } handler##__COUNTER__(command)
+  _DEFINE_HANDLER(_MAKE_UNIQUE(Handler), command, variables, code)
