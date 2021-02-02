@@ -61,8 +61,6 @@ class HandlerExecutor {
           names(names) {}
     void feed(std::string text) {
       if (boost::starts_with(text, "-")) { // is option
-        // TODO: not supported yet
-        invalid_argument();
         id = get(opt_next, id);
       } else { // is argument
         args[get(names, id)] = text;
