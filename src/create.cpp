@@ -157,8 +157,7 @@ Command command(
     /*name =*/"create",
     /*alias =*/{"c"},
     /*short_description =*/"create a new cgroup containing the current shell",
-    /*additional_note =*/R"body(
-This command will create a new cgroup and add the current shell to it. TODO)body");
+    /*additional_note =*/"");
 
 DEFINE_HANDLER({}, "create a new cgroup with a builtin name", {
   auto logger = spdlog::get("create");

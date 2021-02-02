@@ -11,7 +11,7 @@ namespace freeze {
 Command command(/*name =*/"freeze",
                 /*alias =*/{"f"},
                 /*short_description =*/"TODO: Add doc",
-                /*additional_note =*/R"body(TODO: Add doc)body");
+                /*additional_note =*/"");
 
 DEFINE_HANDLER({"cgroup_name"_var}, "freeze the specified cgroup", {
   auto logger = spdlog::get("freeze");
@@ -33,7 +33,7 @@ namespace unfreeze {
 Command command(/*name =*/"unfreeze",
                 /*alias =*/{"uf"},
                 /*short_description =*/"TODO: Add doc",
-                /*additional_note =*/R"body(TODO: Add doc)body");
+                /*additional_note =*/"");
 
 DEFINE_HANDLER({"cgroup_name"_var}, "unfreeze the specified cgroup", {
   auto logger = spdlog::get("freeze");

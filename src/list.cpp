@@ -43,7 +43,7 @@ void print_procs(std::shared_ptr<spdlog::logger> logger,
 Command command(/*name =*/"list",
                 /*alias =*/{"l", "ls"},
                 /*short_description =*/"TODO: Add doc",
-                /*additional_note =*/R"body(TODO: Add doc)body",
+                /*additional_note =*/"",
                 /*sandbox =*/false // disable sandbox to access /proc
 );
 

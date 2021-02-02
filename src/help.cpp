@@ -68,7 +68,7 @@ void usage() {
 Command command(/*name =*/"help",
                 /*alias =*/{"h"},
                 /*short_description =*/"display help information",
-                /*additional_note =*/R"",
+                /*additional_note =*/"",
                 /*sandbox =*/false // disable sandbox to allow users to read
                                    // docs on systems without cgroup v2
 );
@@ -121,10 +121,12 @@ DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
   for (auto h : c->handlers) {
     fmt::print(listing_format, "[{}] {}\n", i++, h->description);
   }
-  fmt::print("\n");
 
   // long description
-  fmt::print(c->additional_note);
+  if (c->additional_note.size() > 0) {
+    fmt::print("\n");
+    fmt::print(c->additional_note);
+  }
 });
 
 } // namespace help

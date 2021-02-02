@@ -12,7 +12,7 @@ namespace show {
 Command command(/*name =*/"show",
                 /*alias =*/{},
                 /*short_description =*/"TODO: Add doc",
-                /*additional_note =*/R"body(TODO: Add doc)body");
+                /*additional_note =*/"");
 
 std::vector<Argument> args_ = {"cgroup_name"_var, "key"_var};
 DEFINE_HANDLER(args_, "TODO: add doc", {
