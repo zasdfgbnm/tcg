@@ -88,32 +88,32 @@ static struct HelpCommandHandler final : public Handler {
   HelpCommandHandler(Command &command) : Handler(command, {"command"_var}) {}
   void operator()(
       const std::unordered_map<std::string, std::string> &args) const override {
-  auto c = Command::get(args.at("command"));
-  if (!c->defined()) {
-    fmt::print(error_format, "Unknown command.");
-    return;
-  }
-
-  // title
-  fmt::print(title_format | name_format, c->name + ": ");
-  fmt::print(title_format, c->short_description);
-  fmt::print("\n\n");
-
-  // alias
-  if (c->alias.size() > 0) {
-    fmt::print(title_format, "Alias: ");
-    bool first = true;
-    for (auto &i : c->alias) {
-      if (!first) {
-        fmt::print(", ");
-      }
-      fmt::print(name_format, i);
-      first = false;
+    auto c = Command::get(args.at("command"));
+    if (!c->defined()) {
+      fmt::print(error_format, "Unknown command.");
+      return;
     }
-    fmt::print("\n");
-  }
 
-  // long description
-  fmt::print(c->long_description);
+    // title
+    fmt::print(title_format | name_format, c->name + ": ");
+    fmt::print(title_format, c->short_description);
+    fmt::print("\n\n");
+
+    // alias
+    if (c->alias.size() > 0) {
+      fmt::print(title_format, "Alias: ");
+      bool first = true;
+      for (auto &i : c->alias) {
+        if (!first) {
+          fmt::print(", ");
+        }
+        fmt::print(name_format, i);
+        first = false;
+      }
+      fmt::print("\n");
+    }
+
+    // long description
+    fmt::print(c->long_description);
   }
 } help_command_handler(command);
