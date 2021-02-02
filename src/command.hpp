@@ -77,3 +77,11 @@ public:
 
   void operator()(const char *args[]) const;
 };
+
+#define DEFINE_HANDLER(command, variables, code)                               \
+  static struct Handler##__COUNTER__ final : public Handler{                   \
+    Handler##__COUNTER__(Command & command) :                                  \
+        Handler(command, variables){} void                                     \
+        operator()(const std::unordered_map<std::string, std::string> &args)   \
+            const override code                                                \
+  } handler##__COUNTER__(command)
