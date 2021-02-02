@@ -43,11 +43,11 @@ void print_procs(std::shared_ptr<spdlog::logger> logger,
 Command command(/*name =*/"list",
                 /*alias =*/{"l", "ls"},
                 /*short_description =*/"TODO: Add doc",
-                /*long_description =*/R"body(TODO: Add doc)body",
+                /*additional_note =*/R"body(TODO: Add doc)body",
                 /*sandbox =*/false // disable sandbox to access /proc
 );
 
-DEFINE_HANDLER({}, {
+DEFINE_HANDLER({}, "list existing cgroups", {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
   fmt::text_style cg_style =

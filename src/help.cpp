@@ -67,7 +67,7 @@ void usage() {
 Command command(/*name =*/"help",
                 /*alias =*/{"h"},
                 /*short_description =*/"display help information",
-                /*long_description =*/R"body(
+                /*additional_note =*/R"body(
 There are two ways of using help:
   - tcg help
   - tcg help <command>
@@ -77,9 +77,9 @@ shows the help for a specific command.)body",
                                    // docs on systems without cgroup v2
 );
 
-DEFINE_HANDLER({}, { usage(); });
+DEFINE_HANDLER({}, "show the help information for the entire tcg tool", { usage(); });
 
-DEFINE_HANDLER({"command"_var}, {
+DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
   auto c = Command::get(args.at("command"));
   if (!c->defined()) {
     fmt::print(error_format, "Unknown command.");
@@ -120,7 +120,7 @@ DEFINE_HANDLER({"command"_var}, {
   fmt::print("\n");
 
   // long description
-  fmt::print(c->long_description);
+  fmt::print(c->additional_note);
 });
 
 } // namespace help
