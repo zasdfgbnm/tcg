@@ -80,7 +80,7 @@ static struct HelpHandler final : public Handler {
   HelpHandler(Command &command) : Handler(command, {}) {}
   void operator()(
       const std::unordered_map<std::string, std::string> &args) const override {
-    help0();
+    usage();
   }
 } help_handler(command);
 
