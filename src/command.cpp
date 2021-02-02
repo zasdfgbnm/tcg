@@ -110,7 +110,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           BOOST_ASSERT_MSG(name == h->arguments[i - 1].name, LL1_ERROR);
         }
       }
-      names[i] = name;
+      names[i - 1] = name;
     }
     if (handlers_by_narg[i] != nullptr) {
       state_handlers[i] = handlers_by_narg[i];
