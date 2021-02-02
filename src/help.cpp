@@ -107,15 +107,17 @@ shows the help for a specific command.)body",
     );
 
 static struct HelpHandler final : public Handler {
-  HelpHandler(Command &command): Handler(command, {}) {}
-  void operator()(const std::unordered_map<std::string, std::string> &args) const override {
+  HelpHandler(Command &command) : Handler(command, {}) {}
+  void operator()(
+      const std::unordered_map<std::string, std::string> &args) const override {
     help0();
   }
 } help_handler(command);
 
 static struct HelpCommandHandler final : public Handler {
-  HelpCommandHandler(Command &command): Handler(command, {"command"_var}) {}
-  void operator()(const std::unordered_map<std::string, std::string> &args) const override {
+  HelpCommandHandler(Command &command) : Handler(command, {"command"_var}) {}
+  void operator()(
+      const std::unordered_map<std::string, std::string> &args) const override {
     help1(args.at("command"));
   }
 } help_command_handler(command);

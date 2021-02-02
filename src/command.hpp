@@ -33,7 +33,9 @@ struct Argument {
   std::string name;
 };
 
-inline Argument operator""_var(const char *name) { return {name}; }
+inline Argument operator""_var(const char *name, size_t size) {
+  return {std::string(name, size)};
+}
 
 class Command;
 
