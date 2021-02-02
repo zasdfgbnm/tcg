@@ -95,7 +95,9 @@ public:
 };
 
 void HandlerExecutor::compile(const std::vector<Handler *> &handlers) {
+  assert(!compiled_);
   compiled_ = true;
+  
 }
 
 Command::Command(const std::string &name, const std::vector<std::string> &alias,
