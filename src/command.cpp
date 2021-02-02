@@ -88,6 +88,10 @@ void HandlerExecutor::compile(const std::vector<Handler *> &handlers) {
   auto max_length = narg(
       *std::max_element(handlers.begin(), handlers.end(),
                         [&](auto a, auto b) { return narg(a) > narg(b); }));
+  std::vector<Handler *> handlers_by_narg(max_length);
+  for (auto h : handlers) {
+    handlers_by_narg[narg(h)] = h;
+  }
 }
 
 std::map<std::string, const Command *> Command::registry;
