@@ -62,14 +62,20 @@ class HandlerExecutor {
           invalid_argument();
         }
         args[i->second] = text;
-        id = arg_next.at(id);
+
+        auto j = arg_next.find(id);
+        if (j == arg_next.end()) {
+          invalid_argument();
+        }
+        id = j->second;
       }
     }
     void finalize() const {
-      const Handler *handler = handlers.at(id);
-      if (handler == nullptr) {
+      auto i = handlers.find(id);
+      if (i == handlers.end()) {
         invalid_argument();
       }
+      auto handler = i->second;
       (*handler)(args);
     }
   };
