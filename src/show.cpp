@@ -12,21 +12,18 @@ static Command command(/*name =*/"show",
                        /*short_description =*/"TODO: Add doc",
                        /*long_description =*/R"body(TODO: Add doc)body");
 
-static struct ShowHandler final : public Handler {
-  ShowHandler(Command &command) : Handler(command, {"name"_var, "key"_var}) {}
-  void operator()(
-      const std::unordered_map<std::string, std::string> &args) const override {
-    auto logger = spdlog::get("show");
-    std::string name = args.at("name");
-    std::string key = args.at("key");
-    logger->info("Showing cgroup {}'s {}...", name, key);
-    auto d = name_dir(name, true) + "/" + key;
-    logger->debug("Reading {}...", d);
-    std::ifstream in(d);
-    std::string line;
-    while (std::getline(in, line)) {
-      fmt::print("{}\n", line);
-    }
-    logger->debug("Done printting.");
+static std::vector<Argument> args_ = {"name"_var, "key"_var};
+DEFINE_HANDLER(command, args_, {
+  auto logger = spdlog::get("show");
+  std::string name = args.at("name");
+  std::string key = args.at("key");
+  logger->info("Showing cgroup {}'s {}...", name, key);
+  auto d = name_dir(name, true) + "/" + key;
+  logger->debug("Reading {}...", d);
+  std::ifstream in(d);
+  std::string line;
+  while (std::getline(in, line)) {
+    fmt::print("{}\n", line);
   }
-} help_handler(command);
+  logger->debug("Done printting.");
+});
