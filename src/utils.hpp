@@ -2,11 +2,11 @@
 
 #include <fmt/color.h>
 #include <map>
+#include <memory>
 #include <optional>
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <memory>
 
 constexpr const char *url = "https://github.com/zasdfgbnm/tcg";
 constexpr const char *cgroup_procs = "/sys/fs/cgroup/cgroup.procs";
@@ -46,9 +46,7 @@ struct Argument {
   std::string name;
 };
 
-inline Argument operator ""_var(const char *name) {
-  return {name};
-}
+inline Argument operator""_var(const char *name) { return {name}; }
 
 class Command;
 

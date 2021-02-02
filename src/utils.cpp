@@ -73,9 +73,8 @@ void handler::operator()(const char *args[]) const {
   }
 }
 
-Handler::Handler(Command &command, const std::vector<Argument> &arguments):
-  arguments(arguments)
-{
+Handler::Handler(Command &command, const std::vector<Argument> &arguments)
+    : arguments(arguments) {
   command.new_handlers.push_back(this);
 }
 
@@ -86,25 +85,21 @@ class HandlerExecutor {
     void feed(std::string) {}
     void finalize() {}
   };
+
 public:
   HandlerExecutor() = default;
-  void compile(const std::vector<Handler *> &handlers) {
-    compiled_ = true;
-  }
-  bool compiled() {
-    return compiled_;
-  }
-  State start() {
-    return {};
-  }
+  void compile(const std::vector<Handler *> &handlers) { compiled_ = true; }
+  bool compiled() { return compiled_; }
+  State start() { return {}; }
 };
 
 Command::Command(const std::string &name, const std::vector<std::string> &alias,
                  const std::string &short_description,
                  const std::string &long_description,
                  const std::vector<handler> &handlers, bool sandbox)
-    : executor(std::make_shared<HandlerExecutor>()), name(name), alias(alias), short_description(short_description),
-      long_description(long_description), handlers(handlers), sandbox(sandbox) {
+    : executor(std::make_shared<HandlerExecutor>()), name(name), alias(alias),
+      short_description(short_description), long_description(long_description),
+      handlers(handlers), sandbox(sandbox) {
   if (registry.find(name) != registry.end()) {
     throw std::runtime_error(
         std::string("Conflicting name. Please report a bug at: ") + url);
