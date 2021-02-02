@@ -82,6 +82,7 @@ class HandlerExecutor {
   bool compiled_ = false;
 
   class State {
+    std::unordered_map<std::string, std::string> args;
   public:
     void feed(std::string) {}
     void finalize() {}
