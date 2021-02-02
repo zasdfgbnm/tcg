@@ -44,6 +44,14 @@ class HandlerExecutor {
     const std::unordered_map<int64_t, int64_t> &opt_next;
     const std::unordered_map<int64_t, std::string> &names;
 
+    static constexpr auto get = [](auto map, auto id) {
+      auto i = map.find(id);
+      if (i == map.end()) {
+        invalid_argument();
+      }
+      return i->second;
+    };
+
   public:
     State(const std::unordered_map<int64_t, Handler *> &handlers,
           const std::unordered_map<int64_t, int64_t> &arg_next,
@@ -55,27 +63,14 @@ class HandlerExecutor {
       if (boost::starts_with(text, "-")) { // is option
         // TODO: not supported yet
         invalid_argument();
-        id = opt_next.at(id);
+        id = get(opt_next, id);
       } else { // is argument
-        auto i = names.find(id);
-        if (i == names.end()) {
-          invalid_argument();
-        }
-        args[i->second] = text;
-
-        auto j = arg_next.find(id);
-        if (j == arg_next.end()) {
-          invalid_argument();
-        }
-        id = j->second;
+        args[get(names, id)] = text;
+        id = get(arg_next, id);
       }
     }
     void finalize() const {
-      auto i = handlers.find(id);
-      if (i == handlers.end()) {
-        invalid_argument();
-      }
-      auto handler = i->second;
+      auto handler = get(handlers, id);
       (*handler)(args);
     }
   };
