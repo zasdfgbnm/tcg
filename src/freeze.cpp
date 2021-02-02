@@ -17,7 +17,7 @@ static struct FreezeHandler final : public Handler {
   void operator()(
       const std::unordered_map<std::string, std::string> &args) const override {
     auto logger = spdlog::get("freeze");
-    std::string name = args.at(name);
+    std::string name = args.at("name");
     logger->info("Will freeze {}.", name);
     auto dir = name_dir(name, true);
     auto freeze_file = dir + "/cgroup.freeze";
@@ -40,7 +40,7 @@ static struct UnfreezeHandler final : public Handler {
   void operator()(
       const std::unordered_map<std::string, std::string> &args) const override {
     auto logger = spdlog::get("freeze");
-    std::string name = args.at(name);
+    std::string name = args.at("name");
     logger->info("Will unfreeze {}.", name);
     auto dir = name_dir(name, true);
     auto freeze_file = dir + "/cgroup.freeze";
