@@ -38,7 +38,7 @@ public:
   handler(f2_t f2) : num_arg_(2), f2(f2) {}
   handler(f3_t f3) : num_arg_(3), f3(f3) {}
   uint8_t num_arg() const { return num_arg_; }
-  void call(const char *args[]) const;
+  void operator()(const char *args[]) const;
 };
 
 class Command {
@@ -65,5 +65,5 @@ public:
     return registry;
   }
 
-  void call(const char *args[]) const;
+  void operator()(const char *args[]) const;
 };
