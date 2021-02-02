@@ -60,12 +60,12 @@ public:
 #define _CONCATENATE(x, y) _CONCATENATE_DETAIL(x, y)
 #define _MAKE_UNIQUE(x) _CONCATENATE(x, __COUNTER__)
 
-#define _DEFINE_HANDLER(name, variables, description, code)                                 \
+#define _DEFINE_HANDLER(name, variables, description, code)                    \
   struct name final : public Handler{                                          \
-    name(Command & command) : Handler(command, variables, description){} void               \
+    name(Command & command) : Handler(command, variables, description){} void  \
     operator()(const std::unordered_map<std::string, std::string> &args)       \
         const override code                                                    \
   } _MAKE_UNIQUE(handler)(command)
 
-#define DEFINE_HANDLER(variables, description, code)                                        \
+#define DEFINE_HANDLER(variables, description, code)                           \
   _DEFINE_HANDLER(_MAKE_UNIQUE(Handler), variables, description, code)

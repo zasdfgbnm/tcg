@@ -14,7 +14,8 @@ const fmt::text_style name_format =
 const fmt::text_style title_format = maybe_style(fmt::emphasis::bold);
 const fmt::text_style error_format =
     maybe_style(fg(fmt::color::red) | fmt::emphasis::bold);
-const fmt::text_style listing_format = maybe_style(fg(fmt::color::blanched_almond));
+const fmt::text_style listing_format =
+    maybe_style(fg(fmt::color::blanched_almond));
 
 void usage() {
   // title
@@ -67,17 +68,13 @@ void usage() {
 Command command(/*name =*/"help",
                 /*alias =*/{"h"},
                 /*short_description =*/"display help information",
-                /*additional_note =*/R"body(
-There are two ways of using help:
-  - tcg help
-  - tcg help <command>
-The former shows the help information for the entire tcg tool, and the latter
-shows the help for a specific command.)body",
+                /*additional_note =*/R"",
                 /*sandbox =*/false // disable sandbox to allow users to read
                                    // docs on systems without cgroup v2
 );
 
-DEFINE_HANDLER({}, "show the help information for the entire tcg tool", { usage(); });
+DEFINE_HANDLER({}, "show the help information for the entire tcg tool",
+               { usage(); });
 
 DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
   auto c = Command::get(args.at("command"));
@@ -116,6 +113,13 @@ DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
       fmt::print(" <{}>", a.name);
     }
     fmt::print("\n");
+  }
+  fmt::print("\n");
+
+  // descript for syntax
+  i = 1;
+  for (auto h : c->handlers) {
+    fmt::print(listing_format, "[{}] {}\n", i++, h->description);
   }
   fmt::print("\n");
 

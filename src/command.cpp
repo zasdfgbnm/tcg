@@ -6,7 +6,8 @@
 #include "command.hpp"
 #include "utils.hpp"
 
-Handler::Handler(Command &command, const std::vector<Argument> &arguments, const std::string &description)
+Handler::Handler(Command &command, const std::vector<Argument> &arguments,
+                 const std::string &description)
     : arguments(arguments), description(description) {
   command.handlers.push_back(this);
 }
