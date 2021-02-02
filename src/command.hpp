@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include <string>
 
 class handler {
   uint8_t num_arg_;

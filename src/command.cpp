@@ -30,17 +30,20 @@ Handler::Handler(Command &command, const std::vector<Argument> &arguments)
 
 class HandlerExecutor {
   bool compiled_ = false;
-  std::unordered_map<int64_t, Handler *> handler;
-  std::unordered_map<int64_t, std::> handler;
+  std::unordered_map<int64_t, Handler *> handlers;
+  std::unordered_map<int64_t, int64_t> next;
 
   class State {
     int64_t id;
     std::unordered_map<std::string, std::string> args;
+    const std::unordered_map<int64_t, Handler *> &handlers;
 
   public:
+    State(const std::unordered_map<int64_t, Handler *> &handlers): handlers(handlers) {}
     void feed(std::string) {}
-    void finalize() {
-      if (!can_finalize) {
+    void finalize() const {
+      const Handler *handler = handlers.at(id);
+      if (handler == nullptr) {
         invalid_argument();
       }
       (*handler)(args);
@@ -51,7 +54,7 @@ public:
   HandlerExecutor() = default;
   void compile(const std::vector<Handler *> &handlers);
   bool compiled() const { return compiled_; }
-  State start() const { return {}; }
+  State start() const { return {handlers}; }
 };
 
 void HandlerExecutor::compile(const std::vector<Handler *> &handlers) {
