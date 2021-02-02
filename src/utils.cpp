@@ -82,6 +82,7 @@ class HandlerExecutor {
   bool compiled_ = false;
 
   class State {
+  std::vector<std::string> stack;
   public:
     void feed(std::string) {}
     void finalize() {}
