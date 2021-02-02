@@ -85,14 +85,18 @@ class HandlerExecutor {
   public:
     void feed(std::string) {}
     void finalize() {}
-  };
+  } start;
 
 public:
   HandlerExecutor() = default;
-  void compile(const std::vector<Handler *> &handlers) { compiled_ = true; }
-  bool compiled() { return compiled_; }
-  State start() { return {}; }
+  void compile(const std::vector<Handler *> &handlers);
+  bool compiled() const { return compiled_; }
+  State start() const { return {}; }
 };
+
+void HandlerExecutor::compile(const std::vector<Handler *> &handlers) {
+  compiled_ = true;
+}
 
 Command::Command(const std::string &name, const std::vector<std::string> &alias,
                  const std::string &short_description,
