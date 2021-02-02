@@ -2,6 +2,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assert.hpp>
 #include <stdexcept>
+#include <fmt/core.h>  // TODO: remove after debugging
 
 #include "command.hpp"
 #include "utils.hpp"
@@ -70,7 +71,9 @@ class HandlerExecutor {
       }
     }
     void finalize() const {
+      fmt::print("debug 3.1\n");
       auto handler = get(state_handlers, id);
+      fmt::print("debug 3.2\n");
       (*handler)(args);
     }
   };
@@ -96,6 +99,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     handlers_by_narg[narg(h)] = h;
   }
   for (int64_t i = 0; i < max_length; i++) {
+    fmt::print("debug 0.1, i={}\n", i);
     std::string name;
     for (int64_t j = i; j < max_length; j++) {
       auto h = handlers_by_narg[j];
@@ -170,14 +174,18 @@ void Command::operator()(const char *args[]) const {
     invalid_argument();
   } else {
     assert(handers.size() == 0);
-    if (executor->compiled()) {
+    if (!executor->compiled()) {
       executor->compile(new_handlers);
     }
     auto state = executor->start();
+    fmt::print("debug 1\n");
     auto arg = args;
     while (*arg != nullptr) {
       state.feed(*(arg++));
+      fmt::print("debug 2\n");
     }
+    fmt::print("debug 3\n");
     state.finalize();
+    fmt::print("debug 4\n");
   }
 }
