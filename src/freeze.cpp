@@ -33,8 +33,7 @@ namespace unfreeze {
 Command command(/*name =*/"unfreeze",
                 /*alias =*/{"uf"},
                 /*short_description =*/"TODO: Add doc",
-                /*long_description =*/R"body(TODO: Add doc)body",
-                /*handlers =*/{});
+                /*long_description =*/R"body(TODO: Add doc)body");
 
 DEFINE_HANDLER({"name"_var}, {
   auto logger = spdlog::get("freeze");
