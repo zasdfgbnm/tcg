@@ -47,7 +47,7 @@ Command command(/*name =*/"list",
                 /*sandbox =*/false // disable sandbox to access /proc
 );
 
-DEFINE_HANDLER(command, {}, {
+DEFINE_HANDLER({}, {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
   fmt::text_style cg_style =

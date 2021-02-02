@@ -14,7 +14,7 @@ Command command(/*name =*/"set",
                 /*long_description =*/R"body(TODO: Add doc)body");
 
 std::vector<Argument> args_ = {"name"_var, "key"_var, "value"_var};
-DEFINE_HANDLER(command, args_, {
+DEFINE_HANDLER(args_, {
   auto logger = spdlog::get("set");
   std::string name = args.at("name");
   std::string key = args.at("key");

@@ -160,7 +160,7 @@ Command command(
     /*long_description =*/R"body(
 This command will create a new cgroup and add the current shell to it. TODO)body");
 
-DEFINE_HANDLER(command, {}, {
+DEFINE_HANDLER({}, {
   auto logger = spdlog::get("create");
   logger->info("Start creating a new cgroup");
   std::string name = new_name();
@@ -168,7 +168,7 @@ DEFINE_HANDLER(command, {}, {
   create(logger, name);
 });
 
-DEFINE_HANDLER(command, {"name"_var}, {
+DEFINE_HANDLER({"name"_var}, {
   auto logger = spdlog::get("create");
   std::string name = args.at("name");
   logger->info("Name specified as {}, will validating.", name);

@@ -76,9 +76,9 @@ shows the help for a specific command.)body",
                                    // docs on systems without cgroup v2
 );
 
-DEFINE_HANDLER(command, {}, { usage(); });
+DEFINE_HANDLER({}, { usage(); });
 
-DEFINE_HANDLER(command, {"command"_var}, {
+DEFINE_HANDLER({"command"_var}, {
   auto c = Command::get(args.at("command"));
   if (!c->defined()) {
     fmt::print(error_format, "Unknown command.");

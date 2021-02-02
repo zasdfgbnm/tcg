@@ -14,13 +14,13 @@ namespace self {
 namespace fs = boost::filesystem;
 
 Command command(/*name =*/"self",
-                       /*alias =*/{"sf"},
-                       /*short_description =*/"TODO: Add doc",
-                       /*long_description =*/R"body(TODO: Add doc)body",
-                       /*sandbox =*/false // disable sandbox to access /proc
+                /*alias =*/{"sf"},
+                /*short_description =*/"TODO: Add doc",
+                /*long_description =*/R"body(TODO: Add doc)body",
+                /*sandbox =*/false // disable sandbox to access /proc
 );
 
-DEFINE_HANDLER(command, {}, {
+DEFINE_HANDLER({}, {
   auto logger = spdlog::get("self");
   logger->info("Getting the cgroup for the current shell");
   auto pid = getpid();

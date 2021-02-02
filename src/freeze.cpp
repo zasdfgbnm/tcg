@@ -8,12 +8,12 @@
 
 namespace freeze {
 
-Command command_f(/*name =*/"freeze",
-                  /*alias =*/{"f"},
-                  /*short_description =*/"TODO: Add doc",
-                  /*long_description =*/R"body(TODO: Add doc)body");
+Command command(/*name =*/"freeze",
+                /*alias =*/{"f"},
+                /*short_description =*/"TODO: Add doc",
+                /*long_description =*/R"body(TODO: Add doc)body");
 
-DEFINE_HANDLER(command_f, {"name"_var}, {
+DEFINE_HANDLER({"name"_var}, {
   auto logger = spdlog::get("freeze");
   std::string name = args.at("name");
   logger->info("Will freeze {}.", name);
@@ -28,15 +28,15 @@ DEFINE_HANDLER(command_f, {"name"_var}, {
 
 } // namespace freeze
 
-namespace freeze {
+namespace unfreeze {
 
-Command command_uf(/*name =*/"unfreeze",
-                   /*alias =*/{"uf"},
-                   /*short_description =*/"TODO: Add doc",
-                   /*long_description =*/R"body(TODO: Add doc)body",
-                   /*handlers =*/{});
+Command command(/*name =*/"unfreeze",
+                /*alias =*/{"uf"},
+                /*short_description =*/"TODO: Add doc",
+                /*long_description =*/R"body(TODO: Add doc)body",
+                /*handlers =*/{});
 
-DEFINE_HANDLER(command_uf, {"name"_var}, {
+DEFINE_HANDLER({"name"_var}, {
   auto logger = spdlog::get("freeze");
   std::string name = args.at("name");
   logger->info("Will unfreeze {}.", name);
@@ -49,4 +49,4 @@ DEFINE_HANDLER(command_uf, {"name"_var}, {
   logger->info("Done unfreezing {}.", name);
 });
 
-} // namespace freeze
+} // namespace unfreeze
