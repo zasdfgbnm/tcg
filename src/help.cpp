@@ -17,7 +17,15 @@ const fmt::text_style error_format =
 const fmt::text_style listing_format =
     maybe_style(fg(fmt::color::blanched_almond));
 
-void usage() {
+Command command(/*name =*/"help",
+                /*alias =*/{"h"},
+                /*short_description =*/"display help information",
+                /*additional_note =*/"",
+                /*sandbox =*/false // disable sandbox to allow users to read
+                                   // docs on systems without cgroup v2
+);
+
+DEFINE_HANDLER({}, "show the help information for the entire tcg tool", {
   // title
   fmt::print(title_format, "Usage:\n");
   fmt::print("tcg <command> [<args>]\n\n");
@@ -63,18 +71,7 @@ void usage() {
   fmt::print(title_format, "For more information, go to:\n");
   fmt::print(url);
   fmt::print("\n");
-}
-
-Command command(/*name =*/"help",
-                /*alias =*/{"h"},
-                /*short_description =*/"display help information",
-                /*additional_note =*/"",
-                /*sandbox =*/false // disable sandbox to allow users to read
-                                   // docs on systems without cgroup v2
-);
-
-DEFINE_HANDLER({}, "show the help information for the entire tcg tool",
-               { usage(); });
+});
 
 DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
   auto c = Command::get(args.at("command"));
