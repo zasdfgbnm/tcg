@@ -20,5 +20,5 @@ int main(int argc, const char *argv[]) {
     enter_sandbox();
   }
 
-  cmd->call(argv + 2);
+  (*cmd)(argv + 2);
 }
