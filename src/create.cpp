@@ -11,6 +11,15 @@
 #include "command.hpp"
 #include "utils.hpp"
 
+#ifdef __linux__
+#include <sys/inotify.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+namespace create {
+
 namespace fs = boost::filesystem;
 
 std::unordered_set<std::string> names = {
@@ -54,14 +63,8 @@ std::string new_name() {
   exit(EXIT_FAILURE);
 }
 
-#ifdef __linux__
-
-#include <sys/inotify.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-
 void create(std::shared_ptr<spdlog::logger> logger, const std::string &name) {
+#ifdef __linux__
   std::cout << name << std::endl;
 
   // create new cgroup
@@ -147,34 +150,25 @@ void create(std::shared_ptr<spdlog::logger> logger, const std::string &name) {
       exit(EXIT_FAILURE);
     }
   }
+#endif
 }
 
-#else
-
-void create(std::shared_ptr<spdlog::logger> logger, const std::string &name) {}
-
-#endif
-
-static Command command(
+Command command(
     /*name =*/"create",
     /*alias =*/{"c"},
     /*short_description =*/"create a new cgroup containing the current shell",
     /*long_description =*/R"body(
 This command will create a new cgroup and add the current shell to it. TODO)body");
 
-static struct CreateHandler final : public Handler {
-  CreateHandler(Command &command) : Handler(command, {}) {}
-  void operator()(
-      const std::unordered_map<std::string, std::string> &args) const override {
-    auto logger = spdlog::get("create");
-    logger->info("Start creating a new cgroup");
-    std::string name = new_name();
-    logger->info("Name not specified, use builtin name {}", name);
-    create(logger, name);
-  }
-} create_handler(command);
+DEFINE_HANDLER({}, {
+  auto logger = spdlog::get("create");
+  logger->info("Start creating a new cgroup");
+  std::string name = new_name();
+  logger->info("Name not specified, use builtin name {}", name);
+  create(logger, name);
+});
 
-DEFINE_HANDLER(command, {"name"_var}, {
+DEFINE_HANDLER({"name"_var}, {
   auto logger = spdlog::get("create");
   std::string name = args.at("name");
   logger->info("Name specified as {}, will validating.", name);
@@ -182,3 +176,5 @@ DEFINE_HANDLER(command, {"name"_var}, {
   logger->info("Name pass validation", name);
   create(logger, name);
 });
+
+} // namespace create
