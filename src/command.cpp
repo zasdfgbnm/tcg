@@ -34,6 +34,7 @@ class HandlerExecutor {
   std::unordered_map<int64_t, Handler *> handlers;
   std::unordered_map<int64_t, int64_t> arg_next;
   std::unordered_map<int64_t, int64_t> opt_next;
+  std::unordered_map<int64_t, std::string> names;
 
   class State {
     int64_t id;
@@ -44,21 +45,23 @@ class HandlerExecutor {
     const std::unordered_map<int64_t, std::string> &names;
 
   public:
-    State(int64_t id, const std::unordered_map<int64_t, Handler *> &handlers,
+    State(const std::unordered_map<int64_t, Handler *> &handlers,
           const std::unordered_map<int64_t, int64_t> &arg_next,
-          const std::unordered_map<int64_t, int64_t> &opt_next)
-        : id(id), handlers(handlers), arg_next(arg_next), opt_next(opt_next) {}
+          const std::unordered_map<int64_t, int64_t> &opt_next,
+          const std::unordered_map<int64_t, std::string> &names)
+        : id(0), handlers(handlers), arg_next(arg_next), opt_next(opt_next),
+          names(names) {}
     void feed(std::string text) {
-      if (boost::starts_with(text, "-")) {  // is option
+      if (boost::starts_with(text, "-")) { // is option
         // TODO: not supported yet
         invalid_argument();
         id = opt_next.at(id);
-      } else {  // is argument
+      } else { // is argument
         auto i = names.find(id);
         if (i == names.end()) {
           invalid_argument();
         }
-        args[i.second] = text;
+        args[i->second] = text;
         id = arg_next.at(id);
       }
     }
@@ -75,7 +78,7 @@ public:
   HandlerExecutor() = default;
   void compile(const std::vector<Handler *> &handlers);
   bool compiled() const { return compiled_; }
-  State start() const { return {handlers}; }
+  State start() const { return {handlers, arg_next, opt_next, names}; }
 };
 
 void HandlerExecutor::compile(const std::vector<Handler *> &handlers) {
