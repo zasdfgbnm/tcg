@@ -11,13 +11,6 @@
 #include "command.hpp"
 #include "utils.hpp"
 
-#ifdef __linux__
-
-#include <sys/inotify.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-
 namespace fs = boost::filesystem;
 
 std::unordered_set<std::string> names = {
@@ -60,6 +53,13 @@ std::string new_name() {
   logger->error("Run out of names.");
   exit(EXIT_FAILURE);
 }
+
+#ifdef __linux__
+
+#include <sys/inotify.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 void create(std::shared_ptr<spdlog::logger> logger, const std::string &name) {
   std::cout << name << std::endl;
