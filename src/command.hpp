@@ -20,8 +20,9 @@ using arg_map_t = std::unordered_map<std::string, std::string>;
 
 struct Handler {
   std::vector<Argument> arguments;
+  std::string description;
   virtual void operator()(const arg_map_t &args) const = 0;
-  Handler(Command &, const std::vector<Argument> &);
+  Handler(Command &, const std::vector<Argument> &, const std::string &);
 };
 
 class HandlerExecutor;
@@ -34,13 +35,13 @@ public:
   std::string name;
   std::vector<std::string> alias;
   std::string short_description;
-  std::string long_description;
+  std::string additional_note;
   std::vector<const Handler *> handlers;
   bool sandbox = true;
 
   Command(const std::string &name, const std::vector<std::string> &alias,
           const std::string &short_description,
-          const std::string &long_description, bool sandbox = true);
+          const std::string &additional_note, bool sandbox = true);
 
   virtual bool defined() const { return true; }
 
@@ -59,12 +60,12 @@ public:
 #define _CONCATENATE(x, y) _CONCATENATE_DETAIL(x, y)
 #define _MAKE_UNIQUE(x) _CONCATENATE(x, __COUNTER__)
 
-#define _DEFINE_HANDLER(name, variables, code)                                 \
+#define _DEFINE_HANDLER(name, variables, description, code)                    \
   struct name final : public Handler{                                          \
-    name(Command & command) : Handler(command, variables){} void               \
+    name(Command & command) : Handler(command, variables, description){} void  \
     operator()(const std::unordered_map<std::string, std::string> &args)       \
         const override code                                                    \
   } _MAKE_UNIQUE(handler)(command)
 
-#define DEFINE_HANDLER(variables, code)                                        \
-  _DEFINE_HANDLER(_MAKE_UNIQUE(Handler), variables, code)
+#define DEFINE_HANDLER(variables, description, code)                           \
+  _DEFINE_HANDLER(_MAKE_UNIQUE(Handler), variables, description, code)

@@ -157,10 +157,9 @@ Command command(
     /*name =*/"create",
     /*alias =*/{"c"},
     /*short_description =*/"create a new cgroup containing the current shell",
-    /*long_description =*/R"body(
-This command will create a new cgroup and add the current shell to it. TODO)body");
+    /*additional_note =*/"");
 
-DEFINE_HANDLER({}, {
+DEFINE_HANDLER({}, "create a new cgroup with a builtin name", {
   auto logger = spdlog::get("create");
   logger->info("Start creating a new cgroup");
   std::string name = new_name();
@@ -168,9 +167,9 @@ DEFINE_HANDLER({}, {
   create(logger, name);
 });
 
-DEFINE_HANDLER({"name"_var}, {
+DEFINE_HANDLER({"cgroup_name"_var}, "create a new cgroup with specified name", {
   auto logger = spdlog::get("create");
-  std::string name = args.at("name");
+  std::string name = args.at("cgroup_name");
   logger->info("Name specified as {}, will validating.", name);
   validate_name(logger, name);
   logger->info("Name pass validation", name);

@@ -12,12 +12,12 @@ namespace show {
 Command command(/*name =*/"show",
                 /*alias =*/{},
                 /*short_description =*/"TODO: Add doc",
-                /*long_description =*/R"body(TODO: Add doc)body");
+                /*additional_note =*/"");
 
-std::vector<Argument> args_ = {"name"_var, "key"_var};
-DEFINE_HANDLER(args_, {
+std::vector<Argument> args_ = {"cgroup_name"_var, "key"_var};
+DEFINE_HANDLER(args_, "TODO: add doc", {
   auto logger = spdlog::get("show");
-  std::string name = args.at("name");
+  std::string name = args.at("cgroup_name");
   std::string key = args.at("key");
   logger->info("Showing cgroup {}'s {}...", name, key);
   auto d = name_dir(name, true) + "/" + key;

@@ -11,11 +11,11 @@ namespace freeze {
 Command command(/*name =*/"freeze",
                 /*alias =*/{"f"},
                 /*short_description =*/"TODO: Add doc",
-                /*long_description =*/R"body(TODO: Add doc)body");
+                /*additional_note =*/"");
 
-DEFINE_HANDLER({"name"_var}, {
+DEFINE_HANDLER({"cgroup_name"_var}, "freeze the specified cgroup", {
   auto logger = spdlog::get("freeze");
-  std::string name = args.at("name");
+  std::string name = args.at("cgroup_name");
   logger->info("Will freeze {}.", name);
   auto dir = name_dir(name, true);
   auto freeze_file = dir + "/cgroup.freeze";
@@ -33,11 +33,11 @@ namespace unfreeze {
 Command command(/*name =*/"unfreeze",
                 /*alias =*/{"uf"},
                 /*short_description =*/"TODO: Add doc",
-                /*long_description =*/R"body(TODO: Add doc)body");
+                /*additional_note =*/"");
 
-DEFINE_HANDLER({"name"_var}, {
+DEFINE_HANDLER({"cgroup_name"_var}, "unfreeze the specified cgroup", {
   auto logger = spdlog::get("freeze");
-  std::string name = args.at("name");
+  std::string name = args.at("cgroup_name");
   logger->info("Will unfreeze {}.", name);
   auto dir = name_dir(name, true);
   auto freeze_file = dir + "/cgroup.freeze";

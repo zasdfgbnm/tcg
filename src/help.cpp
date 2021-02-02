@@ -14,6 +14,8 @@ const fmt::text_style name_format =
 const fmt::text_style title_format = maybe_style(fmt::emphasis::bold);
 const fmt::text_style error_format =
     maybe_style(fg(fmt::color::red) | fmt::emphasis::bold);
+const fmt::text_style listing_format =
+    maybe_style(fg(fmt::color::blanched_almond));
 
 void usage() {
   // title
@@ -66,19 +68,15 @@ void usage() {
 Command command(/*name =*/"help",
                 /*alias =*/{"h"},
                 /*short_description =*/"display help information",
-                /*long_description =*/R"body(
-There are two ways of using help:
-  - tcg help
-  - tcg help <command>
-The former shows the help information for the entire tcg tool, and the latter
-shows the help for a specific command.)body",
+                /*additional_note =*/"",
                 /*sandbox =*/false // disable sandbox to allow users to read
                                    // docs on systems without cgroup v2
 );
 
-DEFINE_HANDLER({}, { usage(); });
+DEFINE_HANDLER({}, "show the help information for the entire tcg tool",
+               { usage(); });
 
-DEFINE_HANDLER({"command"_var}, {
+DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
   auto c = Command::get(args.at("command"));
   if (!c->defined()) {
     fmt::print(error_format, "Unknown command.");
@@ -103,9 +101,32 @@ DEFINE_HANDLER({"command"_var}, {
     }
     fmt::print("\n");
   }
+  fmt::print("\n");
+
+  // print syntax
+  fmt::print(title_format, "Syntax:\n");
+  int64_t i = 1;
+  for (auto h : c->handlers) {
+    fmt::print(listing_format, "[{}] ", i++);
+    fmt::print("tcg {}", c->name);
+    for (auto &a : h->arguments) {
+      fmt::print(" <{}>", a.name);
+    }
+    fmt::print("\n");
+  }
+  fmt::print("\n");
+
+  // descript for syntax
+  i = 1;
+  for (auto h : c->handlers) {
+    fmt::print(listing_format, "[{}] {}\n", i++, h->description);
+  }
 
   // long description
-  fmt::print(c->long_description);
+  if (c->additional_note.size() > 0) {
+    fmt::print("\n");
+    fmt::print(c->additional_note);
+  }
 });
 
 } // namespace help

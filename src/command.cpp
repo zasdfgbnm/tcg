@@ -6,8 +6,9 @@
 #include "command.hpp"
 #include "utils.hpp"
 
-Handler::Handler(Command &command, const std::vector<Argument> &arguments)
-    : arguments(arguments) {
+Handler::Handler(Command &command, const std::vector<Argument> &arguments,
+                 const std::string &description)
+    : arguments(arguments), description(description) {
   command.handlers.push_back(this);
 }
 
@@ -105,9 +106,9 @@ std::map<std::string, const Command *> Command::registry;
 
 Command::Command(const std::string &name, const std::vector<std::string> &alias,
                  const std::string &short_description,
-                 const std::string &long_description, bool sandbox)
+                 const std::string &additional_note, bool sandbox)
     : executor(std::make_shared<HandlerExecutor>()), name(name), alias(alias),
-      short_description(short_description), long_description(long_description),
+      short_description(short_description), additional_note(additional_note),
       sandbox(sandbox) {
   if (registry.find(name) != registry.end()) {
     throw std::runtime_error(

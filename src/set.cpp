@@ -11,12 +11,12 @@ namespace set {
 Command command(/*name =*/"set",
                 /*alias =*/{},
                 /*short_description =*/"TODO: Add doc",
-                /*long_description =*/R"body(TODO: Add doc)body");
+                /*additional_note =*/"");
 
-std::vector<Argument> args_ = {"name"_var, "key"_var, "value"_var};
-DEFINE_HANDLER(args_, {
+std::vector<Argument> args_ = {"cgroup_name"_var, "key"_var, "value"_var};
+DEFINE_HANDLER(args_, "TODO: add doc", {
   auto logger = spdlog::get("set");
-  std::string name = args.at("name");
+  std::string name = args.at("cgroup_name");
   std::string key = args.at("key");
   std::string value = args.at("value");
   logger->info("Setting cgroup {}'s {} to {}...", name, key, value);

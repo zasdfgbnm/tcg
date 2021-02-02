@@ -16,11 +16,11 @@ namespace fs = boost::filesystem;
 Command command(/*name =*/"self",
                 /*alias =*/{"sf"},
                 /*short_description =*/"TODO: Add doc",
-                /*long_description =*/R"body(TODO: Add doc)body",
+                /*additional_note =*/"",
                 /*sandbox =*/false // disable sandbox to access /proc
 );
 
-DEFINE_HANDLER({}, {
+DEFINE_HANDLER({}, "show the cgroup of the current shell", {
   auto logger = spdlog::get("self");
   logger->info("Getting the cgroup for the current shell");
   auto pid = getpid();
