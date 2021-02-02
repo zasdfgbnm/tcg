@@ -173,17 +173,17 @@ static struct CreateHandler final : public Handler {
     logger->info("Name not specified, use builtin name {}", name);
     create(logger, name);
   }
-  create_handler(command);
+} create_handler(command);
 
-  static struct CreateNameHandler final : public Handler {
-    CreateNameHandler(Command &command) : Handler(command, {"name"_var}) {}
-    void operator()(const std::unordered_map<std::string, std::string> &args)
-        const override {
-      auto logger = spdlog::get("create");
-      std::string name = args.at("name");
-      logger->info("Name specified as {}, will validating.", name);
-      validate_name(logger, name);
-      logger->info("Name pass validation", name);
-      create(logger, name);
-    }
-  } create_name_handler(command);
+static struct CreateNameHandler final : public Handler {
+  CreateNameHandler(Command &command) : Handler(command, {"name"_var}) {}
+  void operator()(
+      const std::unordered_map<std::string, std::string> &args) const override {
+    auto logger = spdlog::get("create");
+    std::string name = args.at("name");
+    logger->info("Name specified as {}, will validating.", name);
+    validate_name(logger, name);
+    logger->info("Name pass validation", name);
+    create(logger, name);
+  }
+} create_name_handler(command);
