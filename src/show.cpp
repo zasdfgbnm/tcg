@@ -10,8 +10,7 @@
 static Command command(/*name =*/"show",
                        /*alias =*/{},
                        /*short_description =*/"TODO: Add doc",
-                       /*long_description =*/R"body(TODO: Add doc)body",
-                       /*handlers =*/{});
+                       /*long_description =*/R"body(TODO: Add doc)body");
 
 static struct ShowHandler final : public Handler {
   ShowHandler(Command &command) : Handler(command, {"name"_var, "key"_var}) {}

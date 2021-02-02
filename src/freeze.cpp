@@ -9,8 +9,7 @@
 static Command command_f(/*name =*/"freeze",
                          /*alias =*/{"f"},
                          /*short_description =*/"TODO: Add doc",
-                         /*long_description =*/R"body(TODO: Add doc)body",
-                         /*handlers =*/{});
+                         /*long_description =*/R"body(TODO: Add doc)body");
 
 static struct FreezeHandler final : public Handler {
   FreezeHandler(Command &command) : Handler(command, {"name"_var}) {}
