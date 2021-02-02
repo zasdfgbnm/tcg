@@ -11,6 +11,8 @@
 #include "command.hpp"
 #include "utils.hpp"
 
+namespace list {
+
 namespace fs = boost::filesystem;
 
 void print_procs(std::shared_ptr<spdlog::logger> logger,
@@ -38,11 +40,11 @@ void print_procs(std::shared_ptr<spdlog::logger> logger,
   }
 }
 
-static Command command(/*name =*/"list",
-                       /*alias =*/{"l", "ls"},
-                       /*short_description =*/"TODO: Add doc",
-                       /*long_description =*/R"body(TODO: Add doc)body",
-                       /*sandbox =*/false // disable sandbox to access /proc
+Command command(/*name =*/"list",
+                /*alias =*/{"l", "ls"},
+                /*short_description =*/"TODO: Add doc",
+                /*long_description =*/R"body(TODO: Add doc)body",
+                /*sandbox =*/false // disable sandbox to access /proc
 );
 
 DEFINE_HANDLER(command, {}, {
@@ -69,3 +71,5 @@ DEFINE_HANDLER(command, {}, {
     }
   }
 });
+
+} // namespace list

@@ -7,12 +7,14 @@
 #include "command.hpp"
 #include "utils.hpp"
 
-static Command command(/*name =*/"show",
-                       /*alias =*/{},
-                       /*short_description =*/"TODO: Add doc",
-                       /*long_description =*/R"body(TODO: Add doc)body");
+namespace show {
 
-static std::vector<Argument> args_ = {"name"_var, "key"_var};
+Command command(/*name =*/"show",
+                /*alias =*/{},
+                /*short_description =*/"TODO: Add doc",
+                /*long_description =*/R"body(TODO: Add doc)body");
+
+std::vector<Argument> args_ = {"name"_var, "key"_var};
 DEFINE_HANDLER(command, args_, {
   auto logger = spdlog::get("show");
   std::string name = args.at("name");
@@ -27,3 +29,5 @@ DEFINE_HANDLER(command, args_, {
   }
   logger->debug("Done printting.");
 });
+
+} // namespace show

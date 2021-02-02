@@ -9,9 +9,11 @@
 #include "command.hpp"
 #include "utils.hpp"
 
+namespace self {
+
 namespace fs = boost::filesystem;
 
-static Command command(/*name =*/"self",
+Command command(/*name =*/"self",
                        /*alias =*/{"sf"},
                        /*short_description =*/"TODO: Add doc",
                        /*long_description =*/R"body(TODO: Add doc)body",
@@ -41,3 +43,5 @@ DEFINE_HANDLER(command, {}, {
     }
   }
 });
+
+} // namespace self

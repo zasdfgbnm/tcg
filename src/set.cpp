@@ -6,12 +6,14 @@
 #include "command.hpp"
 #include "utils.hpp"
 
-static Command command(/*name =*/"set",
-                       /*alias =*/{},
-                       /*short_description =*/"TODO: Add doc",
-                       /*long_description =*/R"body(TODO: Add doc)body");
+namespace set {
 
-static std::vector<Argument> args_ = {"name"_var, "key"_var, "value"_var};
+Command command(/*name =*/"set",
+                /*alias =*/{},
+                /*short_description =*/"TODO: Add doc",
+                /*long_description =*/R"body(TODO: Add doc)body");
+
+std::vector<Argument> args_ = {"name"_var, "key"_var, "value"_var};
 DEFINE_HANDLER(command, args_, {
   auto logger = spdlog::get("set");
   std::string name = args.at("name");
@@ -25,3 +27,5 @@ DEFINE_HANDLER(command, args_, {
   out.close();
   logger->debug("Done printting.");
 });
+
+} // namespace set

@@ -7,6 +7,8 @@
 #include "command.hpp"
 #include "utils.hpp"
 
+namespace help {
+
 const fmt::text_style name_format =
     maybe_style(fg(fmt::color::cornflower_blue));
 const fmt::text_style title_format = maybe_style(fmt::emphasis::bold);
@@ -61,19 +63,18 @@ void usage() {
   fmt::print("\n");
 }
 
-static Command
-    command(/*name =*/"help",
-            /*alias =*/{"h"},
-            /*short_description =*/"display help information",
-            /*long_description =*/R"body(
+Command command(/*name =*/"help",
+                /*alias =*/{"h"},
+                /*short_description =*/"display help information",
+                /*long_description =*/R"body(
 There are two ways of using help:
   - tcg help
   - tcg help <command>
 The former shows the help information for the entire tcg tool, and the latter
 shows the help for a specific command.)body",
-            /*sandbox =*/false // disable sandbox to allow users to read docs
-                               // on systems without cgroup v2
-    );
+                /*sandbox =*/false // disable sandbox to allow users to read
+                                   // docs on systems without cgroup v2
+);
 
 DEFINE_HANDLER(command, {}, { usage(); });
 
@@ -106,3 +107,5 @@ DEFINE_HANDLER(command, {"command"_var}, {
   // long description
   fmt::print(c->long_description);
 });
+
+} // namespace help

@@ -60,7 +60,7 @@ public:
 #define _MAKE_UNIQUE(x) _CONCATENATE(x, __COUNTER__)
 
 #define _DEFINE_HANDLER(name, command, variables, code)                        \
-  static struct name final : public Handler{                                   \
+  struct name final : public Handler{                                          \
     name(Command & command) : Handler(command, variables){} void               \
     operator()(const std::unordered_map<std::string, std::string> &args)       \
         const override code                                                    \
