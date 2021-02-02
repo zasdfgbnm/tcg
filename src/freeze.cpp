@@ -22,8 +22,7 @@ DEFINE_HANDLER(command_f, {"name"_var}), {
   out.print("1");
   out.close();
   logger->info("Done freezing {}.", name);
-}
-freeze_handler(command_f);
+});
 
 static Command command_uf(/*name =*/"unfreeze",
                           /*alias =*/{"uf"},
