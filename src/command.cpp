@@ -1,3 +1,4 @@
+#include <boost/algorithm/string/predicate.hpp>
 #include <stdexcept>
 
 #include "command.hpp"
@@ -40,13 +41,27 @@ class HandlerExecutor {
     const std::unordered_map<int64_t, Handler *> &handlers;
     const std::unordered_map<int64_t, int64_t> &arg_next;
     const std::unordered_map<int64_t, int64_t> &opt_next;
+    const std::unordered_map<int64_t, std::string> &names;
 
   public:
-    State(const std::unordered_map<int64_t, Handler *> &handlers,
+    State(int64_t id, const std::unordered_map<int64_t, Handler *> &handlers,
           const std::unordered_map<int64_t, int64_t> &arg_next,
           const std::unordered_map<int64_t, int64_t> &opt_next)
-        : handlers(handlers), arg_next(arg_next), opt_next(opt_next) {}
-    void feed(std::string) {}
+        : id(id), handlers(handlers), arg_next(arg_next), opt_next(opt_next) {}
+    void feed(std::string text) {
+      if (boost::starts_with(text, "-")) {  // is option
+        // TODO: not supported yet
+        invalid_argument();
+        id = opt_next.at(id);
+      } else {  // is argument
+        auto i = names.find(id);
+        if (i == names.end()) {
+          invalid_argument();
+        }
+        args[i.second] = text;
+        id = arg_next.at(id);
+      }
+    }
     void finalize() const {
       const Handler *handler = handlers.at(id);
       if (handler == nullptr) {
