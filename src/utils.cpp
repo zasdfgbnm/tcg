@@ -80,6 +80,7 @@ Handler::Handler(Command &command, const std::vector<Argument> &arguments)
 
 class HandlerExecutor {
   bool compiled_ = false;
+
   class State {
   public:
     void feed(std::string) {}
