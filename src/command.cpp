@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/assert.hpp>
 #include <stdexcept>
 
 #include "command.hpp"
@@ -32,7 +33,7 @@ Handler::Handler(Command &command, const std::vector<Argument> &arguments)
 
 class HandlerExecutor {
   bool compiled_ = false;
-  std::unordered_map<int64_t, Handler *> handlers;
+  std::unordered_map<int64_t, const Handler *> state_handlers;
   std::unordered_map<int64_t, int64_t> arg_next;
   std::unordered_map<int64_t, int64_t> opt_next;
   std::unordered_map<int64_t, std::string> names;
@@ -40,7 +41,7 @@ class HandlerExecutor {
   class State {
     int64_t id;
     std::unordered_map<std::string, std::string> args;
-    const std::unordered_map<int64_t, Handler *> &handlers;
+    const std::unordered_map<int64_t, const Handler *> &state_handlers;
     const std::unordered_map<int64_t, int64_t> &arg_next;
     const std::unordered_map<int64_t, int64_t> &opt_next;
     const std::unordered_map<int64_t, std::string> &names;
@@ -54,11 +55,11 @@ class HandlerExecutor {
     };
 
   public:
-    State(const std::unordered_map<int64_t, Handler *> &handlers,
+    State(const std::unordered_map<int64_t, const Handler *> &state_handlers,
           const std::unordered_map<int64_t, int64_t> &arg_next,
           const std::unordered_map<int64_t, int64_t> &opt_next,
           const std::unordered_map<int64_t, std::string> &names)
-        : id(0), handlers(handlers), arg_next(arg_next), opt_next(opt_next),
+        : id(0), state_handlers(state_handlers), arg_next(arg_next), opt_next(opt_next),
           names(names) {}
     void feed(std::string text) {
       if (boost::starts_with(text, "-")) { // is option
@@ -69,29 +70,48 @@ class HandlerExecutor {
       }
     }
     void finalize() const {
-      auto handler = get(handlers, id);
+      auto handler = get(state_handlers, id);
       (*handler)(args);
     }
   };
 
 public:
   HandlerExecutor() = default;
-  void compile(const std::vector<Handler *> &handlers);
+  void compile(const std::vector<const Handler *> &handlers);
   bool compiled() const { return compiled_; }
-  State start() const { return {handlers, arg_next, opt_next, names}; }
+  State start() const { return {state_handlers, arg_next, opt_next, names}; }
 };
 
-void HandlerExecutor::compile(const std::vector<Handler *> &handlers) {
+void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
+  const char *LL1_ERROR = "The language is not LL(1).";
   assert(!compiled_);
   compiled_ = true;
   auto narg = [](auto h) { return h->arguments.size(); };
   auto max_length = narg(
       *std::max_element(handlers.begin(), handlers.end(),
                         [&](auto a, auto b) { return narg(a) > narg(b); }));
-  std::vector<Handler *> handlers_by_narg(max_length, nullptr);
+  std::vector<const Handler *> handlers_by_narg(max_length, nullptr);
   for (auto h : handlers) {
-    assert(handlers_by_narg[narg(h)] == nullptr);
+    BOOST_ASSERT_MSG(handlers_by_narg[narg(h)] == nullptr, LL1_ERROR);
     handlers_by_narg[narg(h)] = h;
+  }
+  for (int64_t i = 0; i < max_length; i++) {
+    std::string name;
+    for (int64_t j = i; j < max_length; j++) {
+      auto h = handlers_by_narg[j];
+      if (h == nullptr) {
+        continue;
+      }
+      if (name.size() == 0) {
+        name = h->arguments[i].name;
+      } else {
+        BOOST_ASSERT_MSG(name == h->arguments[i].name, LL1_ERROR);
+      }
+    }
+    names[i] = name;
+    if (handlers_by_narg[i] != nullptr) {
+      state_handlers[i] = handlers_by_narg[i];
+    }
   }
 }
 

@@ -56,7 +56,7 @@ public:
   std::string short_description;
   std::string long_description;
   std::vector<handler> handlers;
-  std::vector<Handler *> new_handlers;
+  std::vector<const Handler *> new_handlers;
   bool sandbox = true;
 
   Command(const std::string &name, const std::vector<std::string> &alias,
