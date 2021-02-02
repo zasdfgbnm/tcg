@@ -13,10 +13,11 @@ static Command command_f(/*name =*/"freeze",
                          /*handlers =*/{});
 
 static struct FreezeHandler final : public Handler {
-  FreezeHandler(Command &command) : Handler(command, {}) {}
+  FreezeHandler(Command &command) : Handler(command, {"name"_var}) {}
   void operator()(
       const std::unordered_map<std::string, std::string> &args) const override {
     auto logger = spdlog::get("freeze");
+    std::string name = args.at(name);
     logger->info("Will freeze {}.", name);
     auto dir = name_dir(name, true);
     auto freeze_file = dir + "/cgroup.freeze";
@@ -35,10 +36,11 @@ static Command command_uf(/*name =*/"unfreeze",
                           /*handlers =*/{});
 
 static struct UnfreezeHandler final : public Handler {
-  UnfreezeHandler(Command &command) : Handler(command, {}) {}
+  UnfreezeHandler(Command &command) : Handler(command, {"name"_var}) {}
   void operator()(
       const std::unordered_map<std::string, std::string> &args) const override {
     auto logger = spdlog::get("freeze");
+    std::string name = args.at(name);
     logger->info("Will unfreeze {}.", name);
     auto dir = name_dir(name, true);
     auto freeze_file = dir + "/cgroup.freeze";
