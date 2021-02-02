@@ -49,9 +49,18 @@ std::string name_dir(const std::string &name,
   return dir;
 }
 
-std::map<std::string, const Command *> Command::registry;
 
-void invalid_argument();
+const fmt::text_style error_format =
+    maybe_style(fg(fmt::color::red) | fmt::emphasis::bold);
+const fmt::text_style code_format = maybe_style(fmt::emphasis::underline);
+
+void invalid_argument() {
+  fmt::print(error_format, "Invalid arguments.\n");
+  fmt::print("Run ");
+  fmt::print(code_format, "tcg help");
+  fmt::print(" for more information.\n");
+  exit(EXIT_FAILURE);
+}
 
 void handler::operator()(const char *args[]) const {
   assert(args[num_arg_] == nullptr);
@@ -83,9 +92,16 @@ class HandlerExecutor {
 
   class State {
     std::unordered_map<std::string, std::string> args;
+    Handler *handler;
+    bool can_finalize = false;
   public:
     void feed(std::string) {}
-    void finalize() {}
+    void finalize() {
+      if (!can_finalize) {
+        invalid_argument();
+      }
+      (*handler)(args);
+    }
   };
 
 public:
@@ -100,6 +116,8 @@ void HandlerExecutor::compile(const std::vector<Handler *> &handlers) {
   compiled_ = true;
   
 }
+
+std::map<std::string, const Command *> Command::registry;
 
 Command::Command(const std::string &name, const std::vector<std::string> &alias,
                  const std::string &short_description,

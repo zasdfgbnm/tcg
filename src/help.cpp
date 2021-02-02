@@ -6,11 +6,10 @@
 
 #include "utils.hpp"
 
-const auto name_format = maybe_style(fg(fmt::color::cornflower_blue));
-const auto error_format =
+const fmt::text_style name_format = maybe_style(fg(fmt::color::cornflower_blue));
+const fmt::text_style title_format = maybe_style(fmt::emphasis::bold);
+const fmt::text_style error_format =
     maybe_style(fg(fmt::color::red) | fmt::emphasis::bold);
-const auto code_format = maybe_style(fmt::emphasis::underline);
-const auto title_format = maybe_style(fmt::emphasis::bold);
 
 void help0() {
   // title
@@ -88,14 +87,6 @@ void help1(const std::string &command) {
 
   // long description
   fmt::print(c->long_description);
-}
-
-void invalid_argument() {
-  fmt::print(error_format, "Invalid arguments.\n");
-  fmt::print("Run ");
-  fmt::print(code_format, "tcg help");
-  fmt::print(" for more information.\n");
-  exit(EXIT_FAILURE);
 }
 
 static Command
