@@ -4,9 +4,11 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 
+#include "command.hpp"
 #include "utils.hpp"
 
-const fmt::text_style name_format = maybe_style(fg(fmt::color::cornflower_blue));
+const fmt::text_style name_format =
+    maybe_style(fg(fmt::color::cornflower_blue));
 const fmt::text_style title_format = maybe_style(fmt::emphasis::bold);
 const fmt::text_style error_format =
     maybe_style(fg(fmt::color::red) | fmt::emphasis::bold);

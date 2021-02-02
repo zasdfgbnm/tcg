@@ -1,6 +1,6 @@
 #include <string>
 
-#include "utils.hpp"
+#include "command.hpp"
 
 void initialize_logger();
 void enter_sandbox();

@@ -4,6 +4,7 @@
 #include <fmt/os.h>
 #include <spdlog/spdlog.h>
 
+#include "command.hpp"
 #include "utils.hpp"
 
 void show(const std::string &name, const std::string &key) {

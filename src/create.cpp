@@ -8,7 +8,7 @@
 #include <fmt/os.h>
 #include <spdlog/spdlog.h>
 
-#include "utils.hpp"
+#include "command.hpp"
 
 #ifdef __linux__
 
