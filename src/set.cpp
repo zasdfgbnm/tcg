@@ -9,8 +9,7 @@
 static Command command(/*name =*/"set",
                        /*alias =*/{},
                        /*short_description =*/"TODO: Add doc",
-                       /*long_description =*/R"body(TODO: Add doc)body",
-                       /*handlers =*/{});
+                       /*long_description =*/R"body(TODO: Add doc)body");
 
 static struct SetHandler final : public Handler {
   SetHandler(Command &command)

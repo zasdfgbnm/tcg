@@ -15,7 +15,6 @@ static Command command(/*name =*/"self",
                        /*alias =*/{"sf"},
                        /*short_description =*/"TODO: Add doc",
                        /*long_description =*/R"body(TODO: Add doc)body",
-                       /*handlers =*/{},
                        /*sandbox =*/false // disable sandbox to access /proc
 );
 
