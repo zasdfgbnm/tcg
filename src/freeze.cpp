@@ -3,6 +3,7 @@
 #include <fmt/os.h>
 #include <spdlog/spdlog.h>
 
+#include "command.hpp"
 #include "utils.hpp"
 
 void freeze(const std::string &name) {

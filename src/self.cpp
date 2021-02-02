@@ -6,6 +6,7 @@
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
 
+#include "command.hpp"
 #include "utils.hpp"
 
 namespace fs = boost::filesystem;

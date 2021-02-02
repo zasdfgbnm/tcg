@@ -3,6 +3,7 @@
 #include <fmt/os.h>
 #include <spdlog/spdlog.h>
 
+#include "command.hpp"
 #include "utils.hpp"
 
 void set(const std::string &name, const std::string &key,
