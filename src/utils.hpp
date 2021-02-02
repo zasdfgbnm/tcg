@@ -41,6 +41,19 @@ public:
   void call(const char *args[]) const;
 };
 
+struct Argument {
+  std::string name;
+};
+
+Argument operator ""_var(const char *name) {
+  return {name};
+}
+
+struct Handler {
+  std::vector<Argument> arguments;
+  virtual operator()
+}
+
 class Command {
   static std::map<std::string, const Command *> registry;
 
@@ -50,6 +63,7 @@ public:
   std::string short_description;
   std::string long_description;
   std::vector<handler> handlers;
+  std::vector<
   bool sandbox = true;
 
   Command(const std::string &name, const std::vector<std::string> &alias,
