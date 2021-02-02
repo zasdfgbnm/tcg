@@ -103,6 +103,18 @@ DEFINE_HANDLER({"command"_var}, {
     }
     fmt::print("\n");
   }
+  fmt::print("\n");
+
+  // print syntax
+  fmt::print(title_format, "Syntax:\n");
+  for (auto h : c->handlers) {
+    fmt::print("tcg {}", c->name);
+    for (auto &a : h->arguments) {
+      fmt::print(" <{}>", a.name);
+    }
+    fmt::print("\n");
+  }
+  fmt::print("\n");
 
   // long description
   fmt::print(c->long_description);
