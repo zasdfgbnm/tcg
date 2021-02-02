@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <stdexcept>
 
@@ -83,6 +84,10 @@ public:
 void HandlerExecutor::compile(const std::vector<Handler *> &handlers) {
   assert(!compiled_);
   compiled_ = true;
+  auto narg = [](auto h) { return h->arguments.size(); };
+  auto max_length = narg(
+      *std::max_element(handlers.begin(), handlers.end(),
+                        [&](auto a, auto b) { return narg(a) > narg(b); }));
 }
 
 std::map<std::string, const Command *> Command::registry;
