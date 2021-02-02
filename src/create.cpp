@@ -61,19 +61,7 @@ std::string new_name() {
   exit(EXIT_FAILURE);
 }
 
-void create1(const std::string &name_) {
-  auto logger = spdlog::get("create");
-  logger->info("Start creating a new cgroup");
-  std::string name;
-  if (name_ == "") {
-    name = new_name();
-    logger->info("Name not specified, use builtin name {}", name);
-  } else {
-    logger->info("Name specified as {}, will validating.", name_);
-    validate_name(logger, name_);
-    logger->info("Name pass validation", name_);
-    name = name_;
-  }
+void create(std::shared_ptr<spdlog::logger> logger, const std::string &name) {
   std::cout << name << std::endl;
 
   // create new cgroup
@@ -161,12 +149,9 @@ void create1(const std::string &name_) {
   }
 }
 
-void create0() { create1(""); }
-
 #else
 
-void create0() {}
-void create1(const std::string &) {}
+void create(std::shared_ptr<spdlog::logger> logger, const std::string &name) {}
 
 #endif
 
@@ -176,4 +161,29 @@ static Command command(
     /*short_description =*/"create a new cgroup containing the current shell",
     /*long_description =*/R"body(
 This command will create a new cgroup and add the current shell to it. TODO)body",
-    /*handlers =*/{create0, create1});
+    /*handlers =*/{});
+
+static struct CreateHandler final : public Handler {
+  CreateHandler(Command &command) : Handler(command, {}) {}
+  void operator()(
+      const std::unordered_map<std::string, std::string> &args) const override {
+    auto logger = spdlog::get("create");
+    logger->info("Start creating a new cgroup");
+    std::string name = new_name();
+    logger->info("Name not specified, use builtin name {}", name);
+    create(logger, name);
+  }
+} create_handler(command);
+
+static struct CreateNameHandler final : public Handler {
+  CreateNameHandler(Command &command) : Handler(command, {"name"_var}) {}
+  void operator()(
+      const std::unordered_map<std::string, std::string> &args) const override {
+    auto logger = spdlog::get("create");
+    std::string name = args.at("name");
+    logger->info("Name specified as {}, will validating.", name);
+    validate_name(logger, name);
+    logger->info("Name pass validation", name);
+    create(logger, name);
+  }
+} create_name_handler(command);
