@@ -52,7 +52,7 @@ class Command;
 
 struct Handler {
   std::vector<Argument> arguments;
-  virtual void operator()(const std::vector<std::string> &args) const = 0;
+  virtual void operator()(const std::unordered_map<std::string, std::string> &args) const = 0;
   Handler(Command &, const std::vector<Argument> &);
 };
 
