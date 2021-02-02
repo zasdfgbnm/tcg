@@ -4,13 +4,13 @@
 
 void initialize_logger();
 void enter_sandbox();
-void help0();
+void usage();
 
 int main(int argc, const char *argv[]) {
   initialize_logger();
 
   if (argc < 2) {
-    help0();
+    usage();
     return 0;
   }
 

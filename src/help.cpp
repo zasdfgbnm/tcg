@@ -13,7 +13,7 @@ const fmt::text_style title_format = maybe_style(fmt::emphasis::bold);
 const fmt::text_style error_format =
     maybe_style(fg(fmt::color::red) | fmt::emphasis::bold);
 
-void help0() {
+void usage() {
   // title
   fmt::print(title_format, "Usage:\n");
   fmt::print("tcg <command> [<args>]\n\n");
