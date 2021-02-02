@@ -161,7 +161,7 @@ static Command command(
     /*short_description =*/"create a new cgroup containing the current shell",
     /*long_description =*/R"body(
 This command will create a new cgroup and add the current shell to it. TODO)body",
-    /*handlers =*/{});
+);
 
 static struct CreateHandler final : public Handler {
   CreateHandler(Command &command) : Handler(command, {}) {}
