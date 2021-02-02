@@ -92,9 +92,9 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
   auto narg = [](auto h) { return h->arguments.size(); };
   auto max_length = narg(
       *std::max_element(handlers.begin(), handlers.end(),
-                        [&](auto a, auto b) { return narg(a) > narg(b); }));
+                        [&](auto a, auto b) { return narg(a) < narg(b); }));
   std::vector<const Handler *> handlers_by_narg(max_length + 1, nullptr);
-  fmt::print("debug 0.1, max_length={}\n", max_length);
+  fmt::print("debug 0.1, max_length={}, handlers.size()={}\n", max_length, handlers.size());
   for (auto h : handlers) {
     BOOST_ASSERT_MSG(handlers_by_narg[narg(h)] == nullptr, LL1_ERROR);
     handlers_by_narg[narg(h)] = h;
@@ -103,6 +103,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     fmt::print("debug 0.2, i={}\n", i);
     std::string name;
     for (int64_t j = i; j <= max_length; j++) {
+      fmt::print("debug 0.3, j={}\n", j);
       auto h = handlers_by_narg[j];
       if (h == nullptr) {
         continue;
@@ -113,6 +114,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
         BOOST_ASSERT_MSG(name == h->arguments[i].name, LL1_ERROR);
       }
     }
+    fmt::print("debug 0.4, i={}, name={}\n", i, name);
     names[i] = name;
     if (handlers_by_narg[i] != nullptr) {
       state_handlers[i] = handlers_by_narg[i];
