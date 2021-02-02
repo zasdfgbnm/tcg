@@ -51,8 +51,8 @@ Argument operator ""_var(const char *name) {
 
 struct Handler {
   std::vector<Argument> arguments;
-  virtual operator()
-}
+  virtual operator(const char *args[]) const = 0;
+};
 
 class Command {
   static std::map<std::string, const Command *> registry;
@@ -63,7 +63,7 @@ public:
   std::string short_description;
   std::string long_description;
   std::vector<handler> handlers;
-  std::vector<
+  std::vector<Handler> new_handlers;
   bool sandbox = true;
 
   Command(const std::string &name, const std::vector<std::string> &alias,
