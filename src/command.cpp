@@ -59,8 +59,8 @@ class HandlerExecutor {
           const std::unordered_map<int64_t, int64_t> &arg_next,
           const std::unordered_map<int64_t, int64_t> &opt_next,
           const std::unordered_map<int64_t, std::string> &names)
-        : id(0), state_handlers(state_handlers), arg_next(arg_next), opt_next(opt_next),
-          names(names) {}
+        : id(0), state_handlers(state_handlers), arg_next(arg_next),
+          opt_next(opt_next), names(names) {}
     void feed(std::string text) {
       if (boost::starts_with(text, "-")) { // is option
         id = get(opt_next, id);
@@ -111,6 +111,9 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     names[i] = name;
     if (handlers_by_narg[i] != nullptr) {
       state_handlers[i] = handlers_by_narg[i];
+    }
+    if (i > 0) {
+      arg_next[i - 1] = i;
     }
   }
 }
