@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 constexpr const char *url = "https://github.com/zasdfgbnm/tcg";
 constexpr const char *cgroup_procs = "/sys/fs/cgroup/cgroup.procs";
