@@ -82,6 +82,7 @@ Handler::Handler(Command &command, const std::vector<Argument> &arguments):
 class HandlerExecutor {
   bool compiled_ = false;
   class State {
+  public:
     void feed(std::string) {}
     void finalize() {}
   };
@@ -150,7 +151,7 @@ void Command::operator()(const char *args[]) const {
     if (executor->compiled()) {
       executor->compile(new_handlers);
     }
-    auto state = executor.start();
+    auto state = executor->start();
     auto arg = args;
     while (*arg != nullptr) {
       state.feed(*(arg++));
