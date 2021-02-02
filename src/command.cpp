@@ -105,8 +105,7 @@ std::map<std::string, const Command *> Command::registry;
 
 Command::Command(const std::string &name, const std::vector<std::string> &alias,
                  const std::string &short_description,
-                 const std::string &long_description,
-                 bool sandbox)
+                 const std::string &long_description, bool sandbox)
     : executor(std::make_shared<HandlerExecutor>()), name(name), alias(alias),
       short_description(short_description), long_description(long_description),
       sandbox(sandbox) {

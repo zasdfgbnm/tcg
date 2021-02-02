@@ -40,8 +40,7 @@ public:
 
   Command(const std::string &name, const std::vector<std::string> &alias,
           const std::string &short_description,
-          const std::string &long_description,
-          bool sandbox = true);
+          const std::string &long_description, bool sandbox = true);
 
   virtual bool defined() const { return true; }
 
