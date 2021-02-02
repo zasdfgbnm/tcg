@@ -14,6 +14,7 @@ const fmt::text_style name_format =
 const fmt::text_style title_format = maybe_style(fmt::emphasis::bold);
 const fmt::text_style error_format =
     maybe_style(fg(fmt::color::red) | fmt::emphasis::bold);
+const fmt::text_style listing_format = maybe_style(fg(fmt::color::blanched_almond));
 
 void usage() {
   // title
@@ -107,7 +108,9 @@ DEFINE_HANDLER({"command"_var}, {
 
   // print syntax
   fmt::print(title_format, "Syntax:\n");
+  int64_t i = 1;
   for (auto h : c->handlers) {
+    fmt::print(listing_format, "[{}] ", i++);
     fmt::print("tcg {}", c->name);
     for (auto &a : h->arguments) {
       fmt::print(" <{}>", a.name);
