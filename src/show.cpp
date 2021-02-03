@@ -11,11 +11,11 @@ namespace show {
 
 Command command(/*name =*/"show",
                 /*alias =*/{},
-                /*short_description =*/"TODO: Add doc",
+                /*short_description =*/"show the value of specific key",
                 /*additional_note =*/"");
 
 std::vector<Argument> args_ = {"cgroup_name"_var, "key"_var};
-DEFINE_HANDLER(args_, "TODO: add doc", {
+DEFINE_HANDLER(args_, "show the value of the key of the specified cgroup", {
   auto logger = spdlog::get("show");
   std::string name = args.at("cgroup_name");
   std::string key = args.at("key");

@@ -10,7 +10,7 @@ namespace freeze {
 
 Command command(/*name =*/"freeze",
                 /*alias =*/{"f"},
-                /*short_description =*/"TODO: Add doc",
+                /*short_description =*/"freeze a cgroup",
                 /*additional_note =*/"");
 
 DEFINE_HANDLER({"cgroup_name"_var}, "freeze the specified cgroup", {
@@ -32,7 +32,7 @@ namespace unfreeze {
 
 Command command(/*name =*/"unfreeze",
                 /*alias =*/{"uf"},
-                /*short_description =*/"TODO: Add doc",
+                /*short_description =*/"unfreeze a cgroup",
                 /*additional_note =*/"");
 
 DEFINE_HANDLER({"cgroup_name"_var}, "unfreeze the specified cgroup", {
