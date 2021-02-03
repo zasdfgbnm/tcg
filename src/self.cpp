@@ -15,7 +15,7 @@ namespace fs = boost::filesystem;
 
 Command command(/*name =*/"self",
                 /*alias =*/{"sf"},
-                /*short_description =*/"TODO: Add doc",
+                /*short_description =*/"show the cgroup of the current shell",
                 /*additional_note =*/"",
                 /*sandbox =*/false // disable sandbox to access /proc
 );
