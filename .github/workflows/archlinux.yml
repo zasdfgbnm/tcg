@@ -18,7 +18,7 @@ jobs:
         submodules: true
     - name: build
       run: |
-        docker run -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
+        sudo docker run --privileged -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
           set -eux
           cp -r /workspace/packaging/archlinux ~/package
           cd ~/package
