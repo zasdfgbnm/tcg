@@ -34,6 +34,7 @@ jobs:
         submodules: true
     - name: Install dependencies
       run: |
+        sudo apt-get update
         sudo apt-get install -y libboost-all-dev clang-tidy
     - name: Generate compile_commands.json
       run: |
@@ -55,6 +56,7 @@ jobs:
         python-version: '3.9'
     - name: Install dependencies
       run: |
+        sudo apt-get update
         sudo apt-get install -y libboost-all-dev
         pip install xonsh pytest
     - name: Compile
