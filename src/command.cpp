@@ -70,15 +70,17 @@ public:
 
 class HandlerExecutor {
   bool compiled_ = false;
-  std::unordered_map<int64_t, const Handler *> state_handlers;
-  std::unordered_map<int64_t, int64_t> next;
-  std::unordered_map<int64_t, std::string> names;
+  // std::unordered_map<int64_t, const Handler *> state_handlers;
+  // std::unordered_map<int64_t, int64_t> next;
+  // std::unordered_map<int64_t, std::string> names;
+
+  const std::unordered_map<int64_t, NextInfo> &next;
 
 public:
   HandlerExecutor() = default;
   void compile(const std::vector<const Handler *> &handlers);
   bool compiled() const { return compiled_; }
-  StateMachine start() const { return {state_handlers, next, names}; }
+  StateMachine start() const { return {next}; }
 };
 
 void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
