@@ -2,44 +2,72 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assert.hpp>
 #include <stdexcept>
+#include <utility>
 
 #include "command.hpp"
 #include "utils.hpp"
 
-Handler::Handler(Command &command, const std::vector<std::shared_ptr<Argument>> &arguments,
+const char *LL1_ERROR = "The language is not LL(1).";
+
+class InvalidCommand : public Command {
+  InvalidCommand() : Command(Command::do_not_register{}) {}
+} invalid_command;
+
+class InvalidHandler : public Handler {
+  InvalidHandler(): Handler(invalid_command, {}, "") {}
+  void operator()(const arg_map_t &args) const override {
+    invalid_argument();
+  }
+} invalid_handler;
+
+Handler::Handler(Command &command, const std::vector<std::shared_ptr<const Argument>> &arguments,
                  const std::string &description)
     : arguments(arguments), description(description) {
   command.handlers.push_back(this);
 }
 
+struct NextInfo {
+  const Handler &handler = invalid_handler;
+  std::vector<std::pair<std::shared_ptr<const Argument>, int64_t>> arguments;
+};
+
 class StateMachine {
   int64_t id;
   std::unordered_map<std::string, std::string> args;
-  const std::unordered_map<int64_t, const Handler *> &state_handlers;
-  const std::unordered_map<int64_t, int64_t> &next;
-  const std::unordered_map<int64_t, std::string> &names;
+  const std::unordered_map<int64_t, NextInfo> &next_;
 
-  static constexpr auto get = [](auto map, auto id) {
-    auto i = map.find(id);
-    if (i == map.end()) {
+  const NextInfo &next_info() const {
+    const auto &i = next_.find(id);
+    if (i == next_.end()) {
       invalid_argument();
     }
     return i->second;
   };
 
 public:
-  StateMachine(const std::unordered_map<int64_t, const Handler *> &state_handlers,
-        const std::unordered_map<int64_t, int64_t> &next,
-        const std::unordered_map<int64_t, std::string> &names)
-      : id(0), state_handlers(state_handlers), next(next),
-        names(names) {}
+  StateMachine(const std::unordered_map<int64_t, NextInfo> &next)
+      : id(0), next_(next) {}
   void feed(std::string text) {
-    args[get(names, id)] = text;
-    id = get(next, id);
+    const NextInfo &next = next_info();
+    for (auto &arg_id : next.arguments) {
+      auto &arg = arg_id.first;
+      auto next_id = arg_id.second;
+      if (typeid(*arg) == typeid(Variable)) {
+        BOOST_ASSERT_MSG(next.arguments.size() == 1, LL1_ERROR);
+        args[arg->name] = text;
+        id = next_id;
+      } else {
+        BOOST_ASSERT_MSG(typeid(*arg) == typeid(Keyword), "Unknow argument type");
+        std::shared_ptr<const Keyword> keyword = std::dynamic_pointer_cast<const Keyword>(arg);
+        if (text == keyword->name || keyword->has_alias(text)) {
+          id = next_id;
+          break;
+        }
+      }
+    }
   }
   void finalize() const {
-    auto handler = get(state_handlers, id);
-    (*handler)(args);
+    next_info().handler(args);
   }
 };
 
@@ -57,7 +85,6 @@ public:
 };
 
 void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
-  const char *LL1_ERROR = "The language is not LL(1).";
   assert(!compiled_);
   compiled_ = true;
   auto narg = [](auto h) { return h->arguments.size(); };
