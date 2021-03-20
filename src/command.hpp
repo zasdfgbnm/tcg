@@ -27,7 +27,7 @@ public:
   Keyword(const std::string &name, const std::unordered_set<std::string> &alias)
       : Argument(name), alias_(alias) {}
 
-  template <typename... args_t> std::shared_ptr<Keyword> alias(args_t... args) const {
+  template <typename... args_t> std::shared_ptr<const Keyword> alias(args_t... args) const {
     std::shared_ptr<const Keyword> ret = std::make_shared<Keyword>(name, alias_);
     auto new_alias = std::vector<std::string>{args...};
     ret->alias_.insert(ret->alias_.end(), new_alias.begin(), new_alias.end());
