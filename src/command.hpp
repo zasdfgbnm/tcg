@@ -53,6 +53,10 @@ struct Handler {
   virtual void operator()(const arg_map_t &args) const = 0;
   Handler(Command &, const std::vector<std::shared_ptr<const Argument>> &,
           const std::string &);
+
+  class do_not_register {};
+
+  Handler(do_not_register) {}
 };
 
 class HandlerExecutor;
@@ -68,10 +72,6 @@ public:
   std::string additional_note;
   std::vector<const Handler *> handlers;
   bool sandbox = true;
-
-  class do_not_register {};
-
-  Command(do_not_register) {}
 
   Command(const std::string &name, const std::vector<std::string> &alias,
           const std::string &short_description,

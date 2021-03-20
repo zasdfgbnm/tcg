@@ -9,14 +9,9 @@
 
 const char *LL1_ERROR = "The language is not LL(1).";
 
-class InvalidCommand : public Command {
-public:
-  InvalidCommand() : Command(Command::do_not_register{}) {}
-} invalid_command;
-
 class InvalidHandler : public Handler {
 public:
-  InvalidHandler(): Handler(invalid_command, {}, "") {}
+  InvalidHandler(): Handler(Handler::do_not_register{}) {}
   void operator()(const arg_map_t &args) const override {
     invalid_argument();
   }
