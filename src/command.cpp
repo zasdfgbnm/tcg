@@ -50,8 +50,11 @@ public:
       auto &arg = arg_id.first;
       auto next_id = arg_id.second;
       if (typeid(*arg) == typeid(Variable)) {
+        // when there are multiple variables, these variables
+        // must have the same name
         args[arg->name] = text;
         id = next_id;
+        break;
       } else {
         BOOST_ASSERT_MSG(typeid(*arg) == typeid(Keyword), "Unknow argument type");
         std::shared_ptr<const Keyword> keyword = std::dynamic_pointer_cast<const Keyword>(arg);
