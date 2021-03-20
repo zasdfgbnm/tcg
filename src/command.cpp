@@ -16,7 +16,6 @@ class HandlerExecutor {
   bool compiled_ = false;
   std::unordered_map<int64_t, const Handler *> state_handlers;
   std::unordered_map<int64_t, int64_t> arg_next;
-  std::unordered_map<int64_t, int64_t> opt_next;
   std::unordered_map<int64_t, std::string> names;
 
   class State {
@@ -24,7 +23,6 @@ class HandlerExecutor {
     std::unordered_map<std::string, std::string> args;
     const std::unordered_map<int64_t, const Handler *> &state_handlers;
     const std::unordered_map<int64_t, int64_t> &arg_next;
-    const std::unordered_map<int64_t, int64_t> &opt_next;
     const std::unordered_map<int64_t, std::string> &names;
 
     static constexpr auto get = [](auto map, auto id) {
@@ -38,17 +36,12 @@ class HandlerExecutor {
   public:
     State(const std::unordered_map<int64_t, const Handler *> &state_handlers,
           const std::unordered_map<int64_t, int64_t> &arg_next,
-          const std::unordered_map<int64_t, int64_t> &opt_next,
           const std::unordered_map<int64_t, std::string> &names)
         : id(0), state_handlers(state_handlers), arg_next(arg_next),
-          opt_next(opt_next), names(names) {}
+          names(names) {}
     void feed(std::string text) {
-      if (boost::starts_with(text, "-")) { // is option
-        id = get(opt_next, id);
-      } else { // is argument
-        args[get(names, id)] = text;
-        id = get(arg_next, id);
-      }
+      args[get(names, id)] = text;
+      id = get(arg_next, id);
     }
     void finalize() const {
       auto handler = get(state_handlers, id);
@@ -60,7 +53,7 @@ public:
   HandlerExecutor() = default;
   void compile(const std::vector<const Handler *> &handlers);
   bool compiled() const { return compiled_; }
-  State start() const { return {state_handlers, arg_next, opt_next, names}; }
+  State start() const { return {state_handlers, arg_next, names}; }
 };
 
 void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
