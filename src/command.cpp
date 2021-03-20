@@ -16,7 +16,7 @@ class StateMachine {
   int64_t id;
   std::unordered_map<std::string, std::string> args;
   const std::unordered_map<int64_t, const Handler *> &state_handlers;
-  const std::unordered_map<int64_t, int64_t> &arg_next;
+  const std::unordered_map<int64_t, int64_t> &next;
   const std::unordered_map<int64_t, std::string> &names;
 
   static constexpr auto get = [](auto map, auto id) {
@@ -29,13 +29,13 @@ class StateMachine {
 
 public:
   StateMachine(const std::unordered_map<int64_t, const Handler *> &state_handlers,
-        const std::unordered_map<int64_t, int64_t> &arg_next,
+        const std::unordered_map<int64_t, int64_t> &next,
         const std::unordered_map<int64_t, std::string> &names)
-      : id(0), state_handlers(state_handlers), arg_next(arg_next),
+      : id(0), state_handlers(state_handlers), next(next),
         names(names) {}
   void feed(std::string text) {
     args[get(names, id)] = text;
-    id = get(arg_next, id);
+    id = get(next, id);
   }
   void finalize() const {
     auto handler = get(state_handlers, id);
@@ -46,14 +46,14 @@ public:
 class HandlerExecutor {
   bool compiled_ = false;
   std::unordered_map<int64_t, const Handler *> state_handlers;
-  std::unordered_map<int64_t, int64_t> arg_next;
+  std::unordered_map<int64_t, int64_t> next;
   std::unordered_map<int64_t, std::string> names;
 
 public:
   HandlerExecutor() = default;
   void compile(const std::vector<const Handler *> &handlers);
   bool compiled() const { return compiled_; }
-  StateMachine start() const { return {state_handlers, arg_next, names}; }
+  StateMachine start() const { return {state_handlers, next, names}; }
 };
 
 void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
