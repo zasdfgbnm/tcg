@@ -34,7 +34,8 @@ struct Keyword : public Argument {
 };
 
 inline std::shared_ptr<Keyword> operator""_kwd(const char *name, size_t size) {
-  return std::make_shared<Keyword>(std::string(name, size), std::vector<std::string>{});
+  return std::make_shared<Keyword>(std::string(name, size),
+                                   std::vector<std::string>{});
 }
 
 class Command;
