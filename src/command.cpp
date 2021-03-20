@@ -90,7 +90,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
       state_handlers[i] = handlers_by_narg[i];
     }
     if (i > 0) {
-      arg_next[i - 1] = i;
+      next[i - 1] = i;
     }
   }
 }
