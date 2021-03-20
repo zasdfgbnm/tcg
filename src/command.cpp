@@ -50,7 +50,6 @@ public:
       auto &arg = arg_id.first;
       auto next_id = arg_id.second;
       if (typeid(*arg) == typeid(Variable)) {
-        BOOST_ASSERT_MSG(next.arguments.size() == 1, LL1_ERROR);
         args[arg->name] = text;
         id = next_id;
       } else {
@@ -113,7 +112,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
       names[i - 1] = name;
     }
     if (handlers_by_narg[i] != nullptr) {
-      state_handlers[i] = handlers_by_narg[i];
+      next[i].handler = handlers_by_narg[i];
     }
     if (i > 0) {
       next[i - 1] = i;
