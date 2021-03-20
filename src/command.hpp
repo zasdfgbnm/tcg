@@ -14,6 +14,25 @@ inline Argument operator""_var(const char *name, size_t size) {
   return {std::string(name, size)};
 }
 
+struct Keyword {
+  std::string keyword;
+  std::vector<std::string> alias_;
+
+  template<typename ...args_t>
+  Keyword alias(args_t...args) {
+    Keyword ret;
+    auto new_alias = std::vector<std::string>{args...};
+    ret.keyword = keyword;
+    ret.alias_ = alias_;
+    ret.alias_.insert(ret.alias_.end(), new_alias.begin(), new_alias.end());
+    return ret;
+  }
+};
+
+inline Keyword operator""_kwd(const char *name, size_t size) {
+  return {std::string(name, size), {}};
+}
+
 class Command;
 
 using arg_map_t = std::unordered_map<std::string, std::string>;
