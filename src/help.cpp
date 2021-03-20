@@ -107,7 +107,7 @@ DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
     fmt::print(listing_format, "[{}] ", i++);
     fmt::print("tcg {}", c->name);
     for (auto &a : h->arguments) {
-      fmt::print(" <{}>", a.name);
+      fmt::print(" <{}>", a->name);
     }
     fmt::print("\n");
   }

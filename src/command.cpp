@@ -6,7 +6,7 @@
 #include "command.hpp"
 #include "utils.hpp"
 
-Handler::Handler(Command &command, const std::vector<Argument> &arguments,
+Handler::Handler(Command &command, const std::vector<std::shared_ptr<Argument>> &arguments,
                  const std::string &description)
     : arguments(arguments), description(description) {
   command.handlers.push_back(this);
@@ -79,9 +79,9 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           continue;
         }
         if (name.size() == 0) {
-          name = h->arguments[i - 1].name;
+          name = h->arguments[i - 1]->name;
         } else {
-          BOOST_ASSERT_MSG(name == h->arguments[i - 1].name, LL1_ERROR);
+          BOOST_ASSERT_MSG(name == h->arguments[i - 1]->name, LL1_ERROR);
         }
       }
       names[i - 1] = name;

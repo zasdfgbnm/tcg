@@ -8,10 +8,33 @@
 
 struct Argument {
   std::string name;
+  Argument(const std::string &name) : name(name) {}
 };
 
-inline Argument operator""_var(const char *name, size_t size) {
-  return {std::string(name, size)};
+struct Variable : public Argument {
+  using Argument::Argument;
+};
+
+inline std::shared_ptr<Variable> operator""_var(const char *name, size_t size) {
+  return std::make_shared<Variable>(std::string(name, size));
+}
+
+struct Keyword : public Argument {
+  std::vector<std::string> alias_;
+
+  Keyword(const std::string &name, const std::vector<std::string> &alias)
+      : Argument(name), alias_(alias) {}
+
+  template <typename... args_t> std::shared_ptr<Keyword> alias(args_t... args) {
+    std::shared_ptr<Keyword> ret = std::make_shared<Keyword>(name, alias_);
+    auto new_alias = std::vector<std::string>{args...};
+    ret->alias_.insert(ret->alias_.end(), new_alias.begin(), new_alias.end());
+    return ret;
+  }
+};
+
+inline std::shared_ptr<Keyword> operator""_kwd(const char *name, size_t size) {
+  return std::make_shared<Keyword>(std::string(name, size), std::vector<std::string>{});
 }
 
 class Command;
@@ -19,10 +42,11 @@ class Command;
 using arg_map_t = std::unordered_map<std::string, std::string>;
 
 struct Handler {
-  std::vector<Argument> arguments;
+  std::vector<std::shared_ptr<Argument>> arguments;
   std::string description;
   virtual void operator()(const arg_map_t &args) const = 0;
-  Handler(Command &, const std::vector<Argument> &, const std::string &);
+  Handler(Command &, const std::vector<std::shared_ptr<Argument>> &,
+          const std::string &);
 };
 
 class HandlerExecutor;
