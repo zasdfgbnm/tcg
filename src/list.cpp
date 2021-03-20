@@ -72,27 +72,4 @@ DEFINE_HANDLER({}, "list existing cgroups and its details", {
   }
 });
 
-DEFINE_HANDLER({"cgroups"_kwd->alias("cgs")}, "list existing cgroups", {
-  auto logger = spdlog::get("list");
-  logger->info("List all existing cgroups.");
-  fmt::text_style cg_style =
-      maybe_style(fg(fmt::color::green) | fmt::emphasis::bold);
-  auto r = user_dir();
-  logger->debug("Root directory is {}, iterating it.", r);
-  fs::path p(r);
-  if (!fs::exists(p)) {
-    logger->info("Root directory does not exist, showing empty list.");
-    return;
-  }
-  fs::recursive_directory_iterator end;
-  for (fs::recursive_directory_iterator i(p); i != end; ++i) {
-    if (fs::is_directory(*i)) {
-      auto cg = i->path().filename().string();
-      logger->debug("Found cgroup {}.", cg);
-      fmt::print(cg);
-      fmt::print("\n");
-    }
-  }
-});
-
 } // namespace list
