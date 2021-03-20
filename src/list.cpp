@@ -72,7 +72,7 @@ DEFINE_HANDLER({}, "list existing cgroups and its details", {
   }
 });
 
-DEFINE_HANDLER({"cgroups"_kwd.alias("cgs")}, "list existing cgroups", {
+DEFINE_HANDLER({"cgroups"_kwd->alias("cgs")}, "list existing cgroups", {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
   fmt::text_style cg_style =
