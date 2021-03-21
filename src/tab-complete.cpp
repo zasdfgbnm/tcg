@@ -28,7 +28,8 @@ DEFINE_HANDLER({"partial_command"_var}, "complete partial command", {
       continue;
     }
     auto match = [&](std::string str) {
-      return str.size() >= partial_command.size() && str.substr(0, partial_command.size()) == partial_command;
+      return str.size() >= partial_command.size() &&
+             str.substr(0, partial_command.size()) == partial_command;
     };
     if (match(i.first)) {
       fmt::print("{}\n", i.first);
