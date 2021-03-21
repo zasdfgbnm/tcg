@@ -122,7 +122,8 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           std::shared_ptr<const Argument> barg =
               b.handlers[0]->arguments[branch.cursor];
           auto compare = (*harg <=> *barg);
-          BOOST_ASSERT_MSG(compare >= 0, "BUG: Incompatible argument configuration.");
+          BOOST_ASSERT_MSG(compare >= 0,
+                           "BUG: Incompatible argument configuration.");
           if (compare == 0) {
             new_branch = &b;
             break;
