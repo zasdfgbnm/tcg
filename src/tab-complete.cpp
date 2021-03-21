@@ -23,7 +23,23 @@ DEFINE_HANDLER({"partial_command"_var}, "complete partial command", {
     exit(EXIT_FAILURE);
   }
   partial_command = partial_command.substr(0, partial_command.size() - 1);
-  fmt::print(partial_command);
+  for (auto &i : Command::all()) {
+    if (!i.second->defined() || i.first != i.second->name) {
+      continue;
+    }
+    auto match = [&](std::string str) {
+      return str.size() >= partial_command.size() && str.substr(0, partial_command.size()) == partial_command;
+    };
+    if (match(i.first)) {
+      fmt::print("{}\n", i.first);
+    } else {
+      for (auto &j : i.second->alias) {
+        if (match(j)) {
+          fmt::print("{}\n", j);
+        }
+      }
+    }
+  }
 });
 
 } // namespace tab_complete
