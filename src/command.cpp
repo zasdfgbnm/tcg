@@ -101,13 +101,15 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     // move cursor to the next, discover new branches
     int starting_id = id;
     for (auto h : handlers) {
-      if (h->arg_size() == branch.cursor) {
+      if (h->arguments.size() == branch.cursor) {
         // there can not be more than one handler ending
         // at the same branch, otherwise this language is not unique
         BOOST_ASSERT_MSG(next[branch.id].handler != &invalid_handler,
                          LL1_ERROR);
         next[branch.id].handler = h;
       } else {
+        std::shared_ptr<const Argument> harg = h->arguments[branch.cursor];
+        // find if this handler fits an existing branch
         Branch *new_branch = nullptr;
         for (auto &b : std::ranges::views::reverse(branches)) {
           if (b.id < starting_id) {
@@ -115,11 +117,40 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           }
           BOOST_ASSERT_MSG(b.cursor == branch.cursor + 1,
                            "BUG: cursor for new branches not properly set");
+          BOOST_ASSERT_MSG(b->handlers.size() > 0,
+                           "BUG: handlers for new branches not properly set");
+          std::shared_ptr<const Argument> barg =
+              b->handlers[0]->arguments[branch.cursor];
+          auto compare = (*harg <=> *barg);
+          BOOST_ASSERT_MSG(compare >= 0, "BUG: Incompatible ");
+          if (compare == 0) {
+            new_branch = b;
+            break;
+          }
         }
+        // if not, then create a new branch
         if (new_branch == nullptr) {
           branches.emplace_back(id++, branch.cursor + 1);
           new_branch = &branches.back();
           new_branch->handlers.emplace_back(h);
+        }
+        // update NextInfo of current branch to point to the new branch
+        if (typeid(*harg) == typeid(Variable)) {
+          if (next[branch.id].variable.size() == 0 &&
+              next[branch.id].variable_next == -1) {
+            next[branch.id].variable = harg->name;
+            next[branch.id].variable_next = new_branch->id;
+          }
+          // At the same branch, different handlers can not have different
+          // variables at the branching position. For example: legal: tcg aaa,
+          // tcg aaa <bbb>, tcg aaa <bbb> <ccc> illegal: tcg aaa <bbb>, tcg aaa
+          // <ccc>
+          BOOST_ASSERT_MSG(next[branch.id].variable == harg->name, LL1_ERROR);
+          BOOST_ASSERT_MSG(next[branch.id].variable_next == new_branch->id,
+                           LL1_ERROR);
+        } else {
+          BOOST_ASSERT_MSG(typeid(*harg) == typeid(Keyword),
+                           "BUG: Unknown argument type");
         }
       }
     }
