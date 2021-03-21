@@ -1,15 +1,13 @@
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assert.hpp>
-#include <queue>
+#include <deque>
 #include <ranges>
 #include <stdexcept>
 #include <utility>
 
 #include "command.hpp"
 #include "utils.hpp"
-
-const char *LL1_ERROR = "BUG: The language is not LL(1).";
 
 class InvalidHandler : public Handler {
 public:
