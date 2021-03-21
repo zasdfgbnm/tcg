@@ -73,13 +73,14 @@ public:
 };
 
 void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
+  fmt::print("begin compile\n");
   assert(!compiled_);
   compiled_ = true;
   struct Branch {
-    std::vector<const Handler *> handlers;
+    std::vector<const Handler *> handlers = {};
     int64_t cursor;
     int64_t id;
-    Branch(int64_t id, int64_t cursor) : id(id), cursor(cursor) {}
+    Branch(int64_t id, int64_t cursor, std::vector<const Handler *> handlers) : id(id), cursor(cursor), handlers(handlers) {}
   };
 
   // at the beginning, put all handlers in the same branch,
@@ -87,35 +88,40 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
   // to this id
   int64_t id = 0;
   std::deque<Branch> branches;
-  branches.emplace_back(id++, 0);
-  for (auto h : handlers) {
-    branches.front().handlers.emplace_back(h);
-  }
+  branches.emplace_back(id++, 0, handlers);
 
   while (branches.size() > 0) {
     // pop the front of branches
     Branch &branch = branches.front();
     branches.pop_front();
     NextInfo &next_info = next[branch.id];
+    fmt::print("*** branch.id = {}, branch.cursor = {}, num_handlers = {} ***\n", branch.id, branch.cursor, branch.handlers.size());
 
     // walk through all handlers in this branch, try
     // move cursor to the next, discover new branches
     int starting_id = id;
-    for (auto h : handlers) {
-      if (h->arguments.size() == branch.cursor) {
+    for (auto h : branch.handlers) {
+      fmt::print("handler = {}\n", (void *)h);
+      auto &hargs = h->arguments;
+      fmt::print("-- hargs.size() = {} --\n", hargs.size());
+      BOOST_ASSERT_MSG(hargs.size() >= branch.cursor, "BUG: handlers shouldn't be in branch");
+      if (hargs.size() == branch.cursor) {
+        fmt::print("handler ends here\n");
         // there can not be more than one handler ending
         // at the same branch, otherwise this language is not unique
         BOOST_ASSERT_MSG(next_info.handler != &invalid_handler,
                          "BUG: in one branch, only one handler can end here");
         next_info.handler = h;
       } else {
-        std::shared_ptr<const Argument> harg = h->arguments[branch.cursor];
+        fmt::print("moving cursor to the right\n");
+        std::shared_ptr<const Argument> harg = hargs[branch.cursor];
 
         // find if this handler fits an existing branch
         Branch *new_branch = nullptr;
-        int compare_result = -1;
         for (auto &b : std::ranges::views::reverse(branches)) {
+          fmt::print("searching for existing branches\n");
           if (b.id < starting_id) {
+            fmt::print("search ended without finding anything\n");
             break;
           }
           BOOST_ASSERT_MSG(b.cursor == branch.cursor + 1,
@@ -124,10 +130,11 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
                            "BUG: handlers for new branches not properly set.");
           std::shared_ptr<const Argument> barg =
               b.handlers[0]->arguments[branch.cursor];
-          compare_result = (*harg <=> *barg);
+          int compare_result = (*harg <=> *barg);
           BOOST_ASSERT_MSG(compare_result >= 0,
                            "BUG: Incompatible argument configuration.");
           if (compare_result == 0) {
+            fmt::print("Existing branch found\n");
             new_branch = &b;
             break;
           }
@@ -136,12 +143,15 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
         // if this handler fits to an existing branch, then add this handler to
         // this branch, otherwise, create a new branch
         if (new_branch != nullptr) {
-          new_branch->handlers.emplace_back(h);
+          fmt::print("new_branch != nullptr\n");
+          new_branch->handlers.push_back(h);
         } else {
+          fmt::print("new_branch == nullptr\n");
           // create a new branch
-          branches.emplace_back(id++, branch.cursor + 1);
+          branches.emplace_back(id++, branch.cursor + 1, std::vector<const Handler *>{h});
           new_branch = &branches.back();
-          new_branch->handlers.emplace_back(h);
+          fmt::print("new_branch->handlers.size() = {}\n", new_branch->handlers.size());
+          fmt::print("new_branch->handlers[0]->arguments.size() = {}\n", new_branch->handlers[0]->arguments.size());
 
           // update NextInfo of current branch to point to the new branch
           if (typeid(*harg) == typeid(Variable)) {
@@ -180,6 +190,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
       }
     }
   }
+  fmt::print("end compile\n\n");
 }
 
 std::map<std::string, const Command *> Command::registry;
