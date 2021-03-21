@@ -24,7 +24,7 @@ Handler::Handler(Command &command, const std::vector<std::shared_ptr<const Argum
 }
 
 struct NextInfo {
-  const Handler &handler = invalid_handler;
+  const Handler *handler = invalid_handler;
   std::vector<std::pair<std::shared_ptr<const Argument>, int64_t>> arguments;
 };
 
@@ -51,7 +51,9 @@ public:
       auto next_id = arg_id.second;
       if (typeid(*arg) == typeid(Variable)) {
         // when there are multiple variables, these variables
-        // must have the same name
+        // must have the same name, and there can not be keyword
+        // at the same position
+        BOOST_ASSERT_MSG(next.arguments.size() == 1, LL1_ERROR);
         args[arg->name] = text;
         id = next_id;
         break;
@@ -66,7 +68,7 @@ public:
     }
   }
   void finalize() const {
-    next_info().handler(args);
+    (*next_info().handler)(args);
   }
 };
 
@@ -99,6 +101,10 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     handlers_by_narg[n] = h;
   }
   for (int64_t i = 0; i <= max_length; i++) {
+    NextInfo next_info;
+    if (handlers_by_narg[i] != nullptr) {
+      next_info.handler = handlers_by_narg[i];
+    }
     if (i > 0) {
       std::string name;
       for (int64_t j = i; j <= max_length; j++) {
@@ -108,17 +114,11 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
         }
         if (name.size() == 0) {
           name = h->arguments[i - 1]->name;
+          next_info.arguments.emplace_back(h->arguments[i - 1], i);
         } else {
           BOOST_ASSERT_MSG(name == h->arguments[i - 1]->name, LL1_ERROR);
         }
       }
-      names[i - 1] = name;
-    }
-    if (handlers_by_narg[i] != nullptr) {
-      next[i].handler = handlers_by_narg[i];
-    }
-    if (i > 0) {
-      next[i - 1] = i;
     }
   }
 }
