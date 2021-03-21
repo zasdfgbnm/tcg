@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <utility>
 #include <queue>
+#include <ranges>
 
 #include "command.hpp"
 #include "utils.hpp"
@@ -74,33 +75,46 @@ public:
 void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
   assert(!compiled_);
   compiled_ = true;
-  int64_t id = 0;
-  struct HandlerWrapper {
-    const Handler *handler;
-    HandlerWrapper(const Handler *handler): handler(handler) {}
-    bool operator<(const HandlerWrapper &rhs) const {
-      return handler->arg_size() < rhs.handler->arg_size();
-    }
-  };
   struct Branch {
-    std::priority_queue<HandlerWrapper> handlers;
+    std::vector<const Handler *> handlers;
     int64_t cursor;
+    int64_t id;
+    Branch(int64_t id, int64_t cursor): id(id), cursor(cursor) {}
   };
-  std::queue<Branch> branches;
-  branches.emplace();
+
+  // at the beginning, put all handlers in the same branch,
+  // set cursor to 0, use id 0, and allocate a new NextInfo
+  // to this id
+  int64_t id = 0;
+  std::deque<Branch> branches;
+  branches.emplace_back(id++, 0);
   for (auto h : handlers) {
-    branches.front().handlers.emplace(h);
+    branches.front().handlers.emplace_back(h);
   }
+
   while (branches.size() > 0) {
+    // pop the front of branches
     Branch &branch = branches.front();
-    branches.pop();
-    auto &handlers = branch.handlers;
-    NextInfo info;
-    while (true) {
-      auto top = handlers.top();
-      if (top.handler->arg_size() == branch.cursor) {
-        handlers.pop();
-        info.handler = top.handler;
+    branches.pop_front();
+
+    // walk through all handlers in this branch, try
+    // move cursor to the next, discover new branches
+    int starting_id = id;
+    for (auto h : handlers) {
+      if (h->arg_size() == branch.cursor) {
+        // there can not be more than one handler ending
+        // at the same branch, otherwise this language is not unique
+        BOOST_ASSERT_MSG(next[branch.id].handler != &invalid_handler, LL1_ERROR);
+        next[branch.id].handler = h;
+      } else {
+        if (branches.back().id < starting_id) {
+          branches.emplace_back(id++, branch.cursor + 1);
+        }
+        for (auto &b : std::ranges::views::reverse(branches)) {
+          if (b.id < starting_id) {
+            break;
+          }
+        }
       }
     }
   }
