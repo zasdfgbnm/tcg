@@ -55,7 +55,7 @@ public:
         BOOST_ASSERT_MSG(next.arguments.size() == 1, LL1_ERROR);
         args[arg->name] = text;
         id = next_id;
-        break;
+        return;
       } else {
         BOOST_ASSERT_MSG(typeid(*arg) == typeid(Keyword),
                          "Unknow argument type");
@@ -63,10 +63,11 @@ public:
             std::dynamic_pointer_cast<const Keyword>(arg);
         if (text == keyword->name || keyword->has_alias(text)) {
           id = next_id;
-          break;
+          return;
         }
       }
     }
+    invalid_argument();
   }
   void finalize() const { (*next_info().handler)(args); }
 };
@@ -100,6 +101,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     if (handlers_by_narg[i] != nullptr) {
       next_info.handler = handlers_by_narg[i];
     }
+    next[i] = next_info;
     if (i > 0) {
       std::string name;
       for (int64_t j = i; j <= max_length; j++) {
@@ -109,13 +111,12 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
         }
         if (name.size() == 0) {
           name = h->arguments[i - 1]->name;
-          next_info.arguments.emplace_back(h->arguments[i - 1], i);
+          next[i - 1].arguments.emplace_back(h->arguments[i - 1], i);
         } else {
           BOOST_ASSERT_MSG(name == h->arguments[i - 1]->name, LL1_ERROR);
         }
       }
     }
-    next[i] = next_info;
   }
 }
 
