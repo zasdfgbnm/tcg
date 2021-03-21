@@ -74,7 +74,7 @@ public:
 
 class HandlerExecutor {
   bool compiled_ = false;
-  const std::unordered_map<int64_t, NextInfo> next;
+  std::unordered_map<int64_t, NextInfo> next;
 
 public:
   HandlerExecutor() = default;
@@ -116,6 +116,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
         }
       }
     }
+    next[i] = next_info;
   }
 }
 
