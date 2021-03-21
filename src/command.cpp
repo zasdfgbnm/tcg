@@ -24,7 +24,9 @@ Handler::Handler(Command &command,
 
 struct NextInfo {
   const Handler *handler = &invalid_handler;
-  std::vector<std::pair<std::shared_ptr<const Argument>, int64_t>> arguments;
+  std::unordered_map<std::string, int64_t> keywords;
+  std::string variable = "";
+  int64_t variable_next = -1;
 };
 
 class StateMachine {
@@ -45,29 +47,14 @@ public:
       : id(0), next_(next) {}
   void feed(std::string text) {
     const NextInfo &next = next_info();
-    for (auto &arg_id : next.arguments) {
-      auto &arg = arg_id.first;
-      auto next_id = arg_id.second;
-      if (typeid(*arg) == typeid(Variable)) {
-        // when there are multiple variables, these variables
-        // must have the same name, and there can not be keyword
-        // at the same position
-        BOOST_ASSERT_MSG(next.arguments.size() == 1, LL1_ERROR);
-        args[arg->name] = text;
-        id = next_id;
-        return;
-      } else {
-        BOOST_ASSERT_MSG(typeid(*arg) == typeid(Keyword),
-                         "Unknow argument type");
-        std::shared_ptr<const Keyword> keyword =
-            std::dynamic_pointer_cast<const Keyword>(arg);
-        if (text == keyword->name || keyword->has_alias(text)) {
-          id = next_id;
-          return;
-        }
-      }
+    if (next.keywords.contains(text)) {
+      id = next.keywords.at(text);
+    } else if (next.variable.size() > 0) {
+      args[next.variable] = text;
+      id = next.variable_next;
+    } else {
+      invalid_argument();
     }
-    invalid_argument();
   }
   void finalize() const { (*next_info().handler)(args); }
 };
@@ -111,7 +98,8 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
         }
         if (name.size() == 0) {
           name = h->arguments[i - 1]->name;
-          next[i - 1].arguments.emplace_back(h->arguments[i - 1], i);
+          next[i - 1].variable = name;
+          next[i - 1].variable_next = i;
         } else {
           BOOST_ASSERT_MSG(name == h->arguments[i - 1]->name, LL1_ERROR);
         }
