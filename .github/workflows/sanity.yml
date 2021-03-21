@@ -60,6 +60,9 @@ jobs:
         sudo apt-get install -y libboost-all-dev
         pip install xonsh pytest
     - name: Compile
+      env:
+        CC:   gcc-10
+        CXX:  g++-10
       run: |
         mkdir build
         cd build
