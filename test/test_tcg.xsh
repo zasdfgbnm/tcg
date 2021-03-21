@@ -13,6 +13,19 @@ uid = os.getuid()
 ROOT = f'/sys/fs/cgroup/terminals/{uid}/'
 CGROUP2_AVAILABLE = os.path.isfile('/sys/fs/cgroup/cgroup.procs')
 
+
+known_commands = {
+    "help": ["h"],
+    "list": ["ls", "l"],
+    "self": ["sf"],
+    "create": ["c"],
+    "freeze": ["f"],
+    "unfreeze": ["uf"],
+    "set": [],
+    "show": [],
+    "tab-complete": [],
+}
+
 def remove_ansi_escape(text):
     # https://stackoverflow.com/a/14693789
     ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
@@ -38,17 +51,6 @@ def test_invalid_argument():
 
 
 def test_help():
-    known_commands = {
-        "help": ["h"],
-        "list": ["ls", "l"],
-        "self": ["sf"],
-        "create": ["c"],
-        "freeze": ["f"],
-        "unfreeze": ["uf"],
-        "set": [],
-        "show": [],
-    }
-
     # help for the entire tool
     assert "Usage" in $(tcg help)
     assert "Usage" in $(tcg h)
@@ -403,3 +405,23 @@ def test_xontrib():
     xpip install --force-reinstall dist/*.whl
     xontrib load tcg
     assert $(tcg self).strip() == $TERMINAL_CGROUP
+
+
+def test_tab_complete():
+    a = sorted($(tcg tab-complete '\t').strip().split('\n'))
+    assert a == sorted(list(known_commands.keys()))
+
+    a = sorted($(tcg tab-complete 'fr\t').strip().split('\n'))
+    assert a == ['freeze']
+
+    a = sorted($(tcg tab-complete 'uf\t').strip().split('\n'))
+    assert a == ['uf']
+
+    a = $(tcg tab-complete 'aaa\t').strip()
+    assert a == ''
+
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg tab-complete
+
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg tab-complete aaa
