@@ -1,15 +1,15 @@
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assert.hpp>
-#include <stdexcept>
-#include <utility>
 #include <queue>
 #include <ranges>
+#include <stdexcept>
+#include <utility>
 
 #include "command.hpp"
 #include "utils.hpp"
 
-const char *LL1_ERROR = "The language is not LL(1).";
+const char *LL1_ERROR = "BUG: The language is not LL(1).";
 
 class InvalidHandler : public Handler {
 public:
@@ -79,7 +79,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     std::vector<const Handler *> handlers;
     int64_t cursor;
     int64_t id;
-    Branch(int64_t id, int64_t cursor): id(id), cursor(cursor) {}
+    Branch(int64_t id, int64_t cursor) : id(id), cursor(cursor) {}
   };
 
   // at the beginning, put all handlers in the same branch,
@@ -104,16 +104,22 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
       if (h->arg_size() == branch.cursor) {
         // there can not be more than one handler ending
         // at the same branch, otherwise this language is not unique
-        BOOST_ASSERT_MSG(next[branch.id].handler != &invalid_handler, LL1_ERROR);
+        BOOST_ASSERT_MSG(next[branch.id].handler != &invalid_handler,
+                         LL1_ERROR);
         next[branch.id].handler = h;
       } else {
-        if (branches.back().id < starting_id) {
-          branches.emplace_back(id++, branch.cursor + 1);
-        }
+        Branch *new_branch = nullptr;
         for (auto &b : std::ranges::views::reverse(branches)) {
           if (b.id < starting_id) {
             break;
           }
+          BOOST_ASSERT_MSG(b.cursor == branch.cursor + 1,
+                           "BUG: cursor for new branches not properly set");
+        }
+        if (new_branch == nullptr) {
+          branches.emplace_back(id++, branch.cursor + 1);
+          new_branch = &branches.back();
+          new_branch->handlers.emplace_back(h);
         }
       }
     }
