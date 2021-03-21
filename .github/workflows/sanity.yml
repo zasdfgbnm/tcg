@@ -26,24 +26,24 @@ jobs:
         echo $GIT_DIFF
         exit 1
 
-  clang-tidy:
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libboost-all-dev clang-tidy
-    - name: Generate compile_commands.json
-      run: |
-        mkdir build
-        cd build
-        cmake ..
-    - name: Lint with clang-tidy
-      run: |
-        clang-tidy -p build/compile_commands.json src/*.{cpp,hpp}
+  # clang-tidy:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #     with:
+  #       submodules: true
+  #   - name: Install dependencies
+  #     run: |
+  #       sudo apt-get update
+  #       sudo apt-get install -y libboost-all-dev clang-tidy
+  #   - name: Generate compile_commands.json
+  #     run: |
+  #       mkdir build
+  #       cd build
+  #       cmake ..
+  #   - name: Lint with clang-tidy
+  #     run: |
+  #       clang-tidy -p build/compile_commands.json src/*.{cpp,hpp}
 
   limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
     runs-on: ubuntu-20.04
