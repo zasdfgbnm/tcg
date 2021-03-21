@@ -57,8 +57,11 @@ struct Handler {
           const std::string &);
 
   class do_not_register {};
-
   Handler(do_not_register) {}
+
+  size_t arg_size() const {
+    return arguments.size();
+  }
 };
 
 class HandlerExecutor;

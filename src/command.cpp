@@ -79,7 +79,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     const Handler *handler;
     HandlerWrapper(const Handler *handler): handler(handler) {}
     bool operator<(const HandlerWrapper &rhs) const {
-      return handler->arguments.size() < rhs.handler->arguments.size();
+      return handler->arg_size() < rhs.handler->arg_size();
     }
   };
   struct Branch {
@@ -94,9 +94,14 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
   while (branches.size() > 0) {
     Branch &branch = branches.front();
     branches.pop();
+    auto &handlers = branch.handlers;
+    NextInfo info;
     while (true) {
-      NextInfo info;
-      if () {}
+      auto top = handlers.top();
+      if (top.handler->arg_size() == branch.cursor) {
+        handlers.pop();
+        info.handler = top.handler;
+      }
     }
   }
 }
