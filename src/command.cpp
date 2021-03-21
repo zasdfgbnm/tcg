@@ -166,8 +166,15 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
             BOOST_ASSERT_MSG(typeid(*harg) == typeid(Keyword),
                              "BUG: Unknown argument type.");
             auto set_keyword = [&](std::string keyword) {
-              BOOST_ASSERT_MSG(!next_info.keywords.contains(keyword), "BUG: keyword or alias conflict.");
+              BOOST_ASSERT_MSG(!next_info.keywords.contains(keyword),
+                               "BUG: keyword or alias conflict.");
+              next_info.keywords[keyword] = new_branch->id;
             };
+            auto kwd = std::dynamic_pointer_cast<const Keyword>(harg);
+            set_keyword(kwd->name);
+            for (auto &alias : kwd->alias()) {
+              set_keyword(alias);
+            }
           }
         }
       }

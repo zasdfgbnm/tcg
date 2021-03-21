@@ -48,6 +48,8 @@ public:
     return ret;
   }
 
+  const std::unordered_set<std::string> &alias() const { return alias_; }
+
   bool has_alias(std::string a) const { return alias_.contains(a); }
 
   int operator<=>(const Argument &rhs) const override {
