@@ -10,6 +10,7 @@
 struct Argument {
   std::string name;
   Argument(const std::string &name) : name(name) {}
+  virtual ~Argument() {}
 };
 
 struct Variable : public Argument {
