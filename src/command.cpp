@@ -142,9 +142,13 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
             next[branch.id].variable_next = new_branch->id;
           }
           // At the same branch, different handlers can not have different
-          // variables at the branching position. For example: legal: tcg aaa,
-          // tcg aaa <bbb>, tcg aaa <bbb> <ccc> illegal: tcg aaa <bbb>, tcg aaa
-          // <ccc>
+          // variables at the branching position. For example:
+          //
+          // legal:
+          // tcg aaa, tcg aaa <bbb>, tcg aaa <bbb> <ccc>
+          //
+          // illegal:
+          // tcg aaa <bbb>, tcg aaa <ccc>
           BOOST_ASSERT_MSG(next[branch.id].variable == harg->name, LL1_ERROR);
           BOOST_ASSERT_MSG(next[branch.id].variable_next == new_branch->id,
                            LL1_ERROR);
