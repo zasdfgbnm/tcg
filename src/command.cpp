@@ -161,6 +161,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
             BOOST_ASSERT_MSG(next[branch.id].variable_next == new_branch->id,
                             LL1_ERROR);
           } else {
+            BOOST_ASSERT_MSG(false, "NIY: keyword not implemented yet.");
             BOOST_ASSERT_MSG(typeid(*harg) == typeid(Keyword),
                             "BUG: Unknown argument type.");
           }
