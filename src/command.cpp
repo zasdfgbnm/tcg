@@ -11,13 +11,12 @@ const char *LL1_ERROR = "The language is not LL(1).";
 
 class InvalidHandler : public Handler {
 public:
-  InvalidHandler(): Handler(Handler::do_not_register{}) {}
-  void operator()(const arg_map_t &args) const override {
-    invalid_argument();
-  }
+  InvalidHandler() : Handler(Handler::do_not_register{}) {}
+  void operator()(const arg_map_t &args) const override { invalid_argument(); }
 } invalid_handler;
 
-Handler::Handler(Command &command, const std::vector<std::shared_ptr<const Argument>> &arguments,
+Handler::Handler(Command &command,
+                 const std::vector<std::shared_ptr<const Argument>> &arguments,
                  const std::string &description)
     : arguments(arguments), description(description) {
   command.handlers.push_back(this);
@@ -58,8 +57,10 @@ public:
         id = next_id;
         break;
       } else {
-        BOOST_ASSERT_MSG(typeid(*arg) == typeid(Keyword), "Unknow argument type");
-        std::shared_ptr<const Keyword> keyword = std::dynamic_pointer_cast<const Keyword>(arg);
+        BOOST_ASSERT_MSG(typeid(*arg) == typeid(Keyword),
+                         "Unknow argument type");
+        std::shared_ptr<const Keyword> keyword =
+            std::dynamic_pointer_cast<const Keyword>(arg);
         if (text == keyword->name || keyword->has_alias(text)) {
           id = next_id;
           break;
@@ -67,9 +68,7 @@ public:
       }
     }
   }
-  void finalize() const {
-    (*next_info().handler)(args);
-  }
+  void finalize() const { (*next_info().handler)(args); }
 };
 
 class HandlerExecutor {

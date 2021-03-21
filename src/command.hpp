@@ -17,7 +17,8 @@ struct Variable : public Argument {
   using Argument::Argument;
 };
 
-inline std::shared_ptr<const Variable> operator""_var(const char *name, size_t size) {
+inline std::shared_ptr<const Variable> operator""_var(const char *name,
+                                                      size_t size) {
   return std::make_shared<const Variable>(std::string(name, size));
 }
 
@@ -28,18 +29,18 @@ public:
   Keyword(const std::string &name, const std::unordered_set<std::string> &alias)
       : Argument(name), alias_(alias) {}
 
-  template <typename... args_t> std::shared_ptr<const Keyword> alias(args_t... args) const {
+  template <typename... args_t>
+  std::shared_ptr<const Keyword> alias(args_t... args) const {
     std::shared_ptr<Keyword> ret = std::make_shared<Keyword>(name, alias_);
     auto new_alias = std::unordered_set<std::string>{args...};
     ret->alias_.merge(new_alias);
     return ret;
   }
-  bool has_alias(std::string a) const {
-    return alias_.contains(a);
-  }
+  bool has_alias(std::string a) const { return alias_.contains(a); }
 };
 
-inline std::shared_ptr<const Keyword> operator""_kwd(const char *name, size_t size) {
+inline std::shared_ptr<const Keyword> operator""_kwd(const char *name,
+                                                     size_t size) {
   return std::make_shared<const Keyword>(std::string(name, size),
                                          std::unordered_set<std::string>{});
 }
@@ -97,8 +98,8 @@ public:
 
 #define _DEFINE_HANDLER(name, variables, description, code)                    \
   struct name final : public Handler{                                          \
-    name(Command & command) : Handler(command, variables, description){}       \
-    void operator()(const arg_map_t &args) const override code                 \
+    name(Command & command) : Handler(command, variables, description){} void  \
+    operator()(const arg_map_t &args) const override code                      \
   } _MAKE_UNIQUE(handler)(command)
 
 #define DEFINE_HANDLER(variables, description, code)                           \

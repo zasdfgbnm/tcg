@@ -13,8 +13,8 @@ Command command(/*name =*/"set",
                 /*short_description =*/"set the value of specific key",
                 /*additional_note =*/"");
 
-std::vector<std::shared_ptr<const Argument>> args_ = {"cgroup_name"_var, "key"_var,
-                                                "value"_var};
+std::vector<std::shared_ptr<const Argument>> args_ = {"cgroup_name"_var,
+                                                      "key"_var, "value"_var};
 DEFINE_HANDLER(args_, "set the value of the key of the specified cgroup", {
   auto logger = spdlog::get("set");
   std::string name = args.at("cgroup_name");
