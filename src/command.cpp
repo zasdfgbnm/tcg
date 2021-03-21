@@ -74,11 +74,7 @@ public:
 
 class HandlerExecutor {
   bool compiled_ = false;
-  // std::unordered_map<int64_t, const Handler *> state_handlers;
-  // std::unordered_map<int64_t, int64_t> next;
-  // std::unordered_map<int64_t, std::string> names;
-
-  const std::unordered_map<int64_t, NextInfo> &next;
+  const std::unordered_map<int64_t, NextInfo> next;
 
 public:
   HandlerExecutor() = default;

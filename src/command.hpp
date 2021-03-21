@@ -28,9 +28,9 @@ public:
       : Argument(name), alias_(alias) {}
 
   template <typename... args_t> std::shared_ptr<const Keyword> alias(args_t... args) const {
-    std::shared_ptr<const Keyword> ret = std::make_shared<Keyword>(name, alias_);
-    auto new_alias = std::vector<std::string>{args...};
-    ret->alias_.insert(ret->alias_.end(), new_alias.begin(), new_alias.end());
+    std::shared_ptr<Keyword> ret = std::make_shared<Keyword>(name, alias_);
+    auto new_alias = std::unordered_set<std::string>{args...};
+    ret->alias_.merge(new_alias);
     return ret;
   }
   bool has_alias(std::string a) const {
@@ -40,7 +40,7 @@ public:
 
 inline std::shared_ptr<const Keyword> operator""_kwd(const char *name, size_t size) {
   return std::make_shared<const Keyword>(std::string(name, size),
-                                   std::vector<std::string>{});
+                                         std::vector<std::string>{});
 }
 
 class Command;
