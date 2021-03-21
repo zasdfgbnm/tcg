@@ -24,7 +24,7 @@ Handler::Handler(Command &command, const std::vector<std::shared_ptr<const Argum
 }
 
 struct NextInfo {
-  const Handler *handler = invalid_handler;
+  const Handler *handler = &invalid_handler;
   std::vector<std::pair<std::shared_ptr<const Argument>, int64_t>> arguments;
 };
 
