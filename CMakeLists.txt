@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME}
     src/show.cpp
     src/self.cpp
     src/help.cpp
+    src/tab-complete.cpp
 )
 
 find_package(Boost 1.71.0 COMPONENTS filesystem REQUIRED)
