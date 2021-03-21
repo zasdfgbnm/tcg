@@ -15,6 +15,9 @@ namespace list {
 
 namespace fs = boost::filesystem;
 
+fmt::text_style cg_style =
+    maybe_style(fg(fmt::color::green) | fmt::emphasis::bold);
+
 void print_procs(std::shared_ptr<spdlog::logger> logger,
                  const std::string &name) {
   auto procs_file = name_dir(name, true) + "/cgroup.procs";
@@ -50,8 +53,6 @@ Command command(/*name =*/"list",
 DEFINE_HANDLER({}, "list existing cgroups and its details", {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
-  fmt::text_style cg_style =
-      maybe_style(fg(fmt::color::green) | fmt::emphasis::bold);
   auto r = user_dir();
   logger->debug("Root directory is {}, iterating it.", r);
   fs::path p(r);
@@ -75,8 +76,6 @@ DEFINE_HANDLER({}, "list existing cgroups and its details", {
 DEFINE_HANDLER({"cgroups"_kwd->alias("cgs")}, "list existing cgroups", {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
-  fmt::text_style cg_style =
-      maybe_style(fg(fmt::color::green) | fmt::emphasis::bold);
   auto r = user_dir();
   logger->debug("Root directory is {}, iterating it.", r);
   fs::path p(r);

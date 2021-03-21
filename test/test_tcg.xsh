@@ -158,6 +158,18 @@ def test_list_illegal():
         tcg ls aaa
     with pytest.raises(subprocess.CalledProcessError):
         tcg list aaa
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg l cgs aaa
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg l cgroups aaa
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg ls cgs aaa
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg ls cgroups aaa
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg list cgs aaa
+    with pytest.raises(subprocess.CalledProcessError):
+        tcg list cgroups aaa
 
 
 def test_list_empty():
@@ -174,13 +186,20 @@ def test_list():
     name2 = random_string(10)
     tcg create @(name1)
     tcg create @(name2)
-    groups1 = set(list_groups())
-    groups2 = {x.split()[0] for x in $(tcg list).strip().split('\n')}
-    groups3 = {x.split()[0] for x in $(tcg ls).strip().split('\n')}
-    groups4 = {x.split()[0] for x in $(tcg l).strip().split('\n')}
-    assert groups1 == groups2
-    assert groups1 == groups3
-    assert groups1 == groups4
+    groups = [
+        set(list_groups())
+        {x.split()[0] for x in $(tcg list).strip().split('\n')},
+        {x.split()[0] for x in $(tcg ls).strip().split('\n')},
+        {x.split()[0] for x in $(tcg l).strip().split('\n')},
+        {x for x in $(tcg list cgroups).strip().split('\n')},
+        {x for x in $(tcg list cgs).strip().split('\n')},
+        {x for x in $(tcg ls cgroups).strip().split('\n')},
+        {x for x in $(tcg ls cgs).strip().split('\n')},
+        {x for x in $(tcg l cgroups).strip().split('\n')},
+        {x for x in $(tcg l cgs).strip().split('\n')},
+    ]
+    for g in groups:
+        assert g == groups[0]
 
 
 def test_list_procs():
