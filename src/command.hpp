@@ -4,37 +4,45 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 struct Argument {
   std::string name;
   Argument(const std::string &name) : name(name) {}
+  virtual ~Argument() {}
 };
 
 struct Variable : public Argument {
   using Argument::Argument;
 };
 
-inline std::shared_ptr<Variable> operator""_var(const char *name, size_t size) {
-  return std::make_shared<Variable>(std::string(name, size));
+inline std::shared_ptr<const Variable> operator""_var(const char *name,
+                                                      size_t size) {
+  return std::make_shared<const Variable>(std::string(name, size));
 }
 
-struct Keyword : public Argument {
-  std::vector<std::string> alias_;
+class Keyword : public Argument {
+  std::unordered_set<std::string> alias_;
 
-  Keyword(const std::string &name, const std::vector<std::string> &alias)
+public:
+  Keyword(const std::string &name, const std::unordered_set<std::string> &alias)
       : Argument(name), alias_(alias) {}
 
-  template <typename... args_t> std::shared_ptr<Keyword> alias(args_t... args) {
+  template <typename... args_t>
+  std::shared_ptr<const Keyword> alias(args_t... args) const {
     std::shared_ptr<Keyword> ret = std::make_shared<Keyword>(name, alias_);
-    auto new_alias = std::vector<std::string>{args...};
-    ret->alias_.insert(ret->alias_.end(), new_alias.begin(), new_alias.end());
+    auto new_alias = std::unordered_set<std::string>{args...};
+    ret->alias_.merge(new_alias);
     return ret;
   }
+  bool has_alias(std::string a) const { return alias_.contains(a); }
 };
 
-inline std::shared_ptr<Keyword> operator""_kwd(const char *name, size_t size) {
-  return std::make_shared<Keyword>(std::string(name, size), std::vector<std::string>{});
+inline std::shared_ptr<const Keyword> operator""_kwd(const char *name,
+                                                     size_t size) {
+  return std::make_shared<const Keyword>(std::string(name, size),
+                                         std::unordered_set<std::string>{});
 }
 
 class Command;
@@ -42,11 +50,15 @@ class Command;
 using arg_map_t = std::unordered_map<std::string, std::string>;
 
 struct Handler {
-  std::vector<std::shared_ptr<Argument>> arguments;
+  std::vector<std::shared_ptr<const Argument>> arguments;
   std::string description;
   virtual void operator()(const arg_map_t &args) const = 0;
-  Handler(Command &, const std::vector<std::shared_ptr<Argument>> &,
+  Handler(Command &, const std::vector<std::shared_ptr<const Argument>> &,
           const std::string &);
+
+  class do_not_register {};
+
+  Handler(do_not_register) {}
 };
 
 class HandlerExecutor;
@@ -87,8 +99,7 @@ public:
 #define _DEFINE_HANDLER(name, variables, description, code)                    \
   struct name final : public Handler{                                          \
     name(Command & command) : Handler(command, variables, description){} void  \
-    operator()(const std::unordered_map<std::string, std::string> &args)       \
-        const override code                                                    \
+    operator()(const arg_map_t &args) const override code                      \
   } _MAKE_UNIQUE(handler)(command)
 
 #define DEFINE_HANDLER(variables, description, code)                           \

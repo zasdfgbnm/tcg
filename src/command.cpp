@@ -2,69 +2,88 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assert.hpp>
 #include <stdexcept>
+#include <utility>
 
 #include "command.hpp"
 #include "utils.hpp"
 
-Handler::Handler(Command &command, const std::vector<std::shared_ptr<Argument>> &arguments,
+const char *LL1_ERROR = "The language is not LL(1).";
+
+class InvalidHandler : public Handler {
+public:
+  InvalidHandler() : Handler(Handler::do_not_register{}) {}
+  void operator()(const arg_map_t &args) const override { invalid_argument(); }
+} invalid_handler;
+
+Handler::Handler(Command &command,
+                 const std::vector<std::shared_ptr<const Argument>> &arguments,
                  const std::string &description)
     : arguments(arguments), description(description) {
   command.handlers.push_back(this);
 }
 
+struct NextInfo {
+  const Handler *handler = &invalid_handler;
+  std::vector<std::pair<std::shared_ptr<const Argument>, int64_t>> arguments;
+};
+
+class StateMachine {
+  int64_t id;
+  std::unordered_map<std::string, std::string> args;
+  const std::unordered_map<int64_t, NextInfo> &next_;
+
+  const NextInfo &next_info() const {
+    const auto &i = next_.find(id);
+    if (i == next_.end()) {
+      invalid_argument();
+    }
+    return i->second;
+  };
+
+public:
+  StateMachine(const std::unordered_map<int64_t, NextInfo> &next)
+      : id(0), next_(next) {}
+  void feed(std::string text) {
+    const NextInfo &next = next_info();
+    for (auto &arg_id : next.arguments) {
+      auto &arg = arg_id.first;
+      auto next_id = arg_id.second;
+      if (typeid(*arg) == typeid(Variable)) {
+        // when there are multiple variables, these variables
+        // must have the same name, and there can not be keyword
+        // at the same position
+        BOOST_ASSERT_MSG(next.arguments.size() == 1, LL1_ERROR);
+        args[arg->name] = text;
+        id = next_id;
+        return;
+      } else {
+        BOOST_ASSERT_MSG(typeid(*arg) == typeid(Keyword),
+                         "Unknow argument type");
+        std::shared_ptr<const Keyword> keyword =
+            std::dynamic_pointer_cast<const Keyword>(arg);
+        if (text == keyword->name || keyword->has_alias(text)) {
+          id = next_id;
+          return;
+        }
+      }
+    }
+    invalid_argument();
+  }
+  void finalize() const { (*next_info().handler)(args); }
+};
+
 class HandlerExecutor {
   bool compiled_ = false;
-  std::unordered_map<int64_t, const Handler *> state_handlers;
-  std::unordered_map<int64_t, int64_t> arg_next;
-  std::unordered_map<int64_t, int64_t> opt_next;
-  std::unordered_map<int64_t, std::string> names;
-
-  class State {
-    int64_t id;
-    std::unordered_map<std::string, std::string> args;
-    const std::unordered_map<int64_t, const Handler *> &state_handlers;
-    const std::unordered_map<int64_t, int64_t> &arg_next;
-    const std::unordered_map<int64_t, int64_t> &opt_next;
-    const std::unordered_map<int64_t, std::string> &names;
-
-    static constexpr auto get = [](auto map, auto id) {
-      auto i = map.find(id);
-      if (i == map.end()) {
-        invalid_argument();
-      }
-      return i->second;
-    };
-
-  public:
-    State(const std::unordered_map<int64_t, const Handler *> &state_handlers,
-          const std::unordered_map<int64_t, int64_t> &arg_next,
-          const std::unordered_map<int64_t, int64_t> &opt_next,
-          const std::unordered_map<int64_t, std::string> &names)
-        : id(0), state_handlers(state_handlers), arg_next(arg_next),
-          opt_next(opt_next), names(names) {}
-    void feed(std::string text) {
-      if (boost::starts_with(text, "-")) { // is option
-        id = get(opt_next, id);
-      } else { // is argument
-        args[get(names, id)] = text;
-        id = get(arg_next, id);
-      }
-    }
-    void finalize() const {
-      auto handler = get(state_handlers, id);
-      (*handler)(args);
-    }
-  };
+  std::unordered_map<int64_t, NextInfo> next;
 
 public:
   HandlerExecutor() = default;
   void compile(const std::vector<const Handler *> &handlers);
   bool compiled() const { return compiled_; }
-  State start() const { return {state_handlers, arg_next, opt_next, names}; }
+  StateMachine start() const { return {next}; }
 };
 
 void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
-  const char *LL1_ERROR = "The language is not LL(1).";
   assert(!compiled_);
   compiled_ = true;
   auto narg = [](auto h) { return h->arguments.size(); };
@@ -78,6 +97,11 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     handlers_by_narg[n] = h;
   }
   for (int64_t i = 0; i <= max_length; i++) {
+    NextInfo next_info;
+    if (handlers_by_narg[i] != nullptr) {
+      next_info.handler = handlers_by_narg[i];
+    }
+    next[i] = next_info;
     if (i > 0) {
       std::string name;
       for (int64_t j = i; j <= max_length; j++) {
@@ -87,17 +111,11 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
         }
         if (name.size() == 0) {
           name = h->arguments[i - 1]->name;
+          next[i - 1].arguments.emplace_back(h->arguments[i - 1], i);
         } else {
           BOOST_ASSERT_MSG(name == h->arguments[i - 1]->name, LL1_ERROR);
         }
       }
-      names[i - 1] = name;
-    }
-    if (handlers_by_narg[i] != nullptr) {
-      state_handlers[i] = handlers_by_narg[i];
-    }
-    if (i > 0) {
-      arg_next[i - 1] = i;
     }
   }
 }
