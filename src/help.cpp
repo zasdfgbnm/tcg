@@ -4,6 +4,8 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 
+#include <boost/assert.hpp>
+
 #include "command.hpp"
 #include "utils.hpp"
 
@@ -107,7 +109,16 @@ DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
     fmt::print(listing_format, "[{}] ", i++);
     fmt::print("tcg {}", c->name);
     for (auto &a : h->arguments) {
-      fmt::print(" <{}>", a->name);
+      if (typeid(*a) == typeid(Variable)) {
+        fmt::print(" <{}>", a->name);
+      } else {
+        BOOST_ASSERT_MSG(typeid(*a) == typeid(Keyword), "BUG: unknown argument type.");
+        fmt::print(" {}", a->name);
+        auto kwd = std::dynamic_pointer_cast<const Keyword>(a);
+        for (auto &alias : kwd->alias()) {
+          fmt::print("|{}", alias);
+        }
+      }
     }
     fmt::print("\n");
   }
