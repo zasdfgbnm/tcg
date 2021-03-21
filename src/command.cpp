@@ -120,11 +120,11 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           BOOST_ASSERT_MSG(b->handlers.size() > 0,
                            "BUG: handlers for new branches not properly set");
           std::shared_ptr<const Argument> barg =
-              b->handlers[0]->arguments[branch.cursor];
+              b.handlers[0]->arguments[branch.cursor];
           auto compare = (*harg <=> *barg);
           BOOST_ASSERT_MSG(compare >= 0, "BUG: Incompatible ");
           if (compare == 0) {
-            new_branch = b;
+            new_branch = &b;
             break;
           }
         }

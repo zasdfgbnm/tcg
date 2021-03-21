@@ -15,12 +15,12 @@ struct Argument {
   // < 0 --> if illegal combination in encountered
   // = 0 --> if two argument are the same
   // > 0 --> if two arguments are different
-  virtual int operator<=>(const Argument &rhs) = 0;
+  virtual int operator<=>(const Argument &rhs) const = 0;
 };
 
 struct Variable : public Argument {
   using Argument::Argument;
-  int operator<=>(const Argument &rhs) override {
+  int operator<=>(const Argument &rhs) const override {
     if (typeid(rhs) != typeid(Variable)) {
       return 1;
     }
@@ -50,7 +50,7 @@ public:
 
   bool has_alias(std::string a) const { return alias_.contains(a); }
 
-  int operator<=>(const Argument &rhs) override {
+  int operator<=>(const Argument &rhs) const override {
     if (typeid(rhs) != typeid(Keyword())) {
       return 1;
     }
@@ -58,7 +58,7 @@ public:
     if (name != rhs_.name) {
       return 1;
     } else {
-      if (alias_ != rhs_.alias) {
+      if (alias_ != rhs_.alias_) {
         return -1; // two keyword with the same name must have the same alias
       }
       return 0;
