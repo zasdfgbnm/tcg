@@ -112,7 +112,8 @@ DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
       if (typeid(*a) == typeid(Variable)) {
         fmt::print(" <{}>", a->name);
       } else {
-        BOOST_ASSERT_MSG(typeid(*a) == typeid(Keyword), "BUG: unknown argument type.");
+        BOOST_ASSERT_MSG(typeid(*a) == typeid(Keyword),
+                         "BUG: unknown argument type.");
         fmt::print(" {}", a->name);
         auto kwd = std::dynamic_pointer_cast<const Keyword>(a);
         for (auto &alias : kwd->alias()) {
