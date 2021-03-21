@@ -3,6 +3,7 @@
 #include <boost/assert.hpp>
 #include <stdexcept>
 #include <utility>
+#include <queue>
 
 #include "command.hpp"
 #include "utils.hpp"
@@ -73,37 +74,29 @@ public:
 void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
   assert(!compiled_);
   compiled_ = true;
-  auto narg = [](auto h) { return h->arguments.size(); };
-  auto max_length = narg(
-      *std::max_element(handlers.begin(), handlers.end(),
-                        [&](auto a, auto b) { return narg(a) < narg(b); }));
-  std::vector<const Handler *> handlers_by_narg(max_length + 1, nullptr);
-  for (auto h : handlers) {
-    auto n = narg(h);
-    BOOST_ASSERT_MSG(handlers_by_narg[n] == nullptr, LL1_ERROR);
-    handlers_by_narg[n] = h;
-  }
-  for (int64_t i = 0; i <= max_length; i++) {
-    NextInfo next_info;
-    if (handlers_by_narg[i] != nullptr) {
-      next_info.handler = handlers_by_narg[i];
+  int64_t id = 0;
+  struct HandlerWrapper {
+    const Handler *handler;
+    HandlerWrapper(const Handler *handler): handler(handler) {}
+    bool operator<(const HandlerWrapper &rhs) const {
+      return handler->arguments.size() < rhs.handler->arguments.size();
     }
-    next[i] = next_info;
-    if (i > 0) {
-      std::string name;
-      for (int64_t j = i; j <= max_length; j++) {
-        auto h = handlers_by_narg[j];
-        if (h == nullptr) {
-          continue;
-        }
-        if (name.size() == 0) {
-          name = h->arguments[i - 1]->name;
-          next[i - 1].variable = name;
-          next[i - 1].variable_next = i;
-        } else {
-          BOOST_ASSERT_MSG(name == h->arguments[i - 1]->name, LL1_ERROR);
-        }
-      }
+  };
+  struct Branch {
+    std::priority_queue<HandlerWrapper> handlers;
+    int64_t cursor;
+  };
+  std::queue<Branch> branches;
+  branches.emplace();
+  for (auto h : handlers) {
+    branches.front().handlers.emplace(h);
+  }
+  while (branches.size() > 0) {
+    Branch &branch = branches.front();
+    branches.pop();
+    while (true) {
+      NextInfo info;
+      if () {}
     }
   }
 }
