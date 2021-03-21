@@ -87,12 +87,11 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
   // set cursor to 0, use id 0, and allocate a new NextInfo
   // to this id
   int64_t id = 0;
-  std::deque<Branch> branches;
-  branches.emplace_back(id++, 0, handlers);
+  std::deque<Branch> branches {Branch(id++, 0, handlers)};
 
   while (branches.size() > 0) {
     // pop the front of branches
-    Branch &branch = branches.front();
+    Branch branch = branches.front();
     branches.pop_front();
     NextInfo &next_info = next[branch.id];
     fmt::print("*** branch.id = {}, branch.cursor = {}, num_handlers = {} ***\n", branch.id, branch.cursor, branch.handlers.size());
