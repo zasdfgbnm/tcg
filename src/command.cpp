@@ -1,13 +1,13 @@
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assert.hpp>
+#include <deque>
+#include <ranges>
 #include <stdexcept>
 #include <utility>
 
 #include "command.hpp"
 #include "utils.hpp"
-
-const char *LL1_ERROR = "The language is not LL(1).";
 
 class InvalidHandler : public Handler {
 public:
@@ -73,35 +73,106 @@ public:
 void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
   assert(!compiled_);
   compiled_ = true;
-  auto narg = [](auto h) { return h->arguments.size(); };
-  auto max_length = narg(
-      *std::max_element(handlers.begin(), handlers.end(),
-                        [&](auto a, auto b) { return narg(a) < narg(b); }));
-  std::vector<const Handler *> handlers_by_narg(max_length + 1, nullptr);
-  for (auto h : handlers) {
-    auto n = narg(h);
-    BOOST_ASSERT_MSG(handlers_by_narg[n] == nullptr, LL1_ERROR);
-    handlers_by_narg[n] = h;
-  }
-  for (int64_t i = 0; i <= max_length; i++) {
-    NextInfo next_info;
-    if (handlers_by_narg[i] != nullptr) {
-      next_info.handler = handlers_by_narg[i];
-    }
-    next[i] = next_info;
-    if (i > 0) {
-      std::string name;
-      for (int64_t j = i; j <= max_length; j++) {
-        auto h = handlers_by_narg[j];
-        if (h == nullptr) {
-          continue;
+  struct Branch {
+    std::vector<const Handler *> handlers = {};
+    int64_t cursor;
+    int64_t id;
+    Branch(int64_t id, int64_t cursor, std::vector<const Handler *> handlers)
+        : id(id), cursor(cursor), handlers(handlers) {}
+  };
+
+  // at the beginning, put all handlers in the same branch,
+  // set cursor to 0, use id 0, and allocate a new NextInfo
+  // to this id
+  int64_t id = 0;
+  std::deque<Branch> branches{Branch(id++, 0, handlers)};
+
+  while (branches.size() > 0) {
+    // pop the front of branches
+    Branch branch = branches.front();
+    branches.pop_front();
+    NextInfo &next_info = next[branch.id];
+
+    // walk through all handlers in this branch, try
+    // move cursor to the next, discover new branches
+    int starting_id = id;
+    for (auto h : branch.handlers) {
+      auto &hargs = h->arguments;
+      BOOST_ASSERT_MSG(hargs.size() >= branch.cursor,
+                       "BUG: handlers shouldn't be in branch");
+      if (hargs.size() == branch.cursor) {
+        // there can not be more than one handler ending
+        // at the same branch, otherwise this language is not unique
+        BOOST_ASSERT_MSG(next_info.handler != &invalid_handler,
+                         "BUG: in one branch, only one handler can end here");
+        next_info.handler = h;
+      } else {
+        std::shared_ptr<const Argument> harg = hargs[branch.cursor];
+
+        // find if this handler fits an existing branch
+        Branch *new_branch = nullptr;
+        for (auto &b : std::ranges::views::reverse(branches)) {
+          if (b.id < starting_id) {
+            break;
+          }
+          BOOST_ASSERT_MSG(b.cursor == branch.cursor + 1,
+                           "BUG: cursor for new branches not properly set.");
+          BOOST_ASSERT_MSG(b->handlers.size() > 0,
+                           "BUG: handlers for new branches not properly set.");
+          std::shared_ptr<const Argument> barg =
+              b.handlers[0]->arguments[branch.cursor];
+          int compare_result = (*harg <=> *barg);
+          BOOST_ASSERT_MSG(compare_result >= 0,
+                           "BUG: Incompatible argument configuration.");
+          if (compare_result == 0) {
+            new_branch = &b;
+            break;
+          }
         }
-        if (name.size() == 0) {
-          name = h->arguments[i - 1]->name;
-          next[i - 1].variable = name;
-          next[i - 1].variable_next = i;
+
+        // if this handler fits to an existing branch, then add this handler to
+        // this branch, otherwise, create a new branch
+        if (new_branch != nullptr) {
+          new_branch->handlers.push_back(h);
         } else {
-          BOOST_ASSERT_MSG(name == h->arguments[i - 1]->name, LL1_ERROR);
+          // create a new branch
+          branches.emplace_back(id++, branch.cursor + 1,
+                                std::vector<const Handler *>{h});
+          new_branch = &branches.back();
+
+          // update NextInfo of current branch to point to the new branch
+          if (typeid(*harg) == typeid(Variable)) {
+            if (next_info.variable.size() == 0 &&
+                next_info.variable_next == -1) {
+              next_info.variable = harg->name;
+              next_info.variable_next = new_branch->id;
+            }
+            // At the same branch, different handlers can not have different
+            // variables at the branching position. For example:
+            //
+            // legal:
+            // tcg aaa, tcg aaa <bbb>, tcg aaa <bbb> <ccc>
+            //
+            // illegal:
+            // tcg aaa <bbb>, tcg aaa <ccc>
+            const char *msg = "BUG: different variables at the same position.";
+            BOOST_ASSERT_MSG(next[branch.id].variable == harg->name, msg);
+            BOOST_ASSERT_MSG(next[branch.id].variable_next == new_branch->id,
+                             msg);
+          } else {
+            BOOST_ASSERT_MSG(typeid(*harg) == typeid(Keyword),
+                             "BUG: Unknown argument type.");
+            auto set_keyword = [&](std::string keyword) {
+              BOOST_ASSERT_MSG(!next_info.keywords.contains(keyword),
+                               "BUG: keyword or alias conflict.");
+              next_info.keywords[keyword] = new_branch->id;
+            };
+            auto kwd = std::dynamic_pointer_cast<const Keyword>(harg);
+            set_keyword(kwd->name);
+            for (auto &alias : kwd->alias()) {
+              set_keyword(alias);
+            }
+          }
         }
       }
     }
