@@ -10,11 +10,22 @@
 struct Argument {
   std::string name;
   Argument(const std::string &name) : name(name) {}
-  virtual ~Argument() {}
+
+  // this op should return:
+  // < 0 --> if illegal combination in encountered
+  // = 0 --> if two argument are the same
+  // > 0 --> if two arguments are different
+  virtual int operator<=>(const Argument &rhs) const = 0;
 };
 
 struct Variable : public Argument {
   using Argument::Argument;
+  int operator<=>(const Argument &rhs) const override {
+    if (typeid(rhs) != typeid(Variable)) {
+      return 1;
+    }
+    return (name != rhs.name);
+  }
 };
 
 inline std::shared_ptr<const Variable> operator""_var(const char *name,
@@ -36,7 +47,25 @@ public:
     ret->alias_.merge(new_alias);
     return ret;
   }
+
+  const std::unordered_set<std::string> &alias() const { return alias_; }
+
   bool has_alias(std::string a) const { return alias_.contains(a); }
+
+  int operator<=>(const Argument &rhs) const override {
+    if (typeid(rhs) != typeid(Keyword())) {
+      return 1;
+    }
+    const Keyword &rhs_ = dynamic_cast<const Keyword &>(rhs);
+    if (name != rhs_.name) {
+      return 1;
+    } else {
+      if (alias_ != rhs_.alias_) {
+        return -1; // two keyword with the same name must have the same alias
+      }
+      return 0;
+    }
+  }
 };
 
 inline std::shared_ptr<const Keyword> operator""_kwd(const char *name,
@@ -57,7 +86,6 @@ struct Handler {
           const std::string &);
 
   class do_not_register {};
-
   Handler(do_not_register) {}
 };
 
