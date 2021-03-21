@@ -97,8 +97,7 @@ public:
 #define _DEFINE_HANDLER(name, variables, description, code)                    \
   struct name final : public Handler{                                          \
     name(Command & command) : Handler(command, variables, description){}       \
-                                                                               \
-    void operator()(const arg_map_t &args) const override code                 \                                  \
+    void operator()(const arg_map_t &args) const override code                 \
   } _MAKE_UNIQUE(handler)(command)
 
 #define DEFINE_HANDLER(variables, description, code)                           \
