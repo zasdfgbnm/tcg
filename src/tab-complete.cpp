@@ -1,7 +1,7 @@
 #include <cstdlib>
 
-#include <spdlog/spdlog.h>
 #include <fmt/core.h>
+#include <spdlog/spdlog.h>
 
 #include "command.hpp"
 
@@ -10,7 +10,10 @@ namespace tab_complete {
 Command command("tab-complete",
                 /*alias =*/{},
                 /*short_description =*/"suggest next token",
-                /*additional_note =*/"");
+                /*additional_note =*/"",
+                /*sandbox =*/false // disable sandbox to allow users to read
+                                   // docs on systems without cgroup v2
+);
 
 DEFINE_HANDLER({"partial_command"_var}, "complete partial command", {
   auto logger = spdlog::get("tab-complete");
