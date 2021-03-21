@@ -116,13 +116,13 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
             break;
           }
           BOOST_ASSERT_MSG(b.cursor == branch.cursor + 1,
-                           "BUG: cursor for new branches not properly set");
+                           "BUG: cursor for new branches not properly set.");
           BOOST_ASSERT_MSG(b->handlers.size() > 0,
-                           "BUG: handlers for new branches not properly set");
+                           "BUG: handlers for new branches not properly set.");
           std::shared_ptr<const Argument> barg =
               b.handlers[0]->arguments[branch.cursor];
           auto compare = (*harg <=> *barg);
-          BOOST_ASSERT_MSG(compare >= 0, "BUG: Incompatible ");
+          BOOST_ASSERT_MSG(compare >= 0, "BUG: Incompatible argument configuration.");
           if (compare == 0) {
             new_branch = &b;
             break;
@@ -154,7 +154,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
                            LL1_ERROR);
         } else {
           BOOST_ASSERT_MSG(typeid(*harg) == typeid(Keyword),
-                           "BUG: Unknown argument type");
+                           "BUG: Unknown argument type.");
         }
       }
     }
