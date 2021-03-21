@@ -96,6 +96,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     // pop the front of branches
     Branch &branch = branches.front();
     branches.pop_front();
+    NextInfo &next_info = next[branch.id];
 
     // walk through all handlers in this branch, try
     // move cursor to the next, discover new branches
@@ -104,9 +105,9 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
       if (h->arguments.size() == branch.cursor) {
         // there can not be more than one handler ending
         // at the same branch, otherwise this language is not unique
-        BOOST_ASSERT_MSG(next[branch.id].handler != &invalid_handler,
-                         LL1_ERROR);
-        next[branch.id].handler = h;
+        BOOST_ASSERT_MSG(next_info.handler != &invalid_handler,
+                         "BUG: in one branch, only one handler can end here");
+        next_info.handler = h;
       } else {
         std::shared_ptr<const Argument> harg = h->arguments[branch.cursor];
 
@@ -144,10 +145,10 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
 
           // update NextInfo of current branch to point to the new branch
           if (typeid(*harg) == typeid(Variable)) {
-            if (next[branch.id].variable.size() == 0 &&
-                next[branch.id].variable_next == -1) {
-              next[branch.id].variable = harg->name;
-              next[branch.id].variable_next = new_branch->id;
+            if (next_info.variable.size() == 0 &&
+                next_info.variable_next == -1) {
+              next_info.variable = harg->name;
+              next_info.variable_next = new_branch->id;
             }
             // At the same branch, different handlers can not have different
             // variables at the branching position. For example:
@@ -157,13 +158,16 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
             //
             // illegal:
             // tcg aaa <bbb>, tcg aaa <ccc>
-            BOOST_ASSERT_MSG(next[branch.id].variable == harg->name, LL1_ERROR);
+            const char *msg = "BUG: different variables at the same position.";
+            BOOST_ASSERT_MSG(next[branch.id].variable == harg->name, msg);
             BOOST_ASSERT_MSG(next[branch.id].variable_next == new_branch->id,
-                            LL1_ERROR);
+                             msg);
           } else {
-            BOOST_ASSERT_MSG(false, "NIY: keyword not implemented yet.");
             BOOST_ASSERT_MSG(typeid(*harg) == typeid(Keyword),
-                            "BUG: Unknown argument type.");
+                             "BUG: Unknown argument type.");
+            auto set_keyword = [&](std::string keyword) {
+              BOOST_ASSERT_MSG(!next_info.keywords.contains(keyword), "BUG: keyword or alias conflict.");
+            };
           }
         }
       }
