@@ -40,7 +40,7 @@ public:
 
 inline std::shared_ptr<const Keyword> operator""_kwd(const char *name, size_t size) {
   return std::make_shared<const Keyword>(std::string(name, size),
-                                         std::vector<std::string>{});
+                                         std::unordered_set<std::string>{});
 }
 
 class Command;
