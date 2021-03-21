@@ -77,14 +77,15 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     std::vector<const Handler *> handlers = {};
     int64_t cursor;
     int64_t id;
-    Branch(int64_t id, int64_t cursor, std::vector<const Handler *> handlers) : id(id), cursor(cursor), handlers(handlers) {}
+    Branch(int64_t id, int64_t cursor, std::vector<const Handler *> handlers)
+        : id(id), cursor(cursor), handlers(handlers) {}
   };
 
   // at the beginning, put all handlers in the same branch,
   // set cursor to 0, use id 0, and allocate a new NextInfo
   // to this id
   int64_t id = 0;
-  std::deque<Branch> branches {Branch(id++, 0, handlers)};
+  std::deque<Branch> branches{Branch(id++, 0, handlers)};
 
   while (branches.size() > 0) {
     // pop the front of branches
@@ -97,7 +98,8 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     int starting_id = id;
     for (auto h : branch.handlers) {
       auto &hargs = h->arguments;
-      BOOST_ASSERT_MSG(hargs.size() >= branch.cursor, "BUG: handlers shouldn't be in branch");
+      BOOST_ASSERT_MSG(hargs.size() >= branch.cursor,
+                       "BUG: handlers shouldn't be in branch");
       if (hargs.size() == branch.cursor) {
         // there can not be more than one handler ending
         // at the same branch, otherwise this language is not unique
@@ -134,7 +136,8 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           new_branch->handlers.push_back(h);
         } else {
           // create a new branch
-          branches.emplace_back(id++, branch.cursor + 1, std::vector<const Handler *>{h});
+          branches.emplace_back(id++, branch.cursor + 1,
+                                std::vector<const Handler *>{h});
           new_branch = &branches.back();
 
           // update NextInfo of current branch to point to the new branch
