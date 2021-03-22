@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
@@ -19,6 +20,9 @@ struct Argument {
 };
 
 struct Variable : public Argument {
+  std::function<std::unordered_set<std::string>()> suggest = []() {
+    return std::unordered_set<std::string>{};
+  };
   using Argument::Argument;
   int operator<=>(const Argument &rhs) const override {
     if (typeid(rhs) != typeid(Variable)) {
