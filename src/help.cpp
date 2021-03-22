@@ -111,6 +111,8 @@ DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
     for (auto &a : h->arguments) {
       if (typeid(*a) == typeid(Variable)) {
         fmt::print(" <{}>", a->name);
+      } else if (typeid(*a) == typeid(Varargs)) {
+        fmt::print(" <{}...>", a->name);
       } else {
         BOOST_ASSERT_MSG(typeid(*a) == typeid(Keyword),
                          "BUG: unknown argument type.");

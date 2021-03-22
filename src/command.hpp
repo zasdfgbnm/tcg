@@ -44,7 +44,7 @@ struct Varargs : public Argument {
 };
 
 inline std::shared_ptr<const Varargs> operator""_varargs(const char *name,
-                                                      size_t size) {
+                                                         size_t size) {
   return std::make_shared<const Varargs>(std::string(name, size));
 }
 

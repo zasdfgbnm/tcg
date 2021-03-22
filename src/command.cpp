@@ -25,6 +25,7 @@ Handler::Handler(Command &command,
 struct NextInfo {
   const Handler *handler = &invalid_handler;
   std::unordered_map<std::string, int64_t> keywords;
+  bool is_varargs = false;
   std::string variable = "";
   int64_t variable_next = -1;
 };
@@ -141,9 +142,16 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           new_branch = &branches.back();
 
           // update NextInfo of current branch to point to the new branch
-          if (typeid(*harg) == typeid(Variable)) {
+          if (typeid(*harg) == typeid(Variable) ||
+              typeid(*harg) == typeid(Varargs)) {
+            bool is_varargs = (typeid(*harg) == typeid(Varargs));
+            if (is_varargs) {
+              BOOST_ASSERT_MSG(hargs->size() == branch.cursor + 1,
+                               "BUG: varargs is not the end of argument list.");
+            }
             if (next_info.variable.size() == 0 &&
                 next_info.variable_next == -1) {
+              next_info.is_varargs = is_varargs;
               next_info.variable = harg->name;
               next_info.variable_next = new_branch->id;
             }
@@ -156,9 +164,9 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
             // illegal:
             // tcg aaa <bbb>, tcg aaa <ccc>
             const char *msg = "BUG: different variables at the same position.";
-            BOOST_ASSERT_MSG(next[branch.id].variable == harg->name, msg);
-            BOOST_ASSERT_MSG(next[branch.id].variable_next == new_branch->id,
-                             msg);
+            BOOST_ASSERT_MSG(next_info.is_varargs == is_varargs, msg);
+            BOOST_ASSERT_MSG(next_info.variable == harg->name, msg);
+            BOOST_ASSERT_MSG(next_info.variable_next == new_branch->id, msg);
           } else {
             BOOST_ASSERT_MSG(typeid(*harg) == typeid(Keyword),
                              "BUG: Unknown argument type.");

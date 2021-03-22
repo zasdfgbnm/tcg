@@ -43,9 +43,11 @@ DEFINE_HANDLER({"partial_command"_var}, "complete partial command", {
   }
 });
 
-std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var, "args"_varargs};
+std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var,
+                                                      "args"_varargs};
 DEFINE_HANDLER(args_, "complete arguments", {
   auto cmd = Command::get(args.at("command"));
+  // TODO
 });
 
 } // namespace tab_complete

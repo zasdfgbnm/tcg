@@ -407,7 +407,7 @@ def test_xontrib():
     assert $(tcg self).strip() == $TERMINAL_CGROUP
 
 
-def test_tab_complete():
+def test_tab_complete_command():
     a = sorted($(tcg tab-complete '\t').strip().split('\n'))
     assert a == sorted(list(known_commands.keys()))
 
@@ -425,3 +425,7 @@ def test_tab_complete():
 
     with pytest.raises(subprocess.CalledProcessError):
         tcg tab-complete aaa
+
+
+def test_tab_complete_argument():
+    tcg tab-complete aaa aaa
