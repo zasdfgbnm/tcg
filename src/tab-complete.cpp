@@ -2,7 +2,6 @@
 
 #include <boost/assert.hpp>
 #include <fmt/core.h>
-#include <spdlog/spdlog.h>
 
 #include "command.hpp"
 
@@ -16,26 +15,34 @@ Command command("tab-complete",
                                    // docs on systems without cgroup v2
 );
 
-DEFINE_HANDLER({"command"_var}, "complete arguments", {
-  auto logger = spdlog::get("tab-complete");
-  std::string partial_command = args.at("command");
+std::unordered_set<std::string> suggest_commands(std::string prefix) {
+  std::unordered_set<std::string> result;
+  auto match = [&](std::string str) {
+    return str.size() >= prefix.size() &&
+           str.substr(0, prefix.size()) == prefix;
+  };
   for (auto &i : Command::all()) {
     if (!i.second->defined() || i.first != i.second->name) {
       continue;
     }
-    auto match = [&](std::string str) {
-      return str.size() >= partial_command.size() &&
-             str.substr(0, partial_command.size()) == partial_command;
-    };
     if (match(i.first)) {
-      fmt::print("{}\n", i.first);
+      result.insert(i.first);
     } else {
       for (auto &j : i.second->alias) {
         if (match(j)) {
-          fmt::print("{}\n", j);
+          result.insert(j);
         }
       }
     }
+  }
+  return result;
+}
+
+DEFINE_HANDLER({"command"_var}, "complete arguments", {
+  std::string partial_command = args.at("command");
+  auto suggestions = suggest_commands(partial_command);
+  for (auto &i : suggestions) {
+    fmt::print("{}\n", i);
   }
 });
 
@@ -43,8 +50,8 @@ std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var,
                                                       "args"_varargs};
 DEFINE_HANDLER(args_, "complete arguments", {
   auto cmd = Command::get(args.at("command"));
-  auto result = cmd->suggest(varargs);
-  for (auto &i : result) {
+  auto suggestions = cmd->suggest(varargs);
+  for (auto &i : suggestions) {
     fmt::print("{}\n", i);
   }
 });
