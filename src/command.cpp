@@ -51,10 +51,12 @@ public:
   StateMachine(const std::unordered_map<int64_t, NextInfo> &next)
       : id(0), next_(next) {}
   void feed(std::string text) {
+    fmt::print("feed {}\n", text);
     const NextInfo &next = next_info();
     if (next.keywords.contains(text)) {
       id = next.keywords.at(text);
     } else if (next.variable.size() > 0) {
+      fmt::print("next.variable = {}\n", next.variable);
       if (next.is_varargs) {
         varargs.push_back(text);
       } else {
@@ -65,7 +67,7 @@ public:
       invalid_argument();
     }
   }
-  void finalize() const { (*next_info().handler)(args, varargs); }
+  void finalize() const {fmt::print("finalize"); (*next_info().handler)(args, varargs); }
 };
 
 class HandlerExecutor {
@@ -141,7 +143,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           }
           BOOST_ASSERT_MSG(b.cursor == branch.cursor + 1,
                            "BUG: cursor for new branches not properly set.");
-          BOOST_ASSERT_MSG(b->handlers.size() > 0,
+          BOOST_ASSERT_MSG(b.handlers.size() > 0,
                            "BUG: handlers for new branches not properly set.");
           std::shared_ptr<const Argument> barg =
               b.handlers[0]->arguments[branch.cursor];
