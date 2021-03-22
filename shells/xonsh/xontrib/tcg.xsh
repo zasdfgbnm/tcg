@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 try:
     from importlib.metadata import version, PackageNotFoundError
@@ -11,8 +12,12 @@ except (ModuleNotFoundError, ImportError):
     # importlib.metadata not available
     pass
 
+
 if "AUTO_INIT_TCG" not in ${...}:
     $AUTO_INIT_TCG = True
+
+
+tcg_executable = $(which tcg)
 
 
 def initialize_tcg():
@@ -28,10 +33,12 @@ def initialize_tcg():
 def tcg_tab_complete(line):
     line = line.split(' ')
     command = line[0]
-    if command == 'tcg':
+    if command == 'tcg' or command == tcg_executable:
         try:
-            items = subprocess.check_output(["tcg", "tab-complete", *line[1:]], stderr=subprocess.DEVNULL)
+            items = subprocess.check_output([tcg_executable, "tab-complete", *line[1:]], stderr=subprocess.DEVNULL)
         except FileNotFoundError:
+            return set()
+        except subprocess.CalledProcessError:
             return set()
         items = items.decode("utf-8").splitlines()
         return set(items)
@@ -40,7 +47,7 @@ def tcg_tab_complete(line):
 
 def tcg_completer(prefix, line, begidx, endidx, ctx):
     """Completer for `tcg`"""
-    tcg_tab_complete(line)
+    return tcg_tab_complete(line)
 
 
 completer add tcg tcg_completer
