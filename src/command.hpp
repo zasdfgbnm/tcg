@@ -3,6 +3,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -20,9 +21,8 @@ struct Argument {
 };
 
 struct Variable : public Argument {
-  std::function<std::unordered_set<std::string>()> suggest = []() {
-    return std::unordered_set<std::string>{};
-  };
+  std::optional<std::function<std::unordered_set<std::string>()>> suggest =
+      std::nullopt;
   using Argument::Argument;
   int operator<=>(const Argument &rhs) const override {
     if (typeid(rhs) != typeid(Variable)) {
