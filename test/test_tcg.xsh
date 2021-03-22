@@ -454,3 +454,33 @@ def test_tab_complete_argument():
 
     a = sorted($(tcg tab-complete help 's').strip().split('\n'))
     assert a == ['self', 'set', 'show']
+
+def test_tab_complete_existing_cgroups():
+    if not CGROUP2_AVAILABLE:
+        pytest.xfail("requires cgroup v2")
+
+    name1 = 'n1_' + random_string(10)
+    name2 = 'n2_' + random_string(10)
+
+    tcg create @(name1)
+    tcg c @(name2)
+
+    a = sorted($(tcg tab-complete f '').strip().split('\n'))
+    assert name1 in a
+    assert name2 in a
+
+    a = sorted($(tcg tab-complete freeze 'n1_').strip().split('\n'))
+    assert name1 in a
+    assert name2 not in a
+
+    a = sorted($(tcg tab-complete uf '').strip().split('\n'))
+    assert name1 in a
+    assert name2 in a
+
+    a = sorted($(tcg tab-complete set '').strip().split('\n'))
+    assert name1 in a
+    assert name2 in a
+
+    a = sorted($(tcg tab-complete show '').strip().split('\n'))
+    assert name1 in a
+    assert name2 in a
