@@ -70,10 +70,18 @@ public:
   void execute() const { (*next_info().handler)(args, varargs); }
 
   std::unordered_set<std::string> suggest(std::string prefix) {
+    std::unordered_set<std::string> result;
     const NextInfo &next = next_info();
+    auto match = [&](std::string str) {
+      return str.size() >= prefix.size() &&
+             str.substr(0, prefix.size()) == prefix;
+    };
     for (auto &kv : next.keywords) {
+      if (match(kv.first)) {
+        result.insert((kv.first));
+      }
     }
-    return {};
+    return result;
   }
 };
 
