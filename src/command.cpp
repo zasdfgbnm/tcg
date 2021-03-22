@@ -33,6 +33,8 @@ struct NextInfo {
   int64_t variable_next = -1;
 };
 
+const NextInfo invalid_next_info;
+
 class StateMachine {
   int64_t id;
   std::unordered_map<std::string, std::string> args;
@@ -40,11 +42,10 @@ class StateMachine {
   const std::unordered_map<int64_t, NextInfo> &next_;
 
   const NextInfo &next_info() const {
-    const auto &i = next_.find(id);
-    if (i == next_.end()) {
-      invalid_argument();
+    if (next_.contains(id)) {
+      return next_.at(id);
     }
-    return i->second;
+    return invalid_next_info;
   };
 
 public:
@@ -62,15 +63,13 @@ public:
       }
       id = next.variable_next;
     } else {
-      invalid_argument();
+      id = -1;
     }
   }
 
-  void finalize() const { (*next_info().handler)(args, varargs); }
+  void execute() const { (*next_info().handler)(args, varargs); }
 
-  std::vector<std::string> suggest(std::string prefix) {
-    return {};
-  }
+  std::vector<std::string> suggest(std::string prefix) { return {}; }
 };
 
 class HandlerExecutor {
@@ -237,10 +236,9 @@ class UndefinedCommand final : public Command {
 public:
   UndefinedCommand() : Command({}, {}, {}, {}, {}) {}
   bool defined() const override { return false; }
-  void execute(const char *args[]) const override {
-    invalid_argument();
-  }
-  std::vector<std::string> suggest(const std::vector<std::string> &args) const override {
+  void execute(const char *args[]) const override { invalid_argument(); }
+  std::vector<std::string>
+  suggest(const std::vector<std::string> &args) const override {
     return {};
   }
 } undefined_command;
@@ -262,10 +260,11 @@ void Command::execute(const char *args[]) const {
   while (*arg != nullptr) {
     vm.feed(*(arg++));
   }
-  vm.finalize();
+  vm.execute();
 }
 
-std::vector<std::string> Command::suggest(const std::vector<std::string> &args) const {
+std::vector<std::string>
+Command::suggest(const std::vector<std::string> &args) const {
   if (!executor->compiled()) {
     executor->compile(handlers);
   }
@@ -274,6 +273,6 @@ std::vector<std::string> Command::suggest(const std::vector<std::string> &args) 
     fmt::print("arg: {}\n", args[i]);
     vm.feed(args[i]);
   }
-    fmt::print("arg: {}\n", args[args.size() - 1]);
+  fmt::print("arg: {}\n", args[args.size() - 1]);
   return vm.suggest(args[args.size() - 1]);
 }

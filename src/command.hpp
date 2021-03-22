@@ -135,7 +135,8 @@ public:
   virtual void execute(const char *args[]) const;
 
   // process existing args and suggest next token (used for tab completation)
-  virtual std::vector<std::string> suggest(const std::vector<std::string> &args) const;
+  virtual std::vector<std::string>
+  suggest(const std::vector<std::string> &args) const;
 };
 
 // boiler-plate to create unique name:
