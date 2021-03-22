@@ -11,6 +11,30 @@
 #include "command.hpp"
 #include "utils.hpp"
 
+std::unordered_set<std::string> suggest_existing_cgroups(std::string prefix) {
+  std::unordered_set<std::string> result;
+  auto logger = spdlog::get("list");
+  logger->info("List all existing cgroups.");
+  auto r = user_dir();
+  logger->debug("Root directory is {}, iterating it.", r);
+  fs::path p(r);
+  if (!fs::exists(p)) {
+    logger->info("Root directory does not exist, showing empty list.");
+    return;
+  }
+  fs::recursive_directory_iterator end;
+  for (fs::recursive_directory_iterator i(p); i != end; ++i) {
+    if (fs::is_directory(*i)) {
+      auto cg = i->path().filename().string();
+      logger->debug("Found cgroup {}.", cg);
+      if (startswith(cg, prefix)) {
+        result.insert(cg);
+      }
+    }
+  }
+  return result;
+}
+
 namespace list {
 
 namespace fs = boost::filesystem;
@@ -74,23 +98,9 @@ DEFINE_HANDLER({}, "print a table of existing cgroups and its details", {
 });
 
 DEFINE_HANDLER({"cgroups"_kwd->alias("cgs")}, "list existing cgroups", {
-  auto logger = spdlog::get("list");
-  logger->info("List all existing cgroups.");
-  auto r = user_dir();
-  logger->debug("Root directory is {}, iterating it.", r);
-  fs::path p(r);
-  if (!fs::exists(p)) {
-    logger->info("Root directory does not exist, showing empty list.");
-    return;
-  }
-  fs::recursive_directory_iterator end;
-  for (fs::recursive_directory_iterator i(p); i != end; ++i) {
-    if (fs::is_directory(*i)) {
-      auto cg = i->path().filename().string();
-      logger->debug("Found cgroup {}.", cg);
-      fmt::print(cg);
-      fmt::print("\n");
-    }
+  auto suggestions = suggest_existing_cgroups("");
+  for (auto &i : suggestions) {
+    fs::print("{}\n", i);
   }
 });
 
