@@ -91,6 +91,10 @@ public:
         result.insert(kv.first);
       }
     }
+    for (auto &s : next.suggesters) {
+      auto new_suggestions = s(prefix);
+      result.insert(new_suggestions.begin(), new_suggestions.end());
+    }
     return result;
   }
 };
