@@ -447,7 +447,7 @@ def test_tab_complete_argument():
     from xontrib.tcg import tcg_tab_complete
 
     a = $(tcg tab-complete l aaa).strip()
-    b = sorted(list(tcg_tab_complete('tcg l aaa')))
+    b = tcg_tab_complete('tcg l aaa')
     assert b == set()
     assert a == ""
 
