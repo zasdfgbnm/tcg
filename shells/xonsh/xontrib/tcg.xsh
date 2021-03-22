@@ -33,7 +33,14 @@ def initialize_tcg():
 def tcg_tab_complete(line):
     line = line.split(' ')
     command = line[0]
-    if command == 'tcg' or command == tcg_executable:
+
+    def is_tcg(command):
+        if command == 'tcg':
+            return True
+        command = os.path.expanduser(command)
+        return os.path.isfile(command) and os.path.samefile(command, tcg_executable)
+
+    if is_tcg(command):
         try:
             items = subprocess.check_output([tcg_executable, "tab-complete", *line[1:]], stderr=subprocess.DEVNULL)
         except FileNotFoundError:
