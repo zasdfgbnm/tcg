@@ -415,7 +415,7 @@ def test_xontrib():
 def test_tab_complete_command():
     install_xontrib()
     $AUTO_INIT_TCG = False
-    xontrib load tcg
+    from xontrib.tcg import tcg_tab_complete
 
     a = sorted($(tcg tab-complete '').strip().split('\n'))
     b = sorted(list(tcg_tab_complete('tcg ')))
@@ -444,7 +444,7 @@ def test_tab_complete_command():
 def test_tab_complete_argument():
     install_xontrib()
     $AUTO_INIT_TCG = False
-    xontrib load tcg
+    from xontrib.tcg import tcg_tab_complete
 
     a = $(tcg tab-complete l aaa).strip()
     b = sorted(list(tcg_tab_complete('tcg l aaa')))
@@ -502,7 +502,7 @@ def test_tab_complete_existing_cgroups():
 
     install_xontrib()
     $AUTO_INIT_TCG = False
-    xontrib load tcg
+    from xontrib.tcg import tcg_tab_complete
 
     name1 = 'n1_' + random_string(10)
     name2 = 'n2_' + random_string(10)
@@ -517,7 +517,7 @@ def test_tab_complete_existing_cgroups():
     assert name2 in a
 
     a = set($(tcg tab-complete freeze 'n1_').strip().split('\n'))
-    b = tcg_tab_complete('tcg freeze n1_ ')
+    b = tcg_tab_complete('tcg freeze n1_')
     assert a == b
     assert name1 in a
     assert name2 not in a
