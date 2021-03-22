@@ -55,7 +55,11 @@ public:
     if (next.keywords.contains(text)) {
       id = next.keywords.at(text);
     } else if (next.variable.size() > 0) {
-      args[next.variable] = text;
+      if (next.is_varargs) {
+        varargs.push_back(text);
+      } else {
+        args[next.variable] = text;
+      }
       id = next.variable_next;
     } else {
       invalid_argument();
