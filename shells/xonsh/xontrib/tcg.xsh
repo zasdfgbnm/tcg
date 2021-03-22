@@ -1,3 +1,5 @@
+import subprocess
+
 try:
     from importlib.metadata import version, PackageNotFoundError
     try:
@@ -22,6 +24,22 @@ def initialize_tcg():
     else:
         print("Unable to create cgroup for shell.")
 
+
+def tcg_completer(prefix, line, begidx, endidx, ctx):
+    """Completer for `tcg`"""
+    line = line.split(' ')
+    command = line[0]
+    if command == 'tcg':
+        try:
+            items = subprocess.check_output(["tcg", "tab-complete", *line[1:]], stderr=subprocess.DEVNULL)
+        except FileNotFoundError:
+            return set()
+        items = items.decode("utf-8").splitlines()
+        return set(items)
+    return
+
+
+completer add tcg tcg_completer
 
 if $AUTO_INIT_TCG:
     initialize_tcg()
