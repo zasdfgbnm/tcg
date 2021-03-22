@@ -1,7 +1,9 @@
 #pragma once
 
+#include <functional>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -19,12 +21,23 @@ struct Argument {
 };
 
 struct Variable : public Argument {
+  using suggester_t =
+      std::function<std::unordered_set<std::string>(std::string)>;
+  std::optional<suggester_t> suggest = std::nullopt;
+
   using Argument::Argument;
+
   int operator<=>(const Argument &rhs) const override {
     if (typeid(rhs) != typeid(Variable)) {
       return 1;
     }
     return (name != rhs.name);
+  }
+
+  std::shared_ptr<const Variable> suggester(suggester_t s) const {
+    std::shared_ptr<Variable> ret = std::make_shared<Variable>(name);
+    ret->suggest = s;
+    return ret;
   }
 };
 

@@ -9,6 +9,8 @@
 #include "command.hpp"
 #include "utils.hpp"
 
+std::unordered_set<std::string> suggest_commands(std::string prefix);
+
 namespace help {
 
 const fmt::text_style name_format =
@@ -75,7 +77,9 @@ DEFINE_HANDLER({}, "show the help information for the entire tcg tool", {
   fmt::print("\n");
 });
 
-DEFINE_HANDLER({"command"_var}, "shows the help for the given command", {
+std::vector<std::shared_ptr<const Argument>> args_ = {
+    "command"_var->suggester(suggest_commands)};
+DEFINE_HANDLER(args_, "shows the help for the given command", {
   auto c = Command::get(args.at("command"));
   if (!c->defined()) {
     fmt::print(error_format, "Unknown command.");

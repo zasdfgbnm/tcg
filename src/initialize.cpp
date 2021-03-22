@@ -49,8 +49,6 @@ void setup_loggers() {
   spdlog::register_logger(std::make_shared<spdlog::logger>("set", sink));
   spdlog::register_logger(std::make_shared<spdlog::logger>("self", sink));
   spdlog::register_logger(std::make_shared<spdlog::logger>("show", sink));
-  spdlog::register_logger(
-      std::make_shared<spdlog::logger>("tab-complete", sink));
 }
 
 bool file_contains(std::shared_ptr<spdlog::logger> logger,

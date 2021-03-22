@@ -442,3 +442,15 @@ def test_tab_complete_argument():
 
     a = sorted($(tcg tab-complete l cgs).strip().split('\n'))
     assert a == ['cgs']
+
+    a = sorted($(tcg tab-complete help '').strip().split('\n'))
+    assert a == sorted(list(known_commands.keys()))
+
+    a = sorted($(tcg tab-complete help 'c').strip().split('\n'))
+    assert a == ['create']
+
+    a = sorted($(tcg tab-complete help 'uf').strip().split('\n'))
+    assert a == ['uf']
+
+    a = sorted($(tcg tab-complete help 's').strip().split('\n'))
+    assert a == ['self', 'set', 'show']
