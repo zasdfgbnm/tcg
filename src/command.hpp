@@ -33,6 +33,21 @@ inline std::shared_ptr<const Variable> operator""_var(const char *name,
   return std::make_shared<const Variable>(std::string(name, size));
 }
 
+struct Varargs : public Argument {
+  using Argument::Argument;
+  int operator<=>(const Argument &rhs) const override {
+    if (typeid(rhs) != typeid(Varargs)) {
+      return 1;
+    }
+    return (name != rhs.name);
+  }
+};
+
+inline std::shared_ptr<const Varargs> operator""_varargs(const char *name,
+                                                      size_t size) {
+  return std::make_shared<const Varargs>(std::string(name, size));
+}
+
 class Keyword : public Argument {
   std::unordered_set<std::string> alias_;
 
