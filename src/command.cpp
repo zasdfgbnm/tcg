@@ -82,8 +82,9 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     std::vector<const Handler *> handlers = {};
     int64_t cursor;
     int64_t id;
+    bool is_varargs;
     Branch(int64_t id, int64_t cursor, std::vector<const Handler *> handlers)
-        : id(id), cursor(cursor), handlers(handlers) {}
+        : id(id), cursor(cursor), is_varargs(false), handlers(handlers) {}
   };
 
   // at the beginning, put all handlers in the same branch,
@@ -98,13 +99,27 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
     branches.pop_front();
     NextInfo &next_info = next[branch.id];
 
+    // varargs branch is handled separately, because it can
+    // accept infinite number of arguments.
+    if (branch.is_varargs) {
+      BOOST_ASSERT_MSG(branch.handlers.size() == 1,
+                       "BUG: varargs branch can only has 1 handler");
+      auto handler = branch.handlers[0];
+      auto &hargs = handler->arguments;
+      BOOST_ASSERT_MSG(hargs.size() == branch.cursor,
+                       "BUG: varargs must be the last argument");
+      next_info.is_varargs = true;
+      next_info.variable = hargs[branch.cursor - 1]->name;
+      next_info.variable_next = branch.id;
+    }
+
     // walk through all handlers in this branch, try
     // move cursor to the next, discover new branches
     int starting_id = id;
     for (auto h : branch.handlers) {
       auto &hargs = h->arguments;
       BOOST_ASSERT_MSG(hargs.size() >= branch.cursor,
-                       "BUG: handlers shouldn't be in branch");
+                       "BUG: handlers shouldn't be in this branch");
       if (hargs.size() == branch.cursor) {
         // there can not be more than one handler ending
         // at the same branch, otherwise this language is not unique
@@ -149,16 +164,13 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           if (typeid(*harg) == typeid(Variable) ||
               typeid(*harg) == typeid(Varargs)) {
             bool is_varargs = (typeid(*harg) == typeid(Varargs));
-            if (is_varargs) {
-              BOOST_ASSERT_MSG(hargs->size() == branch.cursor + 1,
-                               "BUG: varargs is not the end of argument list.");
-            }
             if (next_info.variable.size() == 0 &&
                 next_info.variable_next == -1) {
               next_info.is_varargs = is_varargs;
               next_info.variable = harg->name;
               next_info.variable_next = new_branch->id;
             }
+            new_branch->is_varargs = is_varargs;
             // At the same branch, different handlers can not have different
             // variables at the branching position. For example:
             //
