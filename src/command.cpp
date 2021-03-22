@@ -286,9 +286,7 @@ Command::suggest(const std::vector<std::string> &args) const {
   }
   auto vm = executor->start();
   for (int64_t i = 0; i < args.size() - 1; i++) {
-    fmt::print("arg: {}\n", args[i]);
     vm.feed(args[i]);
   }
-  fmt::print("arg: {}\n", args[args.size() - 1]);
   return vm.suggest(args[args.size() - 1]);
 }
