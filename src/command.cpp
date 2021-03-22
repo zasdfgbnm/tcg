@@ -69,7 +69,12 @@ public:
 
   void execute() const { (*next_info().handler)(args, varargs); }
 
-  std::vector<std::string> suggest(std::string prefix) { return {}; }
+  std::unordered_set<std::string> suggest(std::string prefix) {
+    const NextInfo &next = next_info();
+    for (auto &kv : next.keywords) {
+    }
+    return {};
+  }
 };
 
 class HandlerExecutor {
@@ -235,9 +240,12 @@ Command::Command(const std::string &name, const std::vector<std::string> &alias,
 class UndefinedCommand final : public Command {
 public:
   UndefinedCommand() : Command({}, {}, {}, {}, {}) {}
+
   bool defined() const override { return false; }
+
   void execute(const char *args[]) const override { invalid_argument(); }
-  std::vector<std::string>
+
+  std::unordered_set<std::string>
   suggest(const std::vector<std::string> &args) const override {
     return {};
   }
@@ -263,7 +271,7 @@ void Command::execute(const char *args[]) const {
   vm.execute();
 }
 
-std::vector<std::string>
+std::unordered_set<std::string>
 Command::suggest(const std::vector<std::string> &args) const {
   if (!executor->compiled()) {
     executor->compile(handlers);
