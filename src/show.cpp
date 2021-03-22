@@ -16,8 +16,8 @@ Command command(/*name =*/"show",
                 /*short_description =*/"show the value of specific key",
                 /*additional_note =*/"");
 
-std::vector<std::shared_ptr<const Argument>> args_ = {"cgroup_name"_var->suggester(suggest_existing_cgroups),
-                                                      "key"_var};
+std::vector<std::shared_ptr<const Argument>> args_ = {
+    "cgroup_name"_var->suggester(suggest_existing_cgroups), "key"_var};
 DEFINE_HANDLER(args_, "show the value of the key of the specified cgroup", {
   auto logger = spdlog::get("show");
   std::string name = args.at("cgroup_name");

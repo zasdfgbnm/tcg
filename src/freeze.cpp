@@ -15,7 +15,8 @@ Command command(/*name =*/"freeze",
                 /*short_description =*/"freeze a cgroup",
                 /*additional_note =*/"");
 
-std::vector<std::shared_ptr<const Argument>> args_ = {"cgroup_name"_var->suggester(suggest_existing_cgroups)};
+std::vector<std::shared_ptr<const Argument>> args_ = {
+    "cgroup_name"_var->suggester(suggest_existing_cgroups)};
 DEFINE_HANDLER(args_, "freeze the specified cgroup", {
   auto logger = spdlog::get("freeze");
   std::string name = args.at("cgroup_name");
@@ -38,7 +39,8 @@ Command command(/*name =*/"unfreeze",
                 /*short_description =*/"unfreeze a cgroup",
                 /*additional_note =*/"");
 
-std::vector<std::shared_ptr<const Argument>> args_ = {"cgroup_name"_var->suggester(suggest_existing_cgroups)};
+std::vector<std::shared_ptr<const Argument>> args_ = {
+    "cgroup_name"_var->suggester(suggest_existing_cgroups)};
 DEFINE_HANDLER(args_, "unfreeze the specified cgroup", {
   auto logger = spdlog::get("freeze");
   std::string name = args.at("cgroup_name");
