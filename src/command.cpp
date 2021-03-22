@@ -32,6 +32,7 @@ struct NextInfo {
   bool is_varargs = false;
   std::string variable = "";
   int64_t variable_next = -1;
+  std::vector<Variable::suggester_t> suggesters;
 };
 
 const NextInfo invalid_next_info;
@@ -200,6 +201,12 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
               next_info.variable_next = new_branch->id;
             }
             new_branch->is_varargs = is_varargs;
+            if (!is_varargs) {
+              auto var = std::dynamic_pointer_cast<const Variable>(harg);
+              if (var->suggest.has_value()) {
+                next_info.suggesters.push_back(var->suggest.value());
+              }
+            }
             // At the same branch, different handlers can not have different
             // variables at the branching position. For example:
             //
