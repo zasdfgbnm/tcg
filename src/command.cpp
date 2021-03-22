@@ -33,6 +33,8 @@ struct NextInfo {
   int64_t variable_next = -1;
 };
 
+const NextInfo invalid_next_info;
+
 class StateMachine {
   int64_t id;
   std::unordered_map<std::string, std::string> args;
@@ -40,11 +42,10 @@ class StateMachine {
   const std::unordered_map<int64_t, NextInfo> &next_;
 
   const NextInfo &next_info() const {
-    const auto &i = next_.find(id);
-    if (i == next_.end()) {
-      invalid_argument();
+    if (next_.contains(id)) {
+      return next_.at(id);
     }
-    return i->second;
+    return invalid_next_info;
   };
 
 public:
@@ -62,10 +63,26 @@ public:
       }
       id = next.variable_next;
     } else {
-      invalid_argument();
+      id = -1;
     }
   }
-  void finalize() const { (*next_info().handler)(args, varargs); }
+
+  void execute() const { (*next_info().handler)(args, varargs); }
+
+  std::unordered_set<std::string> suggest(std::string prefix) {
+    std::unordered_set<std::string> result;
+    const NextInfo &next = next_info();
+    auto match = [&](std::string str) {
+      return str.size() >= prefix.size() &&
+             str.substr(0, prefix.size()) == prefix;
+    };
+    for (auto &kv : next.keywords) {
+      if (match(kv.first)) {
+        result.insert(kv.first);
+      }
+    }
+    return result;
+  }
 };
 
 class HandlerExecutor {
@@ -73,7 +90,6 @@ class HandlerExecutor {
   std::unordered_map<int64_t, NextInfo> next;
 
 public:
-  HandlerExecutor() = default;
   void compile(const std::vector<const Handler *> &handlers);
   bool compiled() const { return compiled_; }
   StateMachine start() const { return {next}; }
@@ -232,7 +248,15 @@ Command::Command(const std::string &name, const std::vector<std::string> &alias,
 class UndefinedCommand final : public Command {
 public:
   UndefinedCommand() : Command({}, {}, {}, {}, {}) {}
+
   bool defined() const override { return false; }
+
+  void execute(const char *args[]) const override { invalid_argument(); }
+
+  std::unordered_set<std::string>
+  suggest(const std::vector<std::string> &args) const override {
+    return {};
+  }
 } undefined_command;
 
 const Command *Command::get(const std::string &name) {
@@ -243,14 +267,26 @@ const Command *Command::get(const std::string &name) {
   return registry[name];
 }
 
-void Command::operator()(const char *args[]) const {
+void Command::execute(const char *args[]) const {
   if (!executor->compiled()) {
     executor->compile(handlers);
   }
-  auto state = executor->start();
+  auto vm = executor->start();
   auto arg = args;
   while (*arg != nullptr) {
-    state.feed(*(arg++));
+    vm.feed(*(arg++));
   }
-  state.finalize();
+  vm.execute();
+}
+
+std::unordered_set<std::string>
+Command::suggest(const std::vector<std::string> &args) const {
+  if (!executor->compiled()) {
+    executor->compile(handlers);
+  }
+  auto vm = executor->start();
+  for (int64_t i = 0; i < args.size() - 1; i++) {
+    vm.feed(args[i]);
+  }
+  return vm.suggest(args[args.size() - 1]);
 }

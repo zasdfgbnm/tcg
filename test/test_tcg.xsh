@@ -408,24 +408,37 @@ def test_xontrib():
 
 
 def test_tab_complete_command():
-    a = sorted($(tcg tab-complete '\t').strip().split('\n'))
+    a = sorted($(tcg tab-complete '').strip().split('\n'))
     assert a == sorted(list(known_commands.keys()))
 
-    a = sorted($(tcg tab-complete 'fr\t').strip().split('\n'))
+    a = sorted($(tcg tab-complete fr).strip().split('\n'))
     assert a == ['freeze']
 
-    a = sorted($(tcg tab-complete 'uf\t').strip().split('\n'))
+    a = sorted($(tcg tab-complete uf).strip().split('\n'))
     assert a == ['uf']
 
-    a = $(tcg tab-complete 'aaa\t').strip()
+    a = $(tcg tab-complete 'aaa').strip()
     assert a == ''
 
     with pytest.raises(subprocess.CalledProcessError):
         tcg tab-complete
 
-    with pytest.raises(subprocess.CalledProcessError):
-        tcg tab-complete aaa
-
 
 def test_tab_complete_argument():
-    tcg tab-complete help aaa
+    a = $(tcg tab-complete l aaa).strip()
+    assert a == ""
+
+    a = sorted($(tcg tab-complete l '').strip().split('\n'))
+    assert a == ['cgroups', 'cgs']
+
+    a = sorted($(tcg tab-complete ls 'c').strip().split('\n'))
+    assert a == ['cgroups', 'cgs']
+
+    a = sorted($(tcg tab-complete ls 'cg').strip().split('\n'))
+    assert a == ['cgroups', 'cgs']
+
+    a = sorted($(tcg tab-complete l cgr).strip().split('\n'))
+    assert a == ['cgroups']
+
+    a = sorted($(tcg tab-complete l cgs).strip().split('\n'))
+    assert a == ['cgs']
