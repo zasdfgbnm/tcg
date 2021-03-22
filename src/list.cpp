@@ -11,6 +11,8 @@
 #include "command.hpp"
 #include "utils.hpp"
 
+namespace fs = boost::filesystem;
+
 std::unordered_set<std::string> suggest_existing_cgroups(std::string prefix) {
   std::unordered_set<std::string> result;
   auto logger = spdlog::get("list");
@@ -20,7 +22,7 @@ std::unordered_set<std::string> suggest_existing_cgroups(std::string prefix) {
   fs::path p(r);
   if (!fs::exists(p)) {
     logger->info("Root directory does not exist, showing empty list.");
-    return;
+    return {};
   }
   fs::recursive_directory_iterator end;
   for (fs::recursive_directory_iterator i(p); i != end; ++i) {
@@ -37,13 +39,11 @@ std::unordered_set<std::string> suggest_existing_cgroups(std::string prefix) {
 
 namespace list {
 
-namespace fs = boost::filesystem;
-
 fmt::text_style cg_style =
     maybe_style(fg(fmt::color::green) | fmt::emphasis::bold);
 
-void print_procs(std::shared_ptr<spdlog::logger> logger,
-                 const std::string &name) {
+void print_procs(const std::string &name) {
+  auto logger = spdlog::get("list");
   auto procs_file = name_dir(name, true) + "/cgroup.procs";
   logger->debug("Reading process list from {}.", procs_file);
   std::ifstream in(procs_file);
@@ -75,32 +75,19 @@ Command command(/*name =*/"list",
 );
 
 DEFINE_HANDLER({}, "print a table of existing cgroups and its details", {
-  auto logger = spdlog::get("list");
-  logger->info("List all existing cgroups.");
-  auto r = user_dir();
-  logger->debug("Root directory is {}, iterating it.", r);
-  fs::path p(r);
-  if (!fs::exists(p)) {
-    logger->info("Root directory does not exist, showing empty list.");
-    return;
-  }
-  fs::recursive_directory_iterator end;
-  for (fs::recursive_directory_iterator i(p); i != end; ++i) {
-    if (fs::is_directory(*i)) {
-      auto cg = i->path().filename().string();
-      logger->debug("Found cgroup {}.", cg);
-      fmt::print(cg_style, cg);
-      fmt::print("\t");
-      print_procs(logger, cg);
-      fmt::print("\n");
-    }
+  auto suggestions = suggest_existing_cgroups("");
+  for (auto &cg : suggestions) {
+    fmt::print(cg_style, cg);
+    fmt::print("\t");
+    print_procs(cg);
+    fmt::print("\n");
   }
 });
 
 DEFINE_HANDLER({"cgroups"_kwd->alias("cgs")}, "list existing cgroups", {
   auto suggestions = suggest_existing_cgroups("");
-  for (auto &i : suggestions) {
-    fs::print("{}\n", i);
+  for (auto &cg : suggestions) {
+    fmt::print("{}\n", cg);
   }
 });
 

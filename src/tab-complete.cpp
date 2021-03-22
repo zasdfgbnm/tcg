@@ -4,22 +4,19 @@
 #include <fmt/core.h>
 
 #include "command.hpp"
+#include "utils.hpp"
 
 std::unordered_set<std::string> suggest_commands(std::string prefix) {
   std::unordered_set<std::string> result;
-  auto match = [&](std::string str) {
-    return str.size() >= prefix.size() &&
-           str.substr(0, prefix.size()) == prefix;
-  };
   for (auto &i : Command::all()) {
     if (!i.second->defined() || i.first != i.second->name) {
       continue;
     }
-    if (match(i.first)) {
+    if (startswith(i.first, prefix)) {
       result.insert(i.first);
     } else {
       for (auto &j : i.second->alias) {
-        if (match(j)) {
+        if (startswith(j, prefix)) {
           result.insert(j);
         }
       }
