@@ -58,7 +58,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libboost-all-dev
-        pip install xonsh pytest
+        pip install xonsh pytest twine wheel
     - name: Compile
       env:
         CC:   gcc-10
