@@ -92,11 +92,13 @@ inline std::shared_ptr<const Keyword> operator""_kwd(const char *name,
 class Command;
 
 using arg_map_t = std::unordered_map<std::string, std::string>;
+using vararg_t = std::vector<std::string>;
 
 struct Handler {
   std::vector<std::shared_ptr<const Argument>> arguments;
   std::string description;
-  virtual void operator()(const arg_map_t &args) const = 0;
+  virtual void operator()(const arg_map_t &args,
+                          const vararg_t &varargs) const = 0;
   Handler(Command &, const std::vector<std::shared_ptr<const Argument>> &,
           const std::string &);
 
@@ -141,8 +143,11 @@ public:
 
 #define _DEFINE_HANDLER(name, variables, description, code)                    \
   struct name final : public Handler{                                          \
-    name(Command & command) : Handler(command, variables, description){} void  \
-    operator()(const arg_map_t &args) const override code                      \
+    name(Command & command) : Handler(command, variables, description){}       \
+                                                                               \
+    void                                                                       \
+    operator()(const arg_map_t &args, const vararg_t &varargs)                 \
+        const override code                                                    \
   } _MAKE_UNIQUE(handler)(command)
 
 #define DEFINE_HANDLER(variables, description, code)                           \

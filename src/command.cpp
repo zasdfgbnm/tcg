@@ -12,7 +12,10 @@
 class InvalidHandler : public Handler {
 public:
   InvalidHandler() : Handler(Handler::do_not_register{}) {}
-  void operator()(const arg_map_t &args) const override { invalid_argument(); }
+  void operator()(const arg_map_t &args,
+                  const vararg_t &varargs) const override {
+    invalid_argument();
+  }
 } invalid_handler;
 
 Handler::Handler(Command &command,
@@ -33,6 +36,7 @@ struct NextInfo {
 class StateMachine {
   int64_t id;
   std::unordered_map<std::string, std::string> args;
+  std::vector<std::string> varargs;
   const std::unordered_map<int64_t, NextInfo> &next_;
 
   const NextInfo &next_info() const {
@@ -57,7 +61,7 @@ public:
       invalid_argument();
     }
   }
-  void finalize() const { (*next_info().handler)(args); }
+  void finalize() const { (*next_info().handler)(args, varargs); }
 };
 
 class HandlerExecutor {
