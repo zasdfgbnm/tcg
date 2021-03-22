@@ -429,13 +429,13 @@ def test_tab_complete_argument():
     assert a == ""
 
     a = sorted($(tcg tab-complete l '').strip().split('\n'))
-    assert a == ['cgroups', 'cgs']
+    assert a == ['cgroups']
 
     a = sorted($(tcg tab-complete ls 'c').strip().split('\n'))
-    assert a == ['cgroups', 'cgs']
+    assert a == ['cgroups']
 
     a = sorted($(tcg tab-complete ls 'cg').strip().split('\n'))
-    assert a == ['cgroups', 'cgs']
+    assert a == ['cgroups']
 
     a = sorted($(tcg tab-complete l cgr).strip().split('\n'))
     assert a == ['cgroups']

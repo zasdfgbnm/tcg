@@ -85,6 +85,11 @@ public:
         result.insert(kv.first);
       }
     }
+    for (auto &kv : next.alias) {
+      if (match(kv.first) && !result.contains(kv.second)) {
+        result.insert(kv.first);
+      }
+    }
     return result;
   }
 };
