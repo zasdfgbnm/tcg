@@ -78,7 +78,7 @@ public:
     };
     for (auto &kv : next.keywords) {
       if (match(kv.first)) {
-        result.insert((kv.first));
+        result.insert(kv.first);
       }
     }
     return result;

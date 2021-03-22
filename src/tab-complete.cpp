@@ -43,7 +43,10 @@ std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var,
                                                       "args"_varargs};
 DEFINE_HANDLER(args_, "complete arguments", {
   auto cmd = Command::get(args.at("command"));
-  cmd->suggest(varargs);
+  auto result = cmd->suggest(varargs);
+  for (auto &i : result) {
+    fmt::print("{}\n", i);
+  }
 });
 
 } // namespace tab_complete
