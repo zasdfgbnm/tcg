@@ -65,7 +65,12 @@ public:
       invalid_argument();
     }
   }
+
   void finalize() const { (*next_info().handler)(args, varargs); }
+
+  std::vector<std::string> suggest(std::string prefix) {
+    return {};
+  }
 };
 
 class HandlerExecutor {
@@ -243,14 +248,25 @@ const Command *Command::get(const std::string &name) {
   return registry[name];
 }
 
-void Command::operator()(const char *args[]) const {
+void Command::execute(const char *args[]) const {
   if (!executor->compiled()) {
     executor->compile(handlers);
   }
-  auto state = executor->start();
+  auto vm = executor->start();
   auto arg = args;
   while (*arg != nullptr) {
-    state.feed(*(arg++));
+    vm.feed(*(arg++));
   }
-  state.finalize();
+  vm.finalize();
+}
+
+std::vector<std::string> Command::suggest(const std::vector<std::string> &args) const {
+  if (!executor->compiled()) {
+    executor->compile(handlers);
+  }
+  auto vm = executor->start();
+  for (int64_t i = 0; i < args.size() - 1; i++) {
+    vm.feed(args[i]);
+  }
+  return vm.suggest(args[args.size() - 1]);
 }

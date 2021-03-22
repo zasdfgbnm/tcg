@@ -19,11 +19,6 @@ Command command("tab-complete",
 DEFINE_HANDLER({"command"_var}, "complete arguments", {
   auto logger = spdlog::get("tab-complete");
   std::string partial_command = args.at("command");
-  if (partial_command.back() != '\t') {
-    logger->error("Must end with <tab>");
-    exit(EXIT_FAILURE);
-  }
-  partial_command = partial_command.substr(0, partial_command.size() - 1);
   for (auto &i : Command::all()) {
     if (!i.second->defined() || i.first != i.second->name) {
       continue;
@@ -48,7 +43,7 @@ std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var,
                                                       "args"_varargs};
 DEFINE_HANDLER(args_, "complete arguments", {
   auto cmd = Command::get(args.at("command"));
-  // TODO
+  cmd->suggest(varargs);
 });
 
 } // namespace tab_complete

@@ -10,7 +10,7 @@ int main(int argc, const char *argv[]) {
 
   if (argc < 2) {
     const char *args[] = {nullptr};
-    (*Command::get("help"))(args);
+    Command::get("help")->execute(args);
     return 0;
   }
 
@@ -20,5 +20,5 @@ int main(int argc, const char *argv[]) {
     enter_sandbox();
   }
 
-  (*cmd)(argv + 2);
+  cmd->execute(argv + 2);
 }
