@@ -28,6 +28,7 @@ Handler::Handler(Command &command,
 struct NextInfo {
   const Handler *handler = &invalid_handler;
   std::unordered_map<std::string, int64_t> keywords;
+  std::unordered_map<std::string, std::string> alias;
   bool is_varargs = false;
   std::string variable = "";
   int64_t variable_next = -1;
@@ -55,6 +56,9 @@ public:
     const NextInfo &next = next_info();
     if (next.keywords.contains(text)) {
       id = next.keywords.at(text);
+    } else if (next.alias.contains(text)) {
+      auto kwd = next.alias.at(text);
+      id = next.keywords.at(kwd);
     } else if (next.variable.size() > 0) {
       if (next.is_varargs) {
         varargs.push_back(text);
@@ -78,6 +82,11 @@ public:
     };
     for (auto &kv : next.keywords) {
       if (match(kv.first)) {
+        result.insert(kv.first);
+      }
+    }
+    for (auto &kv : next.alias) {
+      if (match(kv.first) && !result.contains(kv.second)) {
         result.insert(kv.first);
       }
     }
@@ -206,15 +215,18 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
           } else {
             BOOST_ASSERT_MSG(typeid(*harg) == typeid(Keyword),
                              "BUG: Unknown argument type.");
-            auto set_keyword = [&](std::string keyword) {
-              BOOST_ASSERT_MSG(!next_info.keywords.contains(keyword),
+            auto check_conflict = [&](std::string k) {
+              BOOST_ASSERT_MSG(!next_info.keywords.contains(k),
                                "BUG: keyword or alias conflict.");
-              next_info.keywords[keyword] = new_branch->id;
+              BOOST_ASSERT_MSG(!next_info.alias.contains(k),
+                               "BUG: keyword or alias conflict.");
             };
             auto kwd = std::dynamic_pointer_cast<const Keyword>(harg);
-            set_keyword(kwd->name);
+            check_conflict(kwd->name);
+            next_info.keywords[kwd->name] = new_branch->id;
             for (auto &alias : kwd->alias()) {
-              set_keyword(alias);
+              check_conflict(alias);
+              next_info.alias[alias] = kwd->name;
             }
           }
         }
