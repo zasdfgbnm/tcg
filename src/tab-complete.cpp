@@ -38,7 +38,9 @@ Command command("tab-complete",
                                    // docs on systems without cgroup v2
 );
 
-DEFINE_HANDLER({"command"_var->suggester(suggest_commands)}, "complete arguments", {
+std::vector<std::shared_ptr<const Argument>> args1 = {
+    "command"_var->suggester(suggest_commands)};
+DEFINE_HANDLER(args1, "complete arguments", {
   std::string partial_command = args.at("command");
   auto suggestions = suggest_commands(partial_command);
   for (auto &i : suggestions) {
@@ -46,9 +48,9 @@ DEFINE_HANDLER({"command"_var->suggester(suggest_commands)}, "complete arguments
   }
 });
 
-std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var->suggester(suggest_commands),
-                                                      "args"_varargs};
-DEFINE_HANDLER(args_, "complete arguments", {
+std::vector<std::shared_ptr<const Argument>> args2 = {
+    "command"_var->suggester(suggest_commands), "args"_varargs};
+DEFINE_HANDLER(args2, "complete arguments", {
   auto cmd = Command::get(args.at("command"));
   auto suggestions = cmd->suggest(varargs);
   for (auto &i : suggestions) {
