@@ -1,5 +1,6 @@
 #include <cstdlib>
 
+#include <boost/assert.hpp>
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
 
@@ -15,9 +16,9 @@ Command command("tab-complete",
                                    // docs on systems without cgroup v2
 );
 
-DEFINE_HANDLER({"partial_command"_var}, "complete partial command", {
+DEFINE_HANDLER({"command"_var}, "complete arguments", {
   auto logger = spdlog::get("tab-complete");
-  std::string partial_command = args.at("partial_command");
+  std::string partial_command = args.at("command");
   if (partial_command.back() != '\t') {
     logger->error("Must end with <tab>");
     exit(EXIT_FAILURE);
@@ -41,6 +42,13 @@ DEFINE_HANDLER({"partial_command"_var}, "complete partial command", {
       }
     }
   }
+});
+
+std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var,
+                                                      "args"_varargs};
+DEFINE_HANDLER(args_, "complete arguments", {
+  auto cmd = Command::get(args.at("command"));
+  // TODO
 });
 
 } // namespace tab_complete
