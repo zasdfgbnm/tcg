@@ -428,4 +428,4 @@ def test_tab_complete_command():
 
 
 def test_tab_complete_argument():
-    pass
+    tcg tab-complete help aaa

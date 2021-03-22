@@ -16,10 +16,9 @@ Command command("tab-complete",
                                    // docs on systems without cgroup v2
 );
 
-DEFINE_HANDLER({"args"_varargs}, "complete arguments", {
+DEFINE_HANDLER({"command"_var}, "complete arguments", {
   auto logger = spdlog::get("tab-complete");
-  BOOST_ASSERT_MSG(varargs.size() == 1, "Not implemented yet.");
-  std::string partial_command = varargs[0];
+  std::string partial_command = args.at("command");
   if (partial_command.back() != '\t') {
     logger->error("Must end with <tab>");
     exit(EXIT_FAILURE);
@@ -43,6 +42,13 @@ DEFINE_HANDLER({"args"_varargs}, "complete arguments", {
       }
     }
   }
+});
+
+std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var,
+                                                      "args"_varargs};
+DEFINE_HANDLER(args_, "complete arguments", {
+  auto cmd = Command::get(args.at("command"));
+  // TODO
 });
 
 } // namespace tab_complete
