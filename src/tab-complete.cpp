@@ -5,16 +5,6 @@
 
 #include "command.hpp"
 
-namespace tab_complete {
-
-Command command("tab-complete",
-                /*alias =*/{},
-                /*short_description =*/"suggest next token",
-                /*additional_note =*/"",
-                /*sandbox =*/false // disable sandbox to allow users to read
-                                   // docs on systems without cgroup v2
-);
-
 std::unordered_set<std::string> suggest_commands(std::string prefix) {
   std::unordered_set<std::string> result;
   auto match = [&](std::string str) {
@@ -38,7 +28,17 @@ std::unordered_set<std::string> suggest_commands(std::string prefix) {
   return result;
 }
 
-DEFINE_HANDLER({"command"_var}, "complete arguments", {
+namespace tab_complete {
+
+Command command("tab-complete",
+                /*alias =*/{},
+                /*short_description =*/"suggest next token",
+                /*additional_note =*/"",
+                /*sandbox =*/false // disable sandbox to allow users to read
+                                   // docs on systems without cgroup v2
+);
+
+DEFINE_HANDLER({"command"_var->suggester(suggest_commands)}, "complete arguments", {
   std::string partial_command = args.at("command");
   auto suggestions = suggest_commands(partial_command);
   for (auto &i : suggestions) {
@@ -46,7 +46,7 @@ DEFINE_HANDLER({"command"_var}, "complete arguments", {
   }
 });
 
-std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var,
+std::vector<std::shared_ptr<const Argument>> args_ = {"command"_var->suggester(suggest_commands),
                                                       "args"_varargs};
 DEFINE_HANDLER(args_, "complete arguments", {
   auto cmd = Command::get(args.at("command"));
