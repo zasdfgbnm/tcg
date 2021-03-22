@@ -25,8 +25,7 @@ def initialize_tcg():
         print("Unable to create cgroup for shell.")
 
 
-def tcg_completer(prefix, line, begidx, endidx, ctx):
-    """Completer for `tcg`"""
+def tcg_tab_complete(line):
     line = line.split(' ')
     command = line[0]
     if command == 'tcg':
@@ -37,6 +36,11 @@ def tcg_completer(prefix, line, begidx, endidx, ctx):
         items = items.decode("utf-8").splitlines()
         return set(items)
     return
+
+
+def tcg_completer(prefix, line, begidx, endidx, ctx):
+    """Completer for `tcg`"""
+    tcg_tab_complete(line)
 
 
 completer add tcg tcg_completer
