@@ -78,7 +78,6 @@ class HandlerExecutor {
   std::unordered_map<int64_t, NextInfo> next;
 
 public:
-  HandlerExecutor() = default;
   void compile(const std::vector<const Handler *> &handlers);
   bool compiled() const { return compiled_; }
   StateMachine start() const { return {next}; }
@@ -238,6 +237,12 @@ class UndefinedCommand final : public Command {
 public:
   UndefinedCommand() : Command({}, {}, {}, {}, {}) {}
   bool defined() const override { return false; }
+  void execute(const char *args[]) const override {
+    invalid_argument();
+  }
+  std::vector<std::string> suggest(const std::vector<std::string> &args) const override {
+    return {};
+  }
 } undefined_command;
 
 const Command *Command::get(const std::string &name) {
@@ -266,7 +271,9 @@ std::vector<std::string> Command::suggest(const std::vector<std::string> &args) 
   }
   auto vm = executor->start();
   for (int64_t i = 0; i < args.size() - 1; i++) {
+    fmt::print("arg: {}\n", args[i]);
     vm.feed(args[i]);
   }
+    fmt::print("arg: {}\n", args[args.size() - 1]);
   return vm.suggest(args[args.size() - 1]);
 }
