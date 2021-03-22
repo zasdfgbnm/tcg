@@ -51,12 +51,10 @@ public:
   StateMachine(const std::unordered_map<int64_t, NextInfo> &next)
       : id(0), next_(next) {}
   void feed(std::string text) {
-    fmt::print("feed {}\n", text);
     const NextInfo &next = next_info();
     if (next.keywords.contains(text)) {
       id = next.keywords.at(text);
     } else if (next.variable.size() > 0) {
-      fmt::print("next.variable = {}\n", next.variable);
       if (next.is_varargs) {
         varargs.push_back(text);
       } else {
@@ -67,7 +65,7 @@ public:
       invalid_argument();
     }
   }
-  void finalize() const {fmt::print("finalize"); (*next_info().handler)(args, varargs); }
+  void finalize() const { (*next_info().handler)(args, varargs); }
 };
 
 class HandlerExecutor {
@@ -129,7 +127,7 @@ void HandlerExecutor::compile(const std::vector<const Handler *> &handlers) {
       if (hargs.size() == branch.cursor) {
         // there can not be more than one handler ending
         // at the same branch, otherwise this language is not unique
-        BOOST_ASSERT_MSG(next_info.handler != &invalid_handler,
+        BOOST_ASSERT_MSG(next_info.handler == &invalid_handler,
                          "BUG: in one branch, only one handler can end here");
         next_info.handler = h;
       } else {

@@ -1,8 +1,8 @@
 #include <cstdlib>
 
+#include <boost/assert.hpp>
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
-#include <boost/assert.hpp>
 
 #include "command.hpp"
 
