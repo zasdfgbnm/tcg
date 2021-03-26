@@ -41,14 +41,6 @@ jobs:
     runs-on: ubuntu-20.04
     container: archlinux
     steps:
-    - name: Workaround actions/virtual-environments#2658
-      run: |
-        # https://github.com/lxqt/lxqt-panel/pull/1562
-        # Work-around the issue with glibc 2.33 on old Docker engines
-        # Extract files directly as pacman is also affected by the issue
-        patched_glibc=glibc-linux4-2.33-4-x86_64.pkg.tar.zst
-        curl -LO https://repo.archlinuxcn.org/x86_64/$patched_glibc
-        bsdtar -C / -xvf $patched_glibc
     - name: Install missing packages
       run: |
         pacman -Sy --noconfirm linux mkinitcpio
