@@ -94,6 +94,8 @@ jobs:
     - name: Run tests on cgroup v1
       timeout-minutes: 1
       run: |
+        set -eux
+        ci/add-debian-sid.sh
         sudo apt install -y ./tcg*.deb
         pip install xonsh pytest
         pytest -v
