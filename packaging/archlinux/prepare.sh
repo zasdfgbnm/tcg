@@ -14,7 +14,7 @@ run () {
         set -eux
         cd /w
         integ=$(makepkg -g sha256)
-        sudo sed -i "s/integ=x/$integ/g" PKGBUILD
+        sudo sed -i "s/sha256sum=(x)/$integ/g" PKGBUILD
         makepkg --printsrcinfo | sudo tee .SRCINFO
     '
     sudo chown -R $(id -u):$(id -g) .
