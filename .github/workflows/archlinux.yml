@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
-      with:
-        submodules: true
     - name: build
       run: |
         set -eux
@@ -78,7 +76,7 @@ jobs:
           pacman -Sy --noconfirm wget arch-install-scripts
           wget https://gitlab.archlinux.org/archlinux/archlinux-docker/-/raw/master/pacman-conf.d-noextract.conf?inline=false -O pacman-conf.d-noextract.conf
           cat pacman-conf.d-noextract.conf >> /etc/pacman.conf
-          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs
+          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog
         '
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout wheel setuptools_scm
@@ -136,8 +134,6 @@ jobs:
       - archlinux-image
     steps:
     - uses: actions/checkout@v2
-      with:
-        submodules: true
     - uses: actions/download-artifact@v2
       with:
         name: archlinux-pkg

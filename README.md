@@ -23,11 +23,7 @@ If you use [Xonsh](https://xon.sh), we have a xontrib, see [shells/xonsh/README.
 
 To clone `tcg` from github, run the following command:
 ```
-git clone --recursive https://github.com/zasdfgbnm/tcg.git
-```
-Make sure you use the `--recursive` in your command line, so that submodules will be available when you build. If you have already cloned without `--recursive`, you can go to your repository and do
-```
-git submodule update --init --recursive
+git clone https://github.com/zasdfgbnm/tcg.git
 ```
 
 
