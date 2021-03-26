@@ -87,6 +87,8 @@ jobs:
 
   limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
     runs-on: ubuntu-20.04
+    needs:
+      - debian-pkg
     steps:
     - uses: actions/checkout@v2
     - uses: actions/download-artifact@v2
