@@ -3,7 +3,7 @@ Version: pkgver
 Section: base
 Priority: optional
 Architecture: x86_64
-Depends: libboost-all (>= libboostver), libfmt (>= libfmtver), libspdlog (>= libspdlogver)
+Depends: libboost-all (>= libboostver), libfmt (>= libfmtver), libspdlog1 (>= libspdlogver)
 Maintainer: tcg <tcg-deb@emailaddress.biz>
 Description: Terminal cgroup
  Terminal cgroup, short for `tcg`, is a tool to help people manage system's
