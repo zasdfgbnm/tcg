@@ -46,6 +46,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - uses: actions/setup-python@v2
       with:
         python-version: '3.9'
@@ -77,18 +79,27 @@ jobs:
         set -eux
         cd packaging/debian
         ./build.sh
+    - uses: actions/upload-artifact@v2
+      with:
+        name: deb-package
+        path: packaging/debian/*.deb
+        retention-days: 5
 
   limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v2
+      with:
+        name: deb-package
     - uses: actions/setup-python@v2
       with:
         python-version: '3.9'
     - name: Run tests on cgroup v1
       timeout-minutes: 1
       run: |
-        export PATH=$PATH:$PWD/build
+        sudo dpkg -i tcg*.deb
+        pip install xonsh pytest twine wheel
         pytest -v
 
   xonsh-test-pypi:
