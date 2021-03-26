@@ -19,8 +19,9 @@ jobs:
     - name: build
       run: |
         set -eux
-        cd packaging/archlinux
+        pushd packaging/archlinux
         ./prepare.sh
+        popd
         sudo docker run --privileged -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
           set -eux
           cp -r /workspace/packaging/archlinux/tcg-git ~/package
