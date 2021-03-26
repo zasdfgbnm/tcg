@@ -91,11 +91,12 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: '3.9'
+    - name: Setup environment
+      run: ci/add-debian-sid.sh
     - name: Run tests on cgroup v1
       timeout-minutes: 1
       run: |
         set -eux
-        ci/add-debian-sid.sh
         sudo apt install -y ./tcg*.deb
         pip install xonsh pytest
         pytest -v
