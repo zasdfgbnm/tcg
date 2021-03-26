@@ -3,6 +3,7 @@
 set -eux
 
 run () {
+    set -eux
     ver=$(python ../../../shells/xonsh/setup.py --version)
     commit=$(git rev-parse HEAD)
     echo $ver
