@@ -22,8 +22,6 @@ def getver(package):
     pkgver = pkgver.split()
     assert len(pkgver) == 4
     pkgver = pkgver[1]
-    pkgver = pkgver.split('.')
-    pkgver = '.'.join(pkgver[:2])
     return pkgver
 
 sed -i f"s/pkgver/{ver}/g" @(pkgname)/DEBIAN/control
