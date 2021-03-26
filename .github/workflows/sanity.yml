@@ -49,15 +49,13 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
-      with:
-        submodules: true
     - uses: actions/setup-python@v2
       with:
         python-version: '3.9'
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libboost-all-dev
+        sudo apt-get install -y libboost-all-dev libfmt-dev libspdlog-dev
         pip install xonsh pytest twine wheel
     - name: Compile
       env:
@@ -81,7 +79,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        submodules: true
         fetch-depth: 0
     - uses: actions/setup-python@v2
       with:
