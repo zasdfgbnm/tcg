@@ -8,14 +8,14 @@ trace on
 ver = $(python ../../shells/xonsh/setup.py --version)
 pkgname = f"tcg_{ver}-1"
 
-mkdir -p $pkgname/usr/bin
-cp ../../build/tcg $pkgname/usr/bin
+mkdir -p @(pkgname)/usr/bin
+cp ../../build/tcg @(pkgname)/usr/bin
 
-mkdir -p $pkgname/DEBIAN
-cp control $pkgname/DEBIAN
+mkdir -p @(pkgname)/DEBIAN
+cp control @(pkgname)/DEBIAN
 
 def getver(package):
-    pkgver = $(apt list --installed | grep $package).strip()
+    pkgver = $(apt list --installed | grep @(package)).strip()
     pkgver = pkgver.splitlines()
     assert len(pkgver) == 1
     pkgver = pkgver[0]
@@ -26,7 +26,11 @@ def getver(package):
     pkgver = '.'.join(pkgver[:2])
     return pkgver
 
-sed -i f"s/pkgver/{ver}/g" $pkgname/DEBIAN/control
-sed -i f"s/libboostver/{getver('libboost-all-dev')}/g" $pkgname/DEBIAN/control
-sed -i f"s/libfmtver/{getver('libfmt-dev')}/g" $pkgname/DEBIAN/control
-sed -i f"s/libspdlogver/{getver('libspdlog-dev')}/g" $pkgname/DEBIAN/control
+sed -i f"s/pkgver/{ver}/g" @(pkgname)/DEBIAN/control
+sed -i f"s/libboostver/{getver('libboost-all-dev')}/g" @(pkgname)/DEBIAN/control
+sed -i f"s/libfmtver/{getver('libfmt-dev')}/g" @(pkgname)/DEBIAN/control
+sed -i f"s/libspdlogver/{getver('libspdlog-dev')}/g" @(pkgname)/DEBIAN/control
+
+cat @(pkgname)/DEBIAN/control
+
+dpkg-deb --build @(pkgname)
