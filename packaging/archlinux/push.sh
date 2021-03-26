@@ -11,6 +11,7 @@ push_repo () {
     git commit -m "version bump"
     git push
     popd
+    rm -rf publish
 }
 
 push_repo tcg
