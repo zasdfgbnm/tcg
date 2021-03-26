@@ -11,7 +11,7 @@ license=('MIT')
 depends=('boost-libs' 'fmt' 'spdlog')
 makedepends=('git' 'cmake' 'boost')
 source=("$url")
-sha256sum=(x)
+sha256sums=(x)
 
 build() {
   cd "$srcdir/tcg"

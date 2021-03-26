@@ -13,8 +13,8 @@ run () {
     sudo docker run --privileged -v $PWD:/w -w /tmp zasdfgbnm/archlinux-yaourt bash -c '
         set -eux
         cd /w
-        integ=$(makepkg -g sha256)
-        sudo sed -i "s/sha256sum=(x)/$integ/g" PKGBUILD
+        integ=$(makepkg -g)
+        sudo sed -i "s/sha256sums=(x)/$integ/g" PKGBUILD
         makepkg --printsrcinfo | sudo tee .SRCINFO
     '
     sudo chown -R $(id -u):$(id -g) .

@@ -4,3 +4,4 @@
 *.pkg.tar.zst
 *.zip
 .eggs
+.SRCINFO
