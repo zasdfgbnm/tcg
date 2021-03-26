@@ -17,21 +17,16 @@ jobs:
       env:
         sshkey: ${{ secrets.AUR_PRIVATE_KEY }}
       run: ci/setup-env.sh
-    - name: prepare tcg-git
+    - name: prepare
       run: |
         set -eux
         cd packaging/archlinux
         ./prepare.sh
-    - name: push tcg-git
+    - name: push
       run: |
         set -eux
-        git clone ssh://aur@aur.archlinux.org/tcg-git.git
-        cd tcg-git
-        rm -rf *
-        cp ../packaging/archlinux/tcg-git/{PKGBUILD,.SRCINFO} .
-        git add .
-        git commit -m "version bump"
-        git push
+        cd packaging/archlinux
+        ./push.sh
 
   xonsh-pypi:
     runs-on: ubuntu-20.04
