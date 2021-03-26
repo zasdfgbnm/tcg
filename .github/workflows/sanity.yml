@@ -99,7 +99,7 @@ jobs:
     - name: Run tests on cgroup v1
       timeout-minutes: 1
       run: |
-        sudo dpkg -i tcg*.deb
+        sudo apt-get install -y tcg*.deb
         pip install xonsh pytest
         pytest -v
 
