@@ -42,67 +42,6 @@ jobs:
   #     run: |
   #       clang-tidy -p build/compile_commands.json src/*.{cpp,hpp}
 
-  debian-pkg:
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-    - name: Install dependencies
-      run: |
-        set -eux
-        ci/add-debian-sid.sh
-        sudo apt-get install -y "libboost-filesystem1.71-dev" "libfmt-dev=7.*" "libspdlog-dev=1:*" xonsh
-    - name: Compile
-      env:
-        CC:   gcc-10
-        CXX:  g++-10
-      run: |
-        set -eux
-        mkdir build
-        cd build
-        cmake ..
-        make -j
-        sudo chown root tcg
-        sudo chmod +s tcg
-    - name: Package
-      run: |
-        set -eux
-        cd packaging/debian
-        ./build.xsh
-    - uses: actions/upload-artifact@v2
-      with:
-        name: deb-package
-        path: packaging/debian/*.deb
-        retention-days: 5
-
-  limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
-    runs-on: ubuntu-20.04
-    needs:
-      - debian-pkg
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/download-artifact@v2
-      with:
-        name: deb-package
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-    - name: Setup environment
-      run: |
-        set -eux
-        ci/add-debian-sid.sh
-        sudo apt install -y ./tcg*.deb
-    - name: Run tests on cgroup v1
-      timeout-minutes: 1
-      run: |
-        set -eux
-        pip install xonsh pytest wheel
-        pytest -v
-
   xonsh-test-pypi:
     runs-on: ubuntu-20.04
     steps:
