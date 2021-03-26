@@ -77,7 +77,7 @@ jobs:
       run: |
         set -eux
         cd packaging/debian
-        ./build.sh
+        ./build.xsh
     - uses: actions/upload-artifact@v2
       with:
         name: deb-package
