@@ -60,8 +60,7 @@ jobs:
         sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
         sudo add-apt-repository "deb http://ftp.us.debian.org/debian sid main"
         sudo apt-get update
-        sudo apt-get install -y libboost-all-dev libfmt-dev libspdlog-dev
-        pip install xonsh pytest twine wheel
+        sudo apt-get install -y libboost-all-dev libfmt-dev libspdlog-dev xonsh
     - name: Compile
       env:
         CC:   gcc-10
@@ -101,7 +100,7 @@ jobs:
       timeout-minutes: 1
       run: |
         sudo dpkg -i tcg*.deb
-        pip install xonsh pytest twine wheel
+        pip install xonsh pytest
         pytest -v
 
   xonsh-test-pypi:
