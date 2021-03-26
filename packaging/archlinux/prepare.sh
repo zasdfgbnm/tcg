@@ -7,7 +7,7 @@ run () {
     commit=$(git rev-parse HEAD)
     echo $ver
     sed -i "s/pkgver=x/pkgver=$ver/g" PKGBUILD
-    sed -i "s/commit=x/pkgver=$commit/g" PKGBUILD
+    sed -i "s/commit=x/commit=$commit/g" PKGBUILD
     cat PKGBUILD
     sudo docker run --privileged -v $PWD:/w -w /tmp zasdfgbnm/archlinux-yaourt bash -c '
         cd /w
