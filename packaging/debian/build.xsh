@@ -5,7 +5,7 @@ $XONSH_TRACE_SUBPROC = True
 trace on
 
 
-ver = $(python ../../shells/xonsh/setup.py --version)
+ver = $(python ../../shells/xonsh/setup.py --version).strip()
 pkgname = f"tcg_{ver}-1"
 
 mkdir -p @(pkgname)/usr/bin
