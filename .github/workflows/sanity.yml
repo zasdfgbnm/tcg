@@ -16,6 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Lint with clang-format
       run: |
+        set -eux
         find src -name '*.cpp' -o -name '*.h' -o -name '*.hpp'| xargs clang-format -i
         GIT_DIFF=$(git diff)
         if [[ -z $GIT_DIFF ]]; then
@@ -41,38 +42,65 @@ jobs:
   #     run: |
   #       clang-tidy -p build/compile_commands.json src/*.{cpp,hpp}
 
-  limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
+  debian-pkg:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - uses: actions/setup-python@v2
       with:
         python-version: '3.9'
     - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y software-properties-common debian-archive-keyring dirmngr
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
-        sudo add-apt-repository "deb http://ftp.us.debian.org/debian sid main"
-        sudo apt-get update
-        sudo apt-get install -y libboost-all-dev libfmt-dev libspdlog-dev
-        pip install xonsh pytest twine wheel
+        set -eux
+        ci/add-debian-sid.sh
+        sudo apt-get install -y libboost-all-dev libfmt-dev libspdlog-dev xonsh
     - name: Compile
       env:
         CC:   gcc-10
         CXX:  g++-10
       run: |
+        set -eux
         mkdir build
         cd build
         cmake ..
         make -j
         sudo chown root tcg
         sudo chmod +s tcg
+    - name: Package
+      run: |
+        set -eux
+        cd packaging/debian
+        ./build.xsh
+    - uses: actions/upload-artifact@v2
+      with:
+        name: deb-package
+        path: packaging/debian/*.deb
+        retention-days: 5
+
+  limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
+    runs-on: ubuntu-20.04
+    needs:
+      - debian-pkg
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v2
+      with:
+        name: deb-package
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Setup environment
+      run: |
+        set -eux
+        ci/add-debian-sid.sh
+        sudo apt install -y ./tcg*.deb
     - name: Run tests on cgroup v1
       timeout-minutes: 1
       run: |
-        export PATH=$PATH:$PWD/build
+        set -eux
+        pip install xonsh pytest wheel
         pytest -v
 
   xonsh-test-pypi:

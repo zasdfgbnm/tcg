@@ -1,0 +1,10 @@
+Package: tcg
+Version: pkgver
+Section: base
+Priority: optional
+Architecture: amd64
+Depends: libboost-all-dev (>= libboostver), libfmt-dev (>= libfmtver), libspdlog1 (>= libspdlogver)
+Maintainer: tcg <tcg-deb@emailaddress.biz>
+Description: Terminal cgroup
+ Terminal cgroup, short for `tcg`, is a tool to help people manage system's
+ resource usage through cgroup.

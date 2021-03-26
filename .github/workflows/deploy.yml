@@ -16,7 +16,7 @@ jobs:
     - name: setup key
       env:
         sshkey: ${{ secrets.AUR_PRIVATE_KEY }}
-      run: ci/setup-env.sh
+      run: ci/setup-ssh-git.sh
     - name: prepare
       run: |
         set -eux
