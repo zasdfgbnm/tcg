@@ -12,7 +12,7 @@ run () {
     sudo docker run --privileged -v $PWD:/w -w /tmp zasdfgbnm/archlinux-yaourt bash -c '
         cd /w
         makepkg -g
-        makepkg --printsrcinfo > .SRCINFO
+        makepkg --printsrcinfo | sudo tee .SRCINFO
     '
     sudo chown -R $(id -u):$(id -g) .
     cat PKGBUILD
