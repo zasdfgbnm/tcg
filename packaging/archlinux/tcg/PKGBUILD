@@ -1,0 +1,27 @@
+# Maintainer: tcg <aur-tcg@emailaddress.biz>
+
+pkgname=tcg
+pkgver=x
+pkgrel=1
+pkgdesc="cgroups for terminals"
+arch=('x86_64')
+commit=x
+url="https://github.com/zasdfgbnm/tcg/archive/$commit.zip"
+license=('MIT')
+depends=('boost-libs' 'fmt' 'spdlog')
+makedepends=('git' 'cmake' 'boost')
+source=("$url")
+
+build() {
+  cd "$srcdir/tcg"
+  mkdir -p build
+  cd build
+  cmake ..
+  make -j
+}
+
+package() {
+  cd "$srcdir/tcg"
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm4755 build/tcg "${pkgdir}/usr/bin/tcg"
+}
