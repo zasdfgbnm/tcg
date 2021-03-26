@@ -1,4 +1,6 @@
 /*/pkg
 /*/src
 /*/tcg
-/*.pkg.tar.zst
+*.pkg.tar.zst
+*.zip
+.eggs
