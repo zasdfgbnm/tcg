@@ -34,31 +34,30 @@ jobs:
           User aur
         EOF
         ssh-keyscan -H aur.archlinux.org | tee -a ~/.ssh/known_hosts
-    - name: update PKGBUILD
+    - name: update PKGBUILD for tcg-git
       run: |
         set -eux
-        cd packaging/archlinux
-        source PKGBUILD
-        rev=$(git rev-list --count $pkgver..HEAD)
-        echo $rev
-        sed -i "s/pkgver=$pkgver/pkgver=$pkgver.$rev/g" PKGBUILD
+        cd packaging/archlinux/tcg-git
+        ver=$(python ../../../shells/xonsh/setup.py --version)
+        echo $ver
+        sed -i "s/pkgver=x/pkgver=$ver/g" PKGBUILD
         cat PKGBUILD
-    - name: prepare srcinfo
+    - name: prepare srcinfo for tcg-git
       run: |
         set -eux
-        cd packaging/archlinux
+        cd packaging/archlinux/tcg-git
         docker run -v $PWD:/w -w /tmp zasdfgbnm/archlinux-yaourt bash -c '
           cp -r /w .
           cd w
           makepkg --printsrcinfo
         ' | tee .SRCINFO
-    - name: push
+    - name: push tcg-git
       run: |
         set -eux
         git clone ssh://aur@aur.archlinux.org/tcg-git.git
         cd tcg-git
         rm -rf *
-        cp ../packaging/archlinux/{PKGBUILD,.SRCINFO} .
+        cp ../packaging/archlinux/tcg-git/{PKGBUILD,.SRCINFO} .
         git config --global user.email "aur-tcg@emailaddress.biz"
         git config --global user.name "tcg"
         git add .

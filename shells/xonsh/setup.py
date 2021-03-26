@@ -2,8 +2,12 @@
 # This program is distributed under the MIT license.
 
 from setuptools import setup
+import os
 
-with open('README.md', 'r') as fh:
+dirname = os.path.dirname(os.path.abspath(__file__))
+readme = os.path.join(dirname, 'README.md')
+
+with open(readme, 'r') as fh:
     long_description = fh.read()
 
 def get_version(version):
