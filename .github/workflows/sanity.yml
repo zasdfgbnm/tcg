@@ -100,7 +100,7 @@ jobs:
       timeout-minutes: 1
       run: |
         set -eux
-        pip install xonsh pytest
+        pip install xonsh pytest wheel
         pytest -v
 
   xonsh-test-pypi:
