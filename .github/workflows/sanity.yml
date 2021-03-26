@@ -56,9 +56,10 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y software-properties-common debian-archive-keyring dirmngr
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B48AD6246925553
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
         sudo add-apt-repository "deb http://ftp.us.debian.org/debian sid main"
+        sudo apt-get update
         sudo apt-get install -y libboost-all-dev libfmt-dev libspdlog-dev
         pip install xonsh pytest twine wheel
     - name: Compile
