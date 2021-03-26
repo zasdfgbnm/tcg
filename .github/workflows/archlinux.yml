@@ -23,7 +23,7 @@ jobs:
         ./prepare.sh
         sudo docker run --privileged -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
           set -eux
-          cp -r /workspace/packaging/archlinux ~/package
+          cp -r /workspace/packaging/archlinux/tcg-git ~/package
           cd ~/package
           sudo pacman -Sy
           sed -i "s/source=.*/source=(\"tcg::git+file:\/\/\/workspace\")/g" PKGBUILD
