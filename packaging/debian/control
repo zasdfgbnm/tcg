@@ -2,7 +2,7 @@ Package: tcg
 Version: pkgver
 Section: base
 Priority: optional
-Architecture: x86_64
+Architecture: amd64
 Depends: libboost-all (>= libboostver), libfmt (>= libfmtver), libspdlog1 (>= libspdlogver)
 Maintainer: tcg <tcg-deb@emailaddress.biz>
 Description: Terminal cgroup
