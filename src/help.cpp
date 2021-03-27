@@ -6,6 +6,7 @@
 
 #include <boost/assert.hpp>
 
+#include "config.h"
 #include "command.hpp"
 #include "utils.hpp"
 
@@ -29,7 +30,18 @@ Command command(/*name =*/"help",
                                    // docs on systems without cgroup v2
 );
 
+void print_version() {
+#ifdef VERSION
+  fmt::print(". version {}", VERSION);
+#endif
+}
+
 DEFINE_HANDLER({}, "show the help information for the entire tcg tool", {
+  // version
+  fmt::print("tcg: terminal cgroups");
+  print_version();
+  fmt::print("\n\n");
+
   // title
   fmt::print(title_format, "Usage:\n");
   fmt::print("tcg <command> [<args>]\n\n");
