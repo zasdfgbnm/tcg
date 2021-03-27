@@ -35,6 +35,6 @@ target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic)
 
 option(CODE_COVERAGE "Enable coverage reporting" OFF)
 if(CODE_COVERAGE)
-  target_compile_options(${PROJECT_NAME} PUBLIC -g --coverage)
-  target_link_options(${PROJECT_NAME} PUBLIC --coverage)
+  target_compile_options(${PROJECT_NAME} PUBLIC -g --coverage -fprofile-dir=/usr/src/tcg)
+  target_link_options(${PROJECT_NAME} PUBLIC --coverage -fprofile-dir=/usr/src/tcg)
 endif(CODE_COVERAGE)
