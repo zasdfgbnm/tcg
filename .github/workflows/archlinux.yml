@@ -22,6 +22,7 @@ jobs:
         popd
         sudo docker run --privileged -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
           set -eux
+          export CODE_COVERAGE=ON
           cp -r /workspace/packaging/archlinux/tcg-git ~/package
           cd ~/package
           sudo pacman -Sy
