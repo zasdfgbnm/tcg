@@ -149,7 +149,8 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
 bool is_sandbox;
 
 void enter_sandbox() {
-#ifdef CODE_COVERAGE
+// disable chroot jail for CODE_COVERAGE to allow writing to profile
+#ifndef CODE_COVERAGE
   auto logger = spdlog::get("initialize");
   logger->info("Entering sandbox...");
   check_cgroup_mount(logger);
