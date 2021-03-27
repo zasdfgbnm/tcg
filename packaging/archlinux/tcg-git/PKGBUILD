@@ -8,7 +8,7 @@ arch=('x86_64')
 url="https://github.com/zasdfgbnm/tcg"
 license=('MIT')
 depends=('boost-libs' 'fmt' 'spdlog')
-makedepends=('git' 'cmake' 'boost')
+makedepends=('git' 'cmake' 'ninja' 'boost')
 source=("git+$url")
 sha256sums=('SKIP')
 
@@ -17,11 +17,11 @@ build() {
   mkdir -p build
   cd build
   if [ "x$CODE_COVERAGE" = "xON" ]; then
-    cmake -DCODE_COVERAGE=ON -DGCDA_DIR=/var/lib/tcg ..
+    cmake -G "Ninja" -DCODE_COVERAGE=ON -DGCDA_DIR=/var/lib/tcg ..
   else
-    cmake ..
+    cmake -G "Ninja" ..
   fi
-  make -j
+  ninja
 }
 
 package() {
