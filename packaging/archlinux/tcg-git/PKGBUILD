@@ -30,7 +30,7 @@ package() {
   if [ "x$CODE_COVERAGE" = "xON" ]; then
     mkdir -p "${pkgdir}/usr/share/tcg/codecov/"
     mkdir -p "${pkgdir}/var/lib/tcg/"
-    install -Dm644 build/CMakeFiles/tcg.dir/src/*.gcno "${pkgdir}/usr/share/tcg/codecov/"
+    install -Dm644 build/*.gcno "${pkgdir}/usr/share/tcg/codecov/"
   fi
   install -Dm4755 build/tcg "${pkgdir}/usr/bin/tcg"
 }

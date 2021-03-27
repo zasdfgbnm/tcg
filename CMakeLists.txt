@@ -35,6 +35,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic)
 
 # Allow obtaining code coverage data
 option(CODE_COVERAGE "Enable coverage reporting" OFF)
+
 # gcda is the file generated at runtime
 # gcno is the file generated at compile time
 #
@@ -43,20 +44,13 @@ option(CODE_COVERAGE "Enable coverage reporting" OFF)
 # https://gcc.gnu.org/onlinedocs/gcc-10.1.0/gcc/Instrumentation-Options.html
 option(GCDA_DIR "Argument for -fprofile-dir=")
 
-message("cmakefiles at ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}")
-message("PROJECT_BINARY_DIR = ${PROJECT_BINARY_DIR}")
-message("PROJECT_SOURCE_DIR = ${PROJECT_SOURCE_DIR}")
-
 if(CODE_COVERAGE)
   set(PROFILE_PREFIX_DIR "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}.dir/src")
   set(CODECOV_CXX_FLAGS --coverage -fprofile-prefix-path=${PROFILE_PREFIX_DIR})
 
   target_compile_options(${PROJECT_NAME} PUBLIC ${CODECOV_CXX_FLAGS})
   target_link_options(${PROJECT_NAME} PUBLIC ${CODECOV_CXX_FLAGS})
-  if(GCDA_DIR STREQUAL "")
-    message("GCDA_DIR not set, use default value")
-  else()
-    message("Adding flag -fprofile-dir=${GCDA_DIR}")
+  if(NOT GCDA_DIR STREQUAL "")
     target_compile_options(${PROJECT_NAME} PUBLIC -fprofile-dir=${GCDA_DIR})
     target_link_options(${PROJECT_NAME} PUBLIC -fprofile-dir=${GCDA_DIR})
   endif()
