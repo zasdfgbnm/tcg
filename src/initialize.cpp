@@ -106,7 +106,11 @@ void create_root_dir(std::shared_ptr<spdlog::logger> logger) {
   }
 }
 
+bool is_chroot_jaiil = false;
+
 void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
+// disable chroot jail for CODE_COVERAGE to allow writing to profile
+#ifndef CODE_COVERAGE
   logger->info("Entering chroot jail...");
   auto ud = user_dir();
   logger->debug("Chdir to {}.", ud);
@@ -121,6 +125,8 @@ void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
     exit(EXIT_FAILURE);
   }
   logger->info("Chroot jail entered.");
+  is_chroot_jaiil = true;
+#endif
 }
 
 void initialize_logger() {
@@ -146,18 +152,12 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
   exit(EXIT_FAILURE);
 }
 
-bool is_sandbox;
-
 void enter_sandbox() {
-// disable chroot jail for CODE_COVERAGE to allow writing to profile
-#ifndef CODE_COVERAGE
   auto logger = spdlog::get("initialize");
   logger->info("Entering sandbox...");
   check_cgroup_mount(logger);
   check_euid(logger);
   create_root_dir(logger);
   enter_chroot_jail(logger);
-  is_sandbox = true;
   logger->info("Sandbox entered successfully.");
-#endif
 }
