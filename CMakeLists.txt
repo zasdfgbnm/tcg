@@ -45,7 +45,7 @@ option(CODE_COVERAGE "Enable coverage reporting" OFF)
 option(GCDA_DIR "Argument for -fprofile-dir=")
 
 if(CODE_COVERAGE)
-  set(PROFILE_PREFIX_DIR "${PROJECT_SOURCE_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}.dir/src")
+  set(PROFILE_PREFIX_DIR "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}.dir/src")
   set(CODECOV_CXX_FLAGS --coverage -fprofile-prefix-path=${PROFILE_PREFIX_DIR})
 
   target_compile_options(${PROJECT_NAME} PUBLIC ${CODECOV_CXX_FLAGS})
