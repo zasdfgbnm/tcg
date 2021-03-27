@@ -168,10 +168,20 @@ jobs:
     - name: Run tests in qemu
       timeout-minutes: 30
       run: qemu-system-x86_64 -no-reboot -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "systemd.unified_cgroup_hierarchy=1 cgroup_no_v1=all console=ttyS0 root=/dev/sda rw" -monitor vc -serial stdio -nographic -m 2048
-    - name: Check test results
+    - name: Copy result files
       run: |
         set -eux
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
-        FILE=/mnt/home/user/test_result.json
-        sudo python -c "import sys; import json; j = json.load(open('$FILE')); sys.exit(j['exitcode'])"
+        cp /mnt/home/user/test_result.json .
+        cp /mnt/home/user/coverage.info .
+        sync
+        sudo umount /mnt
+        sudo qemu-nbd --disconnect /dev/nbd0
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.info
+        verbose: true
+    - name: Check test results
+      run: sudo python -c "import sys; import json; j = json.load(open('test_result.json')); sys.exit(j['exitcode'])"
