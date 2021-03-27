@@ -145,7 +145,7 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
   exit(EXIT_FAILURE);
 }
 
-bool is_sandbox;
+bool is_sandbox = false;
 
 void enter_sandbox() {
 //   auto logger = spdlog::get("initialize");
