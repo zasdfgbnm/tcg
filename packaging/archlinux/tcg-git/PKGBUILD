@@ -16,7 +16,11 @@ build() {
   cd "$srcdir/tcg"
   mkdir -p build
   cd build
-  cmake ..
+  if [ "x$CODE_COVERAGE" = "xON" ]; then
+    cmake -DCODE_COVERAGE=ON -DPROFILE_DIR=/usr/src/tcg ..
+  else
+    cmake ..
+  fi
   make -j
 }
 
@@ -26,6 +30,7 @@ package() {
   if [ "x$CODE_COVERAGE" = "xON" ]; then
     mkdir -p "${pkgdir}/usr/src/tcg/"
     install -Dm644 build/CMakeFiles/tcg.dir/src/* "${pkgdir}/usr/src/tcg/"
+    install -Dm644 build/*.gcno "${pkgdir}/usr/src/tcg/"
   fi
   install -Dm4755 build/tcg "${pkgdir}/usr/bin/tcg"
 }
