@@ -28,6 +28,23 @@ jobs:
         cd packaging/archlinux
         ./push.sh
 
+  validate-aur:
+    runs-on: ubuntu-20.04
+    container: zasdfgbnm/archlinux-yaourt
+    needs:
+      - archlinux-aur
+    steps:
+    - name: validate tcg
+      run: |
+        set -eux
+        yaourt -Sy --noconfirm tcg
+        sudo pacman -Rns tcg
+    - name: validate tcg-git
+      run: |
+        set -eux
+        yaourt -Sy --noconfirm tcg-git
+        sudo pacman -Rns tcg-git
+
   xonsh-pypi:
     runs-on: ubuntu-20.04
     steps:
