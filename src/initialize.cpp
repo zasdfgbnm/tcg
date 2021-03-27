@@ -148,12 +148,12 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
 bool is_sandbox;
 
 void enter_sandbox() {
-  auto logger = spdlog::get("initialize");
-  logger->info("Entering sandbox...");
-  check_cgroup_mount(logger);
-  check_euid(logger);
-  create_root_dir(logger);
-  enter_chroot_jail(logger);
-  is_sandbox = true;
-  logger->info("Sandbox entered successfully.");
+//   auto logger = spdlog::get("initialize");
+//   logger->info("Entering sandbox...");
+//   check_cgroup_mount(logger);
+//   check_euid(logger);
+//   create_root_dir(logger);
+//   enter_chroot_jail(logger);
+//   is_sandbox = true;
+//   logger->info("Sandbox entered successfully.");
 }
