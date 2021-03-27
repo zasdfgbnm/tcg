@@ -17,7 +17,7 @@ build() {
   mkdir -p build
   cd build
   if [ "x$CODE_COVERAGE" = "xON" ]; then
-    cmake -DCODE_COVERAGE=ON -DPROFILE_DIR=/usr/src/tcg ..
+    cmake -DCODE_COVERAGE=ON -DGCDA_DIR=/var/lib/tcg ..
   else
     cmake ..
   fi
@@ -29,6 +29,7 @@ package() {
   install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
   if [ "x$CODE_COVERAGE" = "xON" ]; then
     mkdir -p "${pkgdir}/usr/src/tcg/"
+    mkdir -p "${pkgdir}/var/lib/tcg/"
     install -Dm644 build/CMakeFiles/tcg.dir/src/* "${pkgdir}/usr/src/tcg/"
     install -Dm644 build/*.gcno "${pkgdir}/usr/src/tcg/"
   fi
