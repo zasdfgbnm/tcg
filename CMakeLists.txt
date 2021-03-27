@@ -33,6 +33,7 @@ target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} fmt::fmt spdlo
 
 target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic)
 
+# Allow obtainign code coverage data
 option(CODE_COVERAGE "Enable coverage reporting" OFF)
 option(PROFILE_DIR "Argument for -fprofile-dir=")
 if(CODE_COVERAGE)
