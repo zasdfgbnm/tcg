@@ -113,6 +113,7 @@ jobs:
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         export TCG_LOG_LEVEL=debug
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
+        lcov --capture --directory /usr/bin --output-file coverage.info
         sudo poweroff
         EOF
         sudo chroot /mnt chown -R user:user /home/user
