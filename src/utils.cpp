@@ -18,7 +18,7 @@ fmt::text_style maybe_style(fmt::text_style style) {
 }
 
 std::string user_dir() {
-  if (is_sandbox) {
+  if (is_chroot_jail) {
     return "/";
   }
   auto uid = getuid();
