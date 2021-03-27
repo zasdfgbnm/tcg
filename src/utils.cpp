@@ -6,7 +6,7 @@
 
 namespace fs = boost::filesystem;
 
-extern bool is_sandbox;
+extern bool is_chroot_jail;
 
 bool stdout_is_tty() { return isatty(fileno(stdout)); }
 
@@ -18,7 +18,7 @@ fmt::text_style maybe_style(fmt::text_style style) {
 }
 
 std::string user_dir() {
-  if (is_sandbox) {
+  if (is_chroot_jail) {
     return "/";
   }
   auto uid = getuid();

@@ -22,6 +22,7 @@ jobs:
         popd
         sudo docker run --privileged -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
           set -eux
+          export CODE_COVERAGE=ON
           cp -r /workspace/packaging/archlinux/tcg-git ~/package
           cd ~/package
           sudo pacman -Sy
@@ -75,8 +76,9 @@ jobs:
           set -eux
           pacman -Sy --noconfirm wget arch-install-scripts
           wget https://gitlab.archlinux.org/archlinux/archlinux-docker/-/raw/master/pacman-conf.d-noextract.conf?inline=false -O pacman-conf.d-noextract.conf
-          cat pacman-conf.d-noextract.conf >> /etc/pacman.conf
-          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog
+          wget https://raw.githubusercontent.com/zasdfgbnm-dockers/basic/master/pacman.conf -O pacman-zasdfgbnmsystem.conf
+          cat pacman-conf.d-noextract.conf pacman-zasdfgbnmsystem.conf >> /etc/pacman.conf
+          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog lcov gcc
         '
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout wheel setuptools_scm
@@ -110,7 +112,10 @@ jobs:
         set -ux
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         export TCG_LOG_LEVEL=debug
+        sudo chown -R user:user /var/lib/tcg/
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
+        sudo cp /usr/src/tcg/* /var/lib/tcg/
+        lcov --capture --directory /var/lib/tcg --output-file coverage.info
         sudo poweroff
         EOF
         sudo chroot /mnt chown -R user:user /home/user
@@ -163,10 +168,21 @@ jobs:
     - name: Run tests in qemu
       timeout-minutes: 30
       run: qemu-system-x86_64 -no-reboot -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "systemd.unified_cgroup_hierarchy=1 cgroup_no_v1=all console=ttyS0 root=/dev/sda rw" -monitor vc -serial stdio -nographic -m 2048
-    - name: Check test results
+    - name: Copy result files
       run: |
         set -eux
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
-        FILE=/mnt/home/user/test_result.json
-        sudo python -c "import sys; import json; j = json.load(open('$FILE')); sys.exit(j['exitcode'])"
+        sudo cp /mnt/home/user/test_result.json .
+        sudo cp /mnt/home/user/coverage.info .
+        sudo chown -R $(id -u):$(id -g) .
+        sync
+        sudo umount /mnt
+        sudo qemu-nbd --disconnect /dev/nbd0
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.info
+        verbose: true
+    - name: Check test results
+      run: sudo python -c "import sys; import json; j = json.load(open('test_result.json')); sys.exit(j['exitcode'])"

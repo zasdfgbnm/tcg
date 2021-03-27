@@ -9,6 +9,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+#include "config.h"
 #include "utils.hpp"
 
 namespace fs = boost::filesystem;
@@ -105,7 +106,11 @@ void create_root_dir(std::shared_ptr<spdlog::logger> logger) {
   }
 }
 
+bool is_chroot_jail = false;
+
 void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
+// disable chroot jail for CODE_COVERAGE to allow writing to profile
+#ifndef CODE_COVERAGE
   logger->info("Entering chroot jail...");
   auto ud = user_dir();
   logger->debug("Chdir to {}.", ud);
@@ -120,6 +125,8 @@ void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
     exit(EXIT_FAILURE);
   }
   logger->info("Chroot jail entered.");
+  is_chroot_jail = true;
+#endif
 }
 
 void initialize_logger() {
@@ -145,8 +152,6 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
   exit(EXIT_FAILURE);
 }
 
-bool is_sandbox;
-
 void enter_sandbox() {
   auto logger = spdlog::get("initialize");
   logger->info("Entering sandbox...");
@@ -154,6 +159,5 @@ void enter_sandbox() {
   check_euid(logger);
   create_root_dir(logger);
   enter_chroot_jail(logger);
-  is_sandbox = true;
   logger->info("Sandbox entered successfully.");
 }

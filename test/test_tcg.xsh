@@ -210,8 +210,11 @@ def test_list():
         {x for x in $(tcg l cgroups).strip().split('\n')},
         {x for x in $(tcg l cgs).strip().split('\n')},
     ]
+
     for g in groups:
         assert g == groups[0]
+    assert name1 in groups[0]
+    assert name2 in groups[0]
 
 
 def test_list_procs():
