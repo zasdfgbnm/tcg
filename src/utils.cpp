@@ -6,7 +6,7 @@
 
 namespace fs = boost::filesystem;
 
-extern bool is_sandbox;
+extern bool is_chroot_jail;
 
 bool stdout_is_tty() { return isatty(fileno(stdout)); }
 

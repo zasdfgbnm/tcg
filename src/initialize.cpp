@@ -106,7 +106,7 @@ void create_root_dir(std::shared_ptr<spdlog::logger> logger) {
   }
 }
 
-bool is_chroot_jaiil = false;
+bool is_chroot_jail = false;
 
 void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
 // disable chroot jail for CODE_COVERAGE to allow writing to profile
@@ -125,7 +125,7 @@ void enter_chroot_jail(std::shared_ptr<spdlog::logger> logger) {
     exit(EXIT_FAILURE);
   }
   logger->info("Chroot jail entered.");
-  is_chroot_jaiil = true;
+  is_chroot_jail = true;
 #endif
 }
 
