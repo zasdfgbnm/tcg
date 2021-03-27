@@ -1,2 +1,2 @@
 #cmakedefine CODE_COVERAGE
-// #cmakedefine VERSION "@VERSION@"
+#cmakedefine VERSION "@VERSION@"

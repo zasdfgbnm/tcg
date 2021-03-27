@@ -34,6 +34,8 @@ target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} fmt::fmt spdlo
 
 target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic)
 
+option(VERSION "Version of this project")
+
 configure_file(src/config.h.in config.h @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
@@ -44,7 +46,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 # https://gcc.gnu.org/onlinedocs/gcc/Gcov-Data-Files.html
 # https://gcc.gnu.org/onlinedocs/gcc-10.1.0/gcc/Instrumentation-Options.html
 option(GCDA_DIR "Argument for -fprofile-dir=" OFF)
-message("GCDA_DIR = ${GCDA_DIR}")
 
 if(CODE_COVERAGE)
   set(BUILD_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}.dir/src")

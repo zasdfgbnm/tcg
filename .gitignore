@@ -4,3 +4,4 @@ settings.json
 __pycache__
 test_result.json
 /run_tests.sh
+.eggs

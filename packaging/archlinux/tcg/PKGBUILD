@@ -17,7 +17,7 @@ build() {
   cd "$srcdir/tcg-$commit"
   mkdir -p build
   cd build
-  cmake ..
+  cmake -DVERSION=${pkgver} ..
   make -j
 }
 

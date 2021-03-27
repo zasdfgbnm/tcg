@@ -30,9 +30,10 @@ jobs:
         CXX:  g++-10
       run: |
         set -eux
+        ver=$(python shells/xonsh/setup.py --version)
         mkdir build
         cd build
-        cmake ..
+        cmake -DVERSION=${ver} ..
         make -j
         sudo chown root tcg
         sudo chmod +s tcg
