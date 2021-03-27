@@ -115,7 +115,7 @@ jobs:
         tcg h
         # py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         ls -lah /usr/src/tcg
-        sudo cp /usr/share/tcg/codecov/* /var/lib/tcg/
+        sudo cp /usr/src/tcg/* /var/lib/tcg/
         lcov --capture --directory /var/lib/tcg --output-file coverage.info
         sudo poweroff
         EOF
