@@ -32,7 +32,8 @@ jobs:
         set -eux
         mkdir build
         cd build
-        cmake ..
+        ver=$(python ../../shells/xonsh/setup.py --version)
+        cmake -DVERSION=${ver} ..
         make -j
         sudo chown root tcg
         sudo chmod +s tcg
