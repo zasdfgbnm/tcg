@@ -9,8 +9,8 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
-#include "utils.hpp"
 #include "config.h"
+#include "utils.hpp"
 
 namespace fs = boost::filesystem;
 
