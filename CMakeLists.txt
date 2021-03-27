@@ -32,3 +32,9 @@ find_package(spdlog REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} fmt::fmt spdlog::spdlog)
 
 target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic)
+
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
+if(CODE_COVERAGE)
+  target_compile_options(${PROJECT_NAME} PUBLIC -g --coverage)
+  target_link_options(${PROJECT_NAME} PUBLIC --coverage)
+endif(CODE_COVERAGE)
