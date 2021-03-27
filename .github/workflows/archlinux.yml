@@ -112,7 +112,6 @@ jobs:
         set -ux
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         export TCG_LOG_LEVEL=debug
-        tcg h
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         ls -lah /usr/src/tcg
         lcov --capture --directory /usr/src/tcg --output-file coverage.info
