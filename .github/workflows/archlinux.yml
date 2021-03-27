@@ -113,7 +113,7 @@ jobs:
         sudo pacman -U --noconfirm /*.pkg.tar.zst
         export TCG_LOG_LEVEL=debug
         sudo chown -R user:user /var/lib/tcg/
-        py.test --json-report --json-report-file=test_result.json --timeout=120 -v
+        py.test --json-report --json-report-file=test_result.json -v
         sudo cp /usr/src/tcg/* /var/lib/tcg/
         lcov --capture --directory /var/lib/tcg --output-file coverage.info
         sudo poweroff
