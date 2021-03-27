@@ -10,6 +10,7 @@
 #include <spdlog/spdlog.h>
 
 #include "utils.hpp"
+#include "config.h"
 
 namespace fs = boost::filesystem;
 
@@ -148,6 +149,7 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
 bool is_sandbox;
 
 void enter_sandbox() {
+#ifdef CODE_COVERAGE
   auto logger = spdlog::get("initialize");
   logger->info("Entering sandbox...");
   check_cgroup_mount(logger);
@@ -156,4 +158,5 @@ void enter_sandbox() {
   enter_chroot_jail(logger);
   is_sandbox = true;
   logger->info("Sandbox entered successfully.");
+#endif
 }

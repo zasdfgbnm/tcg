@@ -8,13 +8,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 string(REPLACE "-DNDEBUG" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 string(REPLACE "-DNDEBUG" "" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 
+# Allow obtaining code coverage data
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
+
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/initialize.cpp
     src/utils.cpp
-    src/utils.hpp
     src/command.cpp
-    src/command.hpp
     src/names.txt
     src/create.cpp
     src/freeze.cpp
@@ -33,8 +34,8 @@ target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} fmt::fmt spdlo
 
 target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic)
 
-# Allow obtaining code coverage data
-option(CODE_COVERAGE "Enable coverage reporting" OFF)
+configure_file(src/config.h.in config.h @ONLY)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # gcda is the file generated at runtime
 # gcno is the file generated at compile time
@@ -45,8 +46,8 @@ option(CODE_COVERAGE "Enable coverage reporting" OFF)
 option(GCDA_DIR "Argument for -fprofile-dir=")
 
 if(CODE_COVERAGE)
-  set(PROFILE_PREFIX_DIR "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}.dir/src")
-  set(CODECOV_CXX_FLAGS --coverage -fprofile-prefix-path=${PROFILE_PREFIX_DIR})
+  set(BUILD_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}.dir/src")
+  set(CODECOV_CXX_FLAGS --coverage -fprofile-prefix-path=${BUILD_SRC_DIR})
 
   target_compile_options(${PROJECT_NAME} PUBLIC ${CODECOV_CXX_FLAGS})
   target_link_options(${PROJECT_NAME} PUBLIC ${CODECOV_CXX_FLAGS})
