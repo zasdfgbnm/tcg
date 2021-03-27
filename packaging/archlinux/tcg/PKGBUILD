@@ -14,7 +14,7 @@ source=("$url")
 sha256sums=(x)
 
 build() {
-  cd "$srcdir/tcg"
+  cd "$srcdir/tcg-$commit"
   mkdir -p build
   cd build
   cmake -DCODE_COVERAGE=ON ..
@@ -22,7 +22,7 @@ build() {
 }
 
 package() {
-  cd "$srcdir/tcg"
+  cd "$srcdir/tcg-$commit"
   install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
   install -Dm4755 build/tcg "${pkgdir}/usr/bin/tcg"
 }
