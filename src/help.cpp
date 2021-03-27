@@ -6,8 +6,8 @@
 
 #include <boost/assert.hpp>
 
-#include "config.h"
 #include "command.hpp"
+#include "config.h"
 #include "utils.hpp"
 
 std::unordered_set<std::string> suggest_commands(std::string prefix);
