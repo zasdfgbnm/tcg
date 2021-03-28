@@ -11,7 +11,7 @@ import enum
 
 
 uid = os.getuid()
-ROOT = f'/sys/fs/cgroup/terminals/{uid}/'
+ROOT = ''
 
 class Cgroupv2Status(enum.Enum):
     UNAVAILABLE = 1
@@ -22,9 +22,11 @@ CGROUP2_STATUS = Cgroupv2Status.UNAVAILABLE
 
 if os.path.isfile('/sys/fs/cgroup/cgroup.procs'):
     CGROUP2_STATUS = Cgroupv2Status.PURE
+    ROOT = f'/sys/fs/cgroup/terminals/{uid}/'
 
 if os.path.isfile('/sys/fs/cgroup/unified/cgroup.procs'):
     CGROUP2_STATUS = Cgroupv2Status.HYBRID
+    ROOT = f'/sys/fs/cgroup/unified/terminals/{uid}/'
 
 
 known_commands = {
