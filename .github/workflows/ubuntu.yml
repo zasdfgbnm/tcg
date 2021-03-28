@@ -65,7 +65,7 @@ jobs:
         set -eux
         ci/add-debian-sid.sh
         sudo apt install -y ./tcg*.deb
-    - name: Run tests on cgroup v1
+    - name: Run tests on cgroup hybrid
       timeout-minutes: 5
       run: |
         set -eux

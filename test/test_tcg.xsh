@@ -7,11 +7,24 @@ import subprocess
 import queue
 import timeit
 import re
+import enum
 
 
 uid = os.getuid()
 ROOT = f'/sys/fs/cgroup/terminals/{uid}/'
-CGROUP2_AVAILABLE = os.path.isfile('/sys/fs/cgroup/cgroup.procs')
+
+class Cgroupv2Status(enum.Enum):
+    UNAVAILABLE = 1
+    PURE = 2
+    HYBRID = 3
+
+CGROUP2_STATUS = Cgroupv2Status.UNAVAILABLE
+
+if os.path.isfile('/sys/fs/cgroup/cgroup.procs'):
+    CGROUP2_STATUS = Cgroupv2Status.PURE
+
+if os.path.isfile('/sys/fs/cgroup/unified/cgroup.procs'):
+    CGROUP2_STATUS = Cgroupv2Status.HYBRID
 
 
 known_commands = {
@@ -101,7 +114,7 @@ def test_create_illegal():
 
 
 def test_create_builtin_name():
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         pytest.xfail("requires cgroup v2")
 
     groups1 = set(list_groups())
@@ -112,8 +125,8 @@ def test_create_builtin_name():
 
 
 def test_create_and_destroy():
-    if not CGROUP2_AVAILABLE:
-        pytest.skip("requires cgroup v2")
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
+        pytest.xfail("requires cgroup v2")
 
     name1 = random_string(10)
     name2 = random_string(10)
@@ -185,13 +198,13 @@ def test_list_illegal():
 
 
 def test_list_empty():
-    if CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS != Cgroupv2Status.UNAVAILABLE:
         pytest.skip("hard to guarantee empty in this context")
     assert $(tcg ls).strip() == ''
 
 
 def test_list():
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         pytest.xfail("requires cgroup v2")
 
     name1 = random_string(10)
@@ -218,7 +231,7 @@ def test_list():
 
 
 def test_list_procs():
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         pytest.skip("requires cgroup v2")
 
     name = random_string(10)
@@ -258,7 +271,7 @@ def test_freeze_unfreeze_illegal():
     with pytest.raises(subprocess.CalledProcessError):
         tcg uf @(non_existing_name)
 
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         return
 
     name = random_string(10)
@@ -268,7 +281,7 @@ def test_freeze_unfreeze_illegal():
 
 
 def test_freeze_unfreeze():
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         pytest.skip("requires cgroup v2")
 
     name = random_string(10)
@@ -330,7 +343,7 @@ def test_freeze_unfreeze():
 
 
 def test_cpu_weight():
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         pytest.skip("requires cgroup v2")
 
     name1 = random_string(10)
@@ -383,7 +396,7 @@ def test_cpu_weight():
 
 
 def test_self():
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         pytest.xfail("requires cgroup v2")
 
     name1 = random_string(10)
@@ -397,7 +410,7 @@ def test_self():
 
 
 def test_show():
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         pytest.xfail("requires cgroup v2")
 
     name = random_string(10)
@@ -408,7 +421,7 @@ def test_show():
 
 def test_xontrib():
     pytest.skip("flaky")
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         pytest.xfail("requires cgroup v2")
 
     install_xontrib()
@@ -501,7 +514,7 @@ def test_tab_complete_argument():
     assert a == ['self', 'set', 'show']
 
 def test_tab_complete_existing_cgroups():
-    if not CGROUP2_AVAILABLE:
+    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
         pytest.xfail("requires cgroup v2")
 
     install_xontrib()
