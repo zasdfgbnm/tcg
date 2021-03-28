@@ -22,7 +22,7 @@ std::string app_dir() {
   if (root.size() == 0) {
     return "";
   }
-  return "/sys/fs/cgroup/terminals";
+  return root + "terminals/";
 }
 
 std::string user_dir() {
@@ -34,7 +34,7 @@ std::string user_dir() {
     return "/";
   }
   auto uid = getuid();
-  return fmt::format("{}/{}/", app_dir(), uid);
+  return fmt::format("{}{}/", app_dir(), uid);
 }
 
 std::string name_dir(const std::string &name,
