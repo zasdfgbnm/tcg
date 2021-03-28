@@ -63,11 +63,14 @@ jobs:
         set -eux
         ci/add-debian-sid.sh
         sudo apt install -y ./tcg*.deb
+        sudo chown root /usr/bin/tcg
+        sudo chmod +s /usr/bin/tcg
     - name: Run tests on cgroup hybrid
       run: |
         set -eux
         pip install xonsh pytest wheel pytest-json-report pytest-timeout
-        pytest --json-report --json-report-file=test_result.json --timeout=60 -v
+        tcg create
+        # pytest --json-report --json-report-file=test_result.json --timeout=60 -v
     - uses: actions/upload-artifact@v2
       with:
         name: test-result
