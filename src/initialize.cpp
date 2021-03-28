@@ -150,12 +150,11 @@ void initialize_logger() {
 }
 
 void check_cgroup_mount(std::shared_ptr<spdlog::logger> logger) {
-  auto p = fs::path(cgroup_root);
-  if (fs::exists(p)) {
-    return;
+  auto p = std::string(cgroup_root);
+  if (p.size() == 0) {
+    logger->critical("Cgroup v2 not mounted");
+    exit(EXIT_FAILURE);
   }
-  logger->critical("Cgroup v2 not mounted");
-  exit(EXIT_FAILURE);
 }
 
 void check_euid(std::shared_ptr<spdlog::logger> logger) {
