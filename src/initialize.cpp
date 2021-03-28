@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
-#include <vector>
+#include <unordered_set>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
@@ -82,9 +82,18 @@ void set_cgroup_root() {
   }
 }
 
+void warn_hybrid() {
+  logger->warn(
+      "You are using cgroup v2 in hybrid mode. In this mode, many controllers "
+      "will be unaccessable to cgroup v2 because it is already used by cgroup "
+      "v1. tcg relies on cgroup v2 and can not access these v1 controllers. To "
+      "get better experience, it is recommended to use pure cgroup v2. See: "
+      "https://wiki.archlinux.org/index.php/Cgroups#Switching_to_cgroups_v2");
+}
+
 void enable_controllers(std::shared_ptr<spdlog::logger> logger,
                         const std::string &dir) {
-  std::vector<std::string> controllers;
+  std::unordered_set<std::string> controllers;
   // read controllers from cgroup.controllers
   std::string controller;
   std::string filename = dir + "cgroup.controllers";
@@ -93,6 +102,11 @@ void enable_controllers(std::shared_ptr<spdlog::logger> logger,
   while (in >> controller) {
     logger->debug("Get controller: {}", controller);
     controllers.push_back(controller);
+  }
+  if (cgroup_root == "/sys/fs/cgroup/unified/" &&
+      (!controllers.contains("cpu") || !controllers.contains("memory") ||
+       !controllers.contains("io"))) {
+    warn_hybrid();
   }
 
   // enable controller for subtree
