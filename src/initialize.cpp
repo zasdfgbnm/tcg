@@ -12,6 +12,8 @@
 #include "config.h"
 #include "utils.hpp"
 
+const char *cgroup_root = "";
+
 namespace fs = boost::filesystem;
 
 void set_log_level() {
@@ -65,6 +67,19 @@ bool file_contains(std::shared_ptr<spdlog::logger> logger,
   return false;
 }
 
+void set_cgroup_root() {
+  auto logger = spdlog::get("initialize");
+  if (boost::filesystem::exists("/sys/fs/cgroup/cgroup.procs")) {
+    // cgroup v2
+    logger->debug("Found cgroup v2");
+    cgroup_root = "/sys/fs/cgroup/";
+  } else if (boost::filesystem::exists("/sys/fs/cgroup/unified/cgroup.procs")) {
+    // cgroup hybrid
+    logger->debug("Found cgroup hybrid");
+    cgroup_root = "/sys/fs/cgroup/unified/";
+  }
+}
+
 void enable_controllers(std::shared_ptr<spdlog::logger> logger,
                         const std::string &dir) {
   const static std::string controllers[] = {"cpu"};
@@ -88,13 +103,13 @@ void enable_controllers(std::shared_ptr<spdlog::logger> logger,
 
 void create_root_dir(std::shared_ptr<spdlog::logger> logger) {
   logger->info("Initialize root directory.");
-  enable_controllers(logger, "/sys/fs/cgroup");
-  auto p = fs::path(root_dir);
-  logger->debug("Check if {} exist.", root_dir);
+  enable_controllers(logger, cgroup_root);
+  auto p = fs::path(app_dir());
+  logger->debug("Check if {} exist.", app_dir());
   if (!fs::is_directory(p)) {
-    logger->debug("{} does not exist, create it.", root_dir);
+    logger->debug("{} does not exist, create it.", app_dir());
     fs::create_directory(p);
-    enable_controllers(logger, root_dir);
+    enable_controllers(logger, app_dir());
   }
   auto ud = user_dir();
   logger->debug("Check if {} exist.", ud);
@@ -160,4 +175,9 @@ void enter_sandbox() {
   create_root_dir(logger);
   enter_chroot_jail(logger);
   logger->info("Sandbox entered successfully.");
+}
+
+void initialize() {
+  initialize_logger();
+  set_cgroup_root();
 }

@@ -17,19 +17,36 @@ fmt::text_style maybe_style(fmt::text_style style) {
   return {};
 }
 
+std::string app_dir(); {
+  std::string root = std::string(cgroup_root);
+  if (root.size() == 0) {
+    return "";
+  }
+  return  + "/sys/fs/cgroup/terminals";
+}
+
 std::string user_dir() {
+  std::string root = app_dir();
+  if (root.size() == 0) {
+    return "";
+  }
   if (is_chroot_jail) {
     return "/";
   }
   auto uid = getuid();
-  return fmt::format("{}/{}/", root_dir, uid);
+  return fmt::format("{}/{}/", app_dir(), uid);
 }
 
 std::string name_dir(const std::string &name,
                      std::optional<bool> assert_existence) {
   auto logger = spdlog::get("utils");
   logger->debug("Getting directory for {}...", name);
-  auto dir = user_dir() + name;
+  std::string usr = user_dir();
+  if (usr.size() == 0) {
+    logger->info("No cgroup mount found.");
+    return "";
+  }
+  auto dir = usr + name;
   logger->debug("The directory should be {}.", dir);
   if (assert_existence.has_value()) {
     bool v = assert_existence.value();
