@@ -150,7 +150,7 @@ void initialize_logger() {
 }
 
 void check_cgroup_mount(std::shared_ptr<spdlog::logger> logger) {
-  auto p = fs::path(cgroup_procs);
+  auto p = fs::path(cgroup_root);
   if (fs::exists(p)) {
     return;
   }

@@ -17,12 +17,12 @@ fmt::text_style maybe_style(fmt::text_style style) {
   return {};
 }
 
-std::string app_dir(); {
+std::string app_dir() {
   std::string root = std::string(cgroup_root);
   if (root.size() == 0) {
     return "";
   }
-  return  + "/sys/fs/cgroup/terminals";
+  return "/sys/fs/cgroup/terminals";
 }
 
 std::string user_dir() {
