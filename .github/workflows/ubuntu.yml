@@ -68,8 +68,8 @@ jobs:
     - name: Run tests on cgroup hybrid
       run: |
         set -eux
-        pip install xonsh pytest wheel
-        pytest -v --json-report-file=test_result.json --timeout=60s
+        pip install xonsh pytest wheel pytest-json-report pytest-timeout
+        pytest --json-report --json-report-file=test_result.json --timeout=60s -v
     - uses: actions/upload-artifact@v2
       with:
         name: test-result
