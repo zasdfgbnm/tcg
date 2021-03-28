@@ -82,7 +82,7 @@ void set_cgroup_root() {
   }
 }
 
-void warn_hybrid() {
+void warn_hybrid(std::shared_ptr<spdlog::logger> logger) {
   logger->warn(
       "You are using cgroup v2 in hybrid mode. In this mode, many controllers "
       "will be unaccessable to cgroup v2 because it is already used by cgroup "
@@ -101,12 +101,12 @@ void enable_controllers(std::shared_ptr<spdlog::logger> logger,
   std::ifstream in(dir + "cgroup.controllers");
   while (in >> controller) {
     logger->debug("Get controller: {}", controller);
-    controllers.push_back(controller);
+    controllers.insert(controller);
   }
   if (cgroup_root == "/sys/fs/cgroup/unified/" &&
       (!controllers.contains("cpu") || !controllers.contains("memory") ||
        !controllers.contains("io"))) {
-    warn_hybrid();
+    warn_hybrid(logger);
   }
 
   // enable controller for subtree
