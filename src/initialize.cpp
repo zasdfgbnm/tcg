@@ -2,15 +2,19 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
+#include <unordered_set>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/string_file.hpp>
 #include <fmt/os.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
 #include "config.h"
 #include "utils.hpp"
+
+const char *cgroup_root = "";
 
 namespace fs = boost::filesystem;
 
@@ -65,11 +69,49 @@ bool file_contains(std::shared_ptr<spdlog::logger> logger,
   return false;
 }
 
+void set_cgroup_root() {
+  auto logger = spdlog::get("initialize");
+  if (boost::filesystem::exists("/sys/fs/cgroup/cgroup.procs")) {
+    // cgroup v2
+    logger->debug("Found cgroup v2");
+    cgroup_root = "/sys/fs/cgroup/";
+  } else if (boost::filesystem::exists("/sys/fs/cgroup/unified/cgroup.procs")) {
+    // cgroup hybrid
+    logger->debug("Found cgroup hybrid");
+    cgroup_root = "/sys/fs/cgroup/unified/";
+  }
+}
+
+void warn_hybrid(std::shared_ptr<spdlog::logger> logger) {
+  logger->warn(
+      "You are using cgroup v2 in hybrid mode. In this mode, many controllers "
+      "will be unaccessable to cgroup v2 because it is already used by cgroup "
+      "v1. tcg relies on cgroup v2 and can not access these v1 controllers. To "
+      "get better experience, it is recommended to use pure cgroup v2. See: "
+      "https://wiki.archlinux.org/index.php/Cgroups#Switching_to_cgroups_v2");
+}
+
 void enable_controllers(std::shared_ptr<spdlog::logger> logger,
                         const std::string &dir) {
-  const static std::string controllers[] = {"cpu"};
+  std::unordered_set<std::string> controllers;
+  // read controllers from cgroup.controllers
+  std::string controller;
+  std::string filename = dir + "cgroup.controllers";
+  logger->debug("Reading: {}", filename);
+  std::ifstream in(dir + "cgroup.controllers");
+  while (in >> controller) {
+    logger->debug("Get controller: {}", controller);
+    controllers.insert(controller);
+  }
+  if (cgroup_root == "/sys/fs/cgroup/unified/" &&
+      (!controllers.contains("cpu") || !controllers.contains("memory") ||
+       !controllers.contains("io"))) {
+    warn_hybrid(logger);
+  }
+
+  // enable controller for subtree
   for (std::string c : controllers) {
-    auto subtree_control = dir + "/cgroup.subtree_control";
+    auto subtree_control = dir + "cgroup.subtree_control";
     if (file_contains(logger, subtree_control, c)) {
       logger->debug(
           "The controller {} of {} is already enabled, has nothing to do.", c,
@@ -88,22 +130,22 @@ void enable_controllers(std::shared_ptr<spdlog::logger> logger,
 
 void create_root_dir(std::shared_ptr<spdlog::logger> logger) {
   logger->info("Initialize root directory.");
-  enable_controllers(logger, "/sys/fs/cgroup");
-  auto p = fs::path(root_dir);
-  logger->debug("Check if {} exist.", root_dir);
+  enable_controllers(logger, cgroup_root);
+  auto p = fs::path(app_dir());
+  logger->debug("Check if {} exist.", app_dir());
   if (!fs::is_directory(p)) {
-    logger->debug("{} does not exist, create it.", root_dir);
+    logger->debug("{} does not exist, create it.", app_dir());
     fs::create_directory(p);
-    enable_controllers(logger, root_dir);
   }
+  enable_controllers(logger, app_dir());
   auto ud = user_dir();
   logger->debug("Check if {} exist.", ud);
   p = fs::path(ud);
   if (!fs::is_directory(p)) {
     logger->debug("{} does not exist, create it.", ud);
     fs::create_directory(p);
-    enable_controllers(logger, ud);
   }
+  enable_controllers(logger, ud);
 }
 
 bool is_chroot_jail = false;
@@ -135,12 +177,11 @@ void initialize_logger() {
 }
 
 void check_cgroup_mount(std::shared_ptr<spdlog::logger> logger) {
-  auto p = fs::path(cgroup_procs);
-  if (fs::exists(p)) {
-    return;
+  auto p = std::string(cgroup_root);
+  if (p.size() == 0) {
+    logger->critical("Cgroup v2 not mounted");
+    exit(EXIT_FAILURE);
   }
-  logger->critical("Cgroup v2 not mounted");
-  exit(EXIT_FAILURE);
 }
 
 void check_euid(std::shared_ptr<spdlog::logger> logger) {
@@ -160,4 +201,9 @@ void enter_sandbox() {
   create_root_dir(logger);
   enter_chroot_jail(logger);
   logger->info("Sandbox entered successfully.");
+}
+
+void initialize() {
+  initialize_logger();
+  set_cgroup_root();
 }

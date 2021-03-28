@@ -18,6 +18,10 @@ std::unordered_set<std::string> suggest_existing_cgroups(std::string prefix) {
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
   auto r = user_dir();
+  if (r.size() == 0) {
+    logger->info("No cgroup mount found.");
+    return {};
+  }
   logger->debug("Root directory is {}, iterating it.", r);
   fs::path p(r);
   if (!fs::exists(p)) {

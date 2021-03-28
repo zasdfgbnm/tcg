@@ -2,11 +2,11 @@
 
 #include "command.hpp"
 
-void initialize_logger();
+void initialize();
 void enter_sandbox();
 
 int main(int argc, const char *argv[]) {
-  initialize_logger();
+  initialize();
 
   if (argc < 2) {
     const char *args[] = {nullptr};

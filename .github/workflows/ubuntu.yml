@@ -35,20 +35,18 @@ jobs:
         cd build
         cmake -DVERSION=${ver} ..
         make -j
-        sudo chown root tcg
-        sudo chmod +s tcg
     - name: Package
       run: |
         set -eux
         cd packaging/debian
-        ./build.xsh
+        sudo ./build.xsh
     - uses: actions/upload-artifact@v2
       with:
         name: deb-package
         path: packaging/debian/*.deb
         retention-days: 5
 
-  limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
+  limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup v2 controllers)
     runs-on: ubuntu-20.04
     needs:
       - debian-pkg
@@ -65,9 +63,15 @@ jobs:
         set -eux
         ci/add-debian-sid.sh
         sudo apt install -y ./tcg*.deb
-    - name: Run tests on cgroup v1
-      timeout-minutes: 5
+    - name: Run tests on cgroup hybrid
+      continue-on-error: true
       run: |
         set -eux
-        pip install xonsh pytest wheel
-        pytest -v
+        pip install xonsh pytest wheel pytest-json-report pytest-timeout
+        export TCG_LOG_LEVEL=debug
+        pytest --json-report --json-report-file=test_result.json --timeout=60 -v
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-result
+        path: test_result.json
+        retention-days: 1
