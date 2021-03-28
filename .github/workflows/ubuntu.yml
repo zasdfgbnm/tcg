@@ -64,6 +64,7 @@ jobs:
         ci/add-debian-sid.sh
         sudo apt install -y ./tcg*.deb
     - name: Run tests on cgroup hybrid
+      continue-on-error: true
       run: |
         set -eux
         pip install xonsh pytest wheel pytest-json-report pytest-timeout
