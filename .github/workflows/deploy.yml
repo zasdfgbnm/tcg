@@ -38,12 +38,12 @@ jobs:
       run: |
         set -eux
         yaourt -Sy --noconfirm tcg
-        sudo pacman -Rns tcg
+        sudo pacman -Rns --noconfirm tcg
     - name: validate tcg-git
       run: |
         set -eux
         yaourt -Sy --noconfirm tcg-git
-        sudo pacman -Rns tcg-git
+        sudo pacman -Rns --noconfirm tcg-git
 
   xonsh-pypi:
     runs-on: ubuntu-20.04
