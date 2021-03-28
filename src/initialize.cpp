@@ -2,9 +2,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
+#include <vector>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/string_file.hpp>
 #include <fmt/os.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
@@ -82,9 +84,20 @@ void set_cgroup_root() {
 
 void enable_controllers(std::shared_ptr<spdlog::logger> logger,
                         const std::string &dir) {
-  const static std::string controllers[] = {"cpu"};
+  std::vector<std::string> controllers;
+  // read controllers from cgroup.controllers
+  std::string controller;
+  std::string filename = dir + "cgroup.controllers";
+  logger->debug("Reading: {}", filename);
+  std::ifstream in(dir + "cgroup.controllers");
+  while (in >> controller) {
+    logger->debug("Get controller: {}", controller);
+    controllers.push_back(controller);
+  }
+
+  // enable controller for subtree
   for (std::string c : controllers) {
-    auto subtree_control = dir + "/cgroup.subtree_control";
+    auto subtree_control = dir + "cgroup.subtree_control";
     if (file_contains(logger, subtree_control, c)) {
       logger->debug(
           "The controller {} of {} is already enabled, has nothing to do.", c,
