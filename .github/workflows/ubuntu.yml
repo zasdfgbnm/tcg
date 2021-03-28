@@ -69,6 +69,7 @@ jobs:
       run: |
         set -eux
         pip install xonsh pytest wheel pytest-json-report pytest-timeout
+        export TCG_LOG_LEVEL=debug
         tcg create
         # pytest --json-report --json-report-file=test_result.json --timeout=60 -v
     - uses: actions/upload-artifact@v2
