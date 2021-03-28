@@ -46,7 +46,7 @@ jobs:
         path: packaging/debian/*.deb
         retention-days: 5
 
-  limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup)
+  limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup v2 controllers)
     runs-on: ubuntu-20.04
     needs:
       - debian-pkg
