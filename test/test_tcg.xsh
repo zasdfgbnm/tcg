@@ -412,7 +412,7 @@ def test_self():
 
 
 def test_show():
-    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
+    if CGROUP2_STATUS != Cgroupv2Status.PURE:
         pytest.xfail("requires cgroup v2")
 
     name = random_string(10)
