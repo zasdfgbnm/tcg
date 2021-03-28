@@ -343,7 +343,7 @@ def test_freeze_unfreeze():
 
 
 def test_cpu_weight():
-    if CGROUP2_STATUS == Cgroupv2Status.UNAVAILABLE:
+    if CGROUP2_STATUS != Cgroupv2Status.PURE:
         pytest.skip("requires cgroup v2")
 
     name1 = random_string(10)
