@@ -11,6 +11,9 @@ pkgname = f"tcg_{ver}-1"
 mkdir -p @(pkgname)/usr/bin
 cp ../../build/tcg @(pkgname)/usr/bin
 
+chown root @(pkgname)/usr/bin/tcg
+chmod +s @(pkgname)/usr/bin/tcg
+
 mkdir -p @(pkgname)/DEBIAN
 cp control @(pkgname)/DEBIAN
 

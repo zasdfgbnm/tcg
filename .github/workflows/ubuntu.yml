@@ -35,13 +35,11 @@ jobs:
         cd build
         cmake -DVERSION=${ver} ..
         make -j
-        sudo chown root tcg
-        sudo chmod +s tcg
     - name: Package
       run: |
         set -eux
         cd packaging/debian
-        ./build.xsh
+        sudo ./build.xsh
     - uses: actions/upload-artifact@v2
       with:
         name: deb-package
