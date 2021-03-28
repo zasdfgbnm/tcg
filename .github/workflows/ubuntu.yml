@@ -63,8 +63,6 @@ jobs:
         set -eux
         ci/add-debian-sid.sh
         sudo apt install -y ./tcg*.deb
-        sudo chown root /usr/bin/tcg
-        sudo chmod +s /usr/bin/tcg
     - name: Run tests on cgroup hybrid
       run: |
         set -eux
