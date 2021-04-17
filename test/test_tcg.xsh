@@ -39,6 +39,7 @@ known_commands = {
     "set": [],
     "show": [],
     "tab-complete": [],
+    "version": [],
 }
 
 def remove_ansi_escape(text):
@@ -558,3 +559,12 @@ def test_tab_complete_existing_cgroups():
     assert a == b
     assert name1 in a
     assert name2 in a
+
+def test_tcg_version():
+    assert $(tcg version) == $(tcg v)
+    v = $(tcg v)
+    assert "Version:" in v
+    assert "Git commit:" in v
+    assert "Build date:" in v
+    assert "C++ compiler:" in v
+    assert "CMake version:" in v
