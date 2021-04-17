@@ -25,6 +25,7 @@ add_executable(${PROJECT_NAME}
     src/help.cpp
     src/tab-complete.cpp
     src/version.cpp
+    src/sandbox.cpp
 )
 
 find_package(Boost 1.71.0 COMPONENTS filesystem REQUIRED)
