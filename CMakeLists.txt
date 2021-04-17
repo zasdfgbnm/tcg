@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
+include(external/libseccomp.cmake)
 
 project(tcg)
 
@@ -25,10 +26,11 @@ add_executable(${PROJECT_NAME}
     src/version.cpp
 )
 
-find_package(Boost 1.71.0 COMPONENTS filesystem REQUIRED)
-find_package(fmt REQUIRED)
+find_package(Boost 1.71.0... COMPONENTS filesystem REQUIRED)
+find_package(fmt 7... REQUIRED)
 find_package(spdlog REQUIRED)
-target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} fmt::fmt spdlog::spdlog)
+
+target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} fmt::fmt spdlog::spdlog seccomp)
 
 target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic)
 
