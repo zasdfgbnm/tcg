@@ -14,6 +14,10 @@
 #include "config.h"
 #include "utils.hpp"
 
+#ifdef USE_SECCOMP
+#include <seccomp.h>
+#endif
+
 const char *cgroup_root = "";
 
 namespace fs = boost::filesystem;
@@ -193,6 +197,22 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
   exit(EXIT_FAILURE);
 }
 
+void setup_seccomp() {
+#ifdef USE_SECCOMP
+  auto logger = spdlog::get("initialize");
+  logger->info("Setting up seccomp...");
+  scmp_filter_ctx ctx;
+  ctx = seccomp_init(SCMP_ACT_KILL);
+  seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), 0);
+  seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 0);
+  seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 0);
+  seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(close), 0);
+  seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(newfstatat), 0);
+  seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(exit_group), 0);
+  seccomp_load(ctx);
+#endif
+}
+
 void enter_sandbox() {
   auto logger = spdlog::get("initialize");
   logger->info("Entering sandbox...");
@@ -206,4 +226,5 @@ void enter_sandbox() {
 void initialize() {
   initialize_logger();
   set_cgroup_root();
+  setup_seccomp();
 }
