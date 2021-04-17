@@ -42,6 +42,16 @@ void show_verison() {
   print_item("Build date", "unknown");
 #endif
 
+#ifdef CMAKE_CXX_COMPILER_ID
+#ifdef CMAKE_CXX_COMPILER_VERSION
+  print_item("C++ compiler", CMAKE_CXX_COMPILER_ID " v" CMAKE_CXX_COMPILER_VERSION);
+#else
+  print_item("C++ compiler", CMAKE_CXX_COMPILER_ID);
+#endif
+#else
+  print_item("C++ compiler", "unknown");
+#endif
+
 #ifdef CMAKE_VERSION
   print_item("CMake version", CMAKE_VERSION);
 #else
