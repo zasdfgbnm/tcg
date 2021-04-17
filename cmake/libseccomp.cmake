@@ -48,6 +48,7 @@ ELSE()
     MESSAGE("--   library: ${libseccomp_LIB_PATH}")
     MESSAGE("--   include directory: ${libseccomp_INC_PATH}")
 
+    SET(USE_SECCOMP ON)
     ADD_LIBRARY(seccomp UNKNOWN IMPORTED)
     SET_PROPERTY(TARGET seccomp
         PROPERTY IMPORTED_LOCATION
