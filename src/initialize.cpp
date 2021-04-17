@@ -202,7 +202,7 @@ void setup_seccomp() {
   auto logger = spdlog::get("initialize");
   logger->info("Setting up seccomp...");
   scmp_filter_ctx ctx;
-  ctx = seccomp_init(SCMP_ACT_ERRNO(100));
+  ctx = seccomp_init(SCMP_ACT_KILL_PROCESS);
 
   seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), 0);
   seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(openat), 0);
