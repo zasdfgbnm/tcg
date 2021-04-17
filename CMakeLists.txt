@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
     src/self.cpp
     src/help.cpp
     src/tab-complete.cpp
+    src/version.cpp
 )
 
 find_package(Boost 1.71.0 COMPONENTS filesystem REQUIRED)
@@ -47,7 +48,7 @@ if(NOT VERSION)
   endif()
 
   # infer git commit
-  execute_process(COMMAND git -C ${CMAKE_CURRENT_SOURCE_DIR} rev-parsee HEAD
+  execute_process(COMMAND git -C ${CMAKE_CURRENT_SOURCE_DIR} rev-parse HEAD
                   OUTPUT_VARIABLE GIT_COMMIT ERROR_QUIET)
   string(REGEX REPLACE "\n$" "" GIT_COMMIT "${GIT_COMMIT}")
   if("${GIT_COMMIT}" STREQUAL "")
@@ -56,6 +57,8 @@ if(NOT VERSION)
     message("++ Git commit is ${GIT_COMMIT}")
   endif()
 endif()
+
+string(TIMESTAMP BUILD_DATE "%Y-%m-%d")
 
 configure_file(src/config.h.in config.h @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
