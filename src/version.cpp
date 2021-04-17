@@ -44,7 +44,8 @@ void show_verison() {
 
 #ifdef CMAKE_CXX_COMPILER_ID
 #ifdef CMAKE_CXX_COMPILER_VERSION
-  print_item("C++ compiler", CMAKE_CXX_COMPILER_ID " v" CMAKE_CXX_COMPILER_VERSION);
+  print_item("C++ compiler",
+             CMAKE_CXX_COMPILER_ID " v" CMAKE_CXX_COMPILER_VERSION);
 #else
   print_item("C++ compiler", CMAKE_CXX_COMPILER_ID);
 #endif
@@ -61,4 +62,4 @@ void show_verison() {
 
 DEFINE_HANDLER({}, "show version information", { show_verison(); });
 
-}
+} // namespace version
