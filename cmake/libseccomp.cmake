@@ -1,8 +1,5 @@
 # https://github.com/sio2project/sio2jail/blob/master/external/libseccomp.cmake
 
-
-ADD_LIBRARY(seccomp UNKNOWN IMPORTED)
-
 IF(LINK STREQUAL "STATIC")
     SET(libseccomp_LIB_FILE_NAME "libseccomp.a")
 ELSE()
@@ -51,6 +48,7 @@ ELSE()
     MESSAGE("--   library: ${libseccomp_LIB_PATH}")
     MESSAGE("--   include directory: ${libseccomp_INC_PATH}")
 
+    ADD_LIBRARY(seccomp UNKNOWN IMPORTED)
     SET_PROPERTY(TARGET seccomp
         PROPERTY IMPORTED_LOCATION
             "${libseccomp_LIB_PATH}"
