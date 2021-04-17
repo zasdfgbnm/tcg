@@ -8,7 +8,7 @@ ENDIF()
 FIND_FILE(
     libseccomp_LIB_PATH
     NAMES "${libseccomp_LIB_FILE_NAME}"
-    PATHS "${LIBSECCOMP_PREFIX}" "${LIBSECCOMP_PREFIX}/lib" "${LIBSECCOMP_PREFIX}/usr/lib"
+    PATHS "${LIBSECCOMP_PREFIX}" "${LIBSECCOMP_PREFIX}/lib" "${LIBSECCOMP_PREFIX}/usr/lib" "/usr/lib/x86_64-linux-gnu"
     )
 FIND_PATH(
     libseccomp_INC_PATH
