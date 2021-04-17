@@ -22,7 +22,7 @@ setup(
         'relative_to': __file__,
         'version_scheme': get_version,
         'local_scheme': lambda x:"",
-        'fallback_version': '0.0.1',
+        'fallback_version': 'unknown',
     },
     setup_requires=['setuptools_scm'],
     license='MIT',

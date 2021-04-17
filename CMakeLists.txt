@@ -8,9 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 string(REPLACE "-DNDEBUG" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 string(REPLACE "-DNDEBUG" "" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 
-# Allow obtaining code coverage data
-option(CODE_COVERAGE "Enable coverage reporting" OFF)
-
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/initialize.cpp
@@ -35,19 +32,34 @@ target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY} fmt::fmt spdlo
 target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic)
 
 option(VERSION "Version of this project")
+if(NOT VERSION)
+  message("++ Version not specified, will try to infer version")
+  execute_process(COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/shells/xonsh/setup.py --version
+                  OUTPUT_VARIABLE INFERRED_VERSION ERROR_QUIET)
+  string(REGEX REPLACE "\n$" "" INFERRED_VERSION "${INFERRED_VERSION}")
+  if("${INFERRED_VERSION}" STREQUAL "" OR "${INFERRED_VERSION}" STREQUAL "unknown")
+    message("++ Unable to infer version.")
+  else()
+    set(VERSION "${INFERRED_VERSION}")
+    message("++ Version inferred as ${VERSION}")
+  endif()
+endif()
 
 configure_file(src/config.h.in config.h @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-# gcda is the file generated at runtime
-# gcno is the file generated at compile time
-#
-# See:
-# https://gcc.gnu.org/onlinedocs/gcc/Gcov-Data-Files.html
-# https://gcc.gnu.org/onlinedocs/gcc-10.1.0/gcc/Instrumentation-Options.html
-option(GCDA_DIR "Argument for -fprofile-dir=" OFF)
+# Allow obtaining code coverage data
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
 
 if(CODE_COVERAGE)
+  # gcda is the file generated at runtime
+  # gcno is the file generated at compile time
+  #
+  # See:
+  # https://gcc.gnu.org/onlinedocs/gcc/Gcov-Data-Files.html
+  # https://gcc.gnu.org/onlinedocs/gcc-10.1.0/gcc/Instrumentation-Options.html
+  option(GCDA_DIR "Argument for -fprofile-dir=" OFF)
+
   set(BUILD_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}.dir/src")
   set(CODECOV_CXX_FLAGS --coverage -fprofile-prefix-path=${BUILD_SRC_DIR})
 

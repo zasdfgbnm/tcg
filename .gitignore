@@ -1,4 +1,5 @@
 /build/*
+/debug/*
 settings.json
 .pytest_cache
 __pycache__
