@@ -1,2 +1,3 @@
 #cmakedefine CODE_COVERAGE
 #cmakedefine VERSION "@VERSION@"
+#cmakedefine GIT_COMMIT "@GIT_COMMIT@"
