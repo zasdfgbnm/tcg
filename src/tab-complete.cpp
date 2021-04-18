@@ -31,7 +31,7 @@ Command command("tab-complete",
                 /*alias =*/{},
                 /*short_description =*/"suggest next token",
                 /*additional_note =*/"",
-                /*flags =*/{false, false, false, false}
+                /*flags =*/{true, false, true, true}
                 // disable sandbox to allow users to read
                 // docs on systems without cgroup v2
 );
