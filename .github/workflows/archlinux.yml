@@ -78,7 +78,7 @@ jobs:
           wget https://gitlab.archlinux.org/archlinux/archlinux-docker/-/raw/master/pacman-conf.d-noextract.conf?inline=false -O pacman-conf.d-noextract.conf
           wget https://raw.githubusercontent.com/zasdfgbnm-dockers/basic/master/pacman.conf -O pacman-zasdfgbnmsystem.conf
           cat pacman-conf.d-noextract.conf pacman-zasdfgbnmsystem.conf >> /etc/pacman.conf
-          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog lcov gcc
+          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog lcov gcc libseccomp strace
         '
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout wheel setuptools_scm
@@ -116,6 +116,8 @@ jobs:
         py.test --json-report --json-report-file=test_result.json --timeout=60 -v
         sudo cp /usr/src/tcg/* /var/lib/tcg/
         lcov --capture --directory /var/lib/tcg --output-file coverage.info
+        sudo dmesg
+        journalctl --no-pager
         sudo poweroff
         EOF
         sudo chroot /mnt chown -R user:user /home/user

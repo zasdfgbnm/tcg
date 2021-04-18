@@ -14,6 +14,10 @@
 #include "config.h"
 #include "utils.hpp"
 
+#ifdef USE_SECCOMP
+#include <seccomp.h>
+#endif
+
 const char *cgroup_root = "";
 
 namespace fs = boost::filesystem;
@@ -193,6 +197,9 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
   exit(EXIT_FAILURE);
 }
 
+void setup_seccomp();
+
+// TODO: retire chroot jail, and use seccomp completely
 void enter_sandbox() {
   auto logger = spdlog::get("initialize");
   logger->info("Entering sandbox...");
@@ -206,4 +213,5 @@ void enter_sandbox() {
 void initialize() {
   initialize_logger();
   set_cgroup_root();
+  setup_seccomp();
 }

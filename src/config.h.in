@@ -1,4 +1,5 @@
 #cmakedefine CODE_COVERAGE
+#cmakedefine USE_SECCOMP
 #cmakedefine VERSION "@VERSION@"
 #cmakedefine GIT_COMMIT "@GIT_COMMIT@"
 #cmakedefine BUILD_DATE "@BUILD_DATE@"
