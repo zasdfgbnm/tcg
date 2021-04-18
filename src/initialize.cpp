@@ -11,6 +11,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+#include "command.hpp"
 #include "config.h"
 #include "utils.hpp"
 
@@ -197,10 +198,8 @@ void check_euid(std::shared_ptr<spdlog::logger> logger) {
   exit(EXIT_FAILURE);
 }
 
-void setup_seccomp();
-
 // TODO: retire chroot jail, and use seccomp completely
-void enter_sandbox() {
+void enter_chroot() {
   auto logger = spdlog::get("initialize");
   logger->info("Entering sandbox...");
   check_cgroup_mount(logger);
@@ -210,8 +209,16 @@ void enter_sandbox() {
   logger->info("Sandbox entered successfully.");
 }
 
-void initialize() {
-  initialize_logger();
-  set_cgroup_root();
-  setup_seccomp();
+void initialize1() { initialize_logger(); }
+
+void enter_sandbox(const Flags &flags);
+
+void initialize2(const Flags &flags) {
+  if (flags.cgroup_dir) {
+    set_cgroup_root();
+  }
+  enter_sandbox(flags);
+  if (flags.chroot) {
+    enter_chroot();
+  }
 }

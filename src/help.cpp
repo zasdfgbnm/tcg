@@ -26,8 +26,9 @@ Command command(/*name =*/"help",
                 /*alias =*/{"h"},
                 /*short_description =*/"display help information",
                 /*additional_note =*/"",
-                /*sandbox =*/false // disable sandbox to allow users to read
-                                   // docs on systems without cgroup v2
+                /*flags =*/{false, false, false, false}
+                // disable sandbox to allow users to read
+                // docs on systems without cgroup v2
 );
 
 void print_version() {

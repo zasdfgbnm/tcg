@@ -2,11 +2,12 @@
 
 #include "command.hpp"
 
-void initialize();
-void enter_sandbox();
+void initialize1();
+void enter_chroot();
+void initialize2(const Flags &flags);
 
 int main(int argc, const char *argv[]) {
-  initialize();
+  initialize1();
 
   if (argc < 2) {
     const char *args[] = {nullptr};
@@ -15,10 +16,7 @@ int main(int argc, const char *argv[]) {
   }
 
   auto cmd = Command::get(argv[1]);
-
-  if (cmd->sandbox) {
-    enter_sandbox();
-  }
+  initialize2(cmd->flags);
 
   cmd->execute(argv + 2);
 }

@@ -31,8 +31,9 @@ Command command("tab-complete",
                 /*alias =*/{},
                 /*short_description =*/"suggest next token",
                 /*additional_note =*/"",
-                /*sandbox =*/false // disable sandbox to allow users to read
-                                   // docs on systems without cgroup v2
+                /*flags =*/{true, false, true, true}
+                // disable sandbox to allow users to read
+                // docs on systems without cgroup v2
 );
 
 std::vector<std::shared_ptr<const Argument>> args1 = {

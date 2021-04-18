@@ -14,8 +14,9 @@ Command command(/*name =*/"version",
                 /*alias =*/{"v"},
                 /*short_description =*/"display version information",
                 /*additional_note =*/"",
-                /*sandbox =*/false // disable sandbox to allow users to read
-                                   // docs on systems without cgroup v2
+                /*flags =*/{false, false, false, false}
+                // disable sandbox to allow users to read
+                // docs on systems without cgroup v2
 );
 
 void print_item(const char *property, const char *value) {
