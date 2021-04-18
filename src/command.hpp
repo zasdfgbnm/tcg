@@ -142,7 +142,8 @@ public:
 
   Command(const std::string &name, const std::vector<std::string> &alias,
           const std::string &short_description,
-          const std::string &additional_note, Flags flags = {true, true, true, true});
+          const std::string &additional_note,
+          Flags flags = {true, true, true, true});
 
   virtual bool defined() const { return true; }
 
