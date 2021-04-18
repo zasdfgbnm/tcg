@@ -75,7 +75,7 @@ Command command(/*name =*/"list",
                 /*alias =*/{"l", "ls"},
                 /*short_description =*/"list current cgroups",
                 /*additional_note =*/"",
-                /*flags =*/{true, false} // disable sandbox to access /proc
+                /*flags =*/{true, false, true, true} // disable sandbox to access /proc
 );
 
 DEFINE_HANDLER({}, "print a table of existing cgroups and its details", {
