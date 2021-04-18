@@ -250,10 +250,10 @@ std::map<std::string, const Command *> Command::registry;
 
 Command::Command(const std::string &name, const std::vector<std::string> &alias,
                  const std::string &short_description,
-                 const std::string &additional_note, bool sandbox)
+                 const std::string &additional_note, Flags flags)
     : executor(std::make_shared<HandlerExecutor>()), name(name), alias(alias),
       short_description(short_description), additional_note(additional_note),
-      sandbox(sandbox) {
+      flags(flags) {
   if (registry.find(name) != registry.end()) {
     throw std::runtime_error(
         std::string("Conflicting name. Please report a bug at: ") + url);

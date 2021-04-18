@@ -17,7 +17,7 @@ Command command(/*name =*/"self",
                 /*alias =*/{"sf"},
                 /*short_description =*/"show the cgroup of the current shell",
                 /*additional_note =*/"",
-                /*sandbox =*/false // disable sandbox to access /proc
+                /*flags =*/{true, false} // disable sandbox to access /proc
 );
 
 DEFINE_HANDLER({}, "show the cgroup of the current shell", {

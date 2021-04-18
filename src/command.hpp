@@ -9,6 +9,13 @@
 #include <unordered_set>
 #include <vector>
 
+struct Flags {
+  bool advanced;
+  bool chroot;
+  bool cgroup_dir;
+  bool proc_dir;
+};
+
 struct Argument {
   std::string name;
   Argument(const std::string &name) : name(name) {}
@@ -131,11 +138,11 @@ public:
   std::string short_description;
   std::string additional_note;
   std::vector<const Handler *> handlers;
-  bool sandbox = true;
+  Flags flags;
 
   Command(const std::string &name, const std::vector<std::string> &alias,
           const std::string &short_description,
-          const std::string &additional_note, bool sandbox = true);
+          const std::string &additional_note, Flags flags = {true, true});
 
   virtual bool defined() const { return true; }
 
