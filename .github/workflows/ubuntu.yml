@@ -70,7 +70,7 @@ jobs:
         pip install xonsh pytest wheel pytest-json-report pytest-timeout
         export TCG_LOG_LEVEL=debug
         # pytest --json-report --json-report-file=test_result.json --timeout=60 -v
-        strace -f bash -c "tcg c"
+        strace -f bash -c "sudo tcg c"
     - uses: actions/upload-artifact@v2
       with:
         name: test-result
