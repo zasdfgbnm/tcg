@@ -81,7 +81,7 @@ void create(std::shared_ptr<spdlog::logger> logger, const std::string &name) {
   auto ppid = getppid();
   logger->info("Parent process's pid is {}, will add to file {}", ppid,
                procs_file);
-  out.print("{:d}", ppid);
+  // out.print("{:d}", ppid);
   out.close();
   logger->info("Done adding parent process to the new cgroup");
 
