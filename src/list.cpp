@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <coroutine>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
@@ -13,7 +14,7 @@
 
 namespace fs = boost::filesystem;
 
-std::unordered_set<std::string> suggest_existing_cgroups(std::string prefix) {
+std::generator<std::string> suggest_existing_cgroups(std::string prefix) {
   std::unordered_set<std::string> result;
   auto logger = spdlog::get("list");
   logger->info("List all existing cgroups.");
@@ -34,11 +35,10 @@ std::unordered_set<std::string> suggest_existing_cgroups(std::string prefix) {
       auto cg = i->path().filename().string();
       logger->debug("Found cgroup {}.", cg);
       if (startswith(cg, prefix)) {
-        result.insert(cg);
+        co_yield cg;
       }
     }
   }
-  return result;
 }
 
 namespace list {

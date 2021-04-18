@@ -37,7 +37,7 @@ if(USE_SECCOMP)
   target_link_libraries(${PROJECT_NAME} seccomp)
 endif()
 
-target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic)
+target_compile_options(${PROJECT_NAME} PUBLIC -Werror -pedantic -fcoroutines)
 
 string(TIMESTAMP BUILD_DATE "%Y-%m-%d")
 
