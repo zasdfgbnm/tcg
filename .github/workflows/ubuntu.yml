@@ -80,7 +80,7 @@ jobs:
         sudo dmesg
         journalctl --no-pager
 
-  push-package:
+  make-repo:
     runs-on: ubuntu-20.04
     needs:
       - limited-tests
@@ -120,7 +120,7 @@ jobs:
   validate-repo:
     runs-on: ubuntu-20.04
     needs:
-      - push-package
+      - make-repo
     steps:
     - name: Validate deploy
       run: |

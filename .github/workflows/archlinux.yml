@@ -49,7 +49,7 @@ jobs:
         tcg
         sudo pacman -Rns --noconfirm tcg-git
 
-  package:
+  make-repo:
     runs-on: ubuntu-20.04
     container: zasdfgbnm/archlinux-yaourt
     # needs:
@@ -59,14 +59,34 @@ jobs:
       run: |
         set -eux
         sudo chown user .
+        mkdir repo
         yaourt -G tcg
-        ls
         cd tcg
         makepkg -s --noconfirm
-        ls
-    - uses: actions/upload-artifact@v2
+        mv *.pkg.tar.zst ../repo
+        cd ../repo
+        repo-add tcg.db.tar.gz *.pkg.tar.zst
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        name: archlinux-pkg
-        path: tcg/*.pkg.tar.zst
-        retention-days: 1
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        force_orphan: true
+        publish_dir: repo
+        destination_dir: archlinux
 
+  validate-repo:
+    runs-on: ubuntu-20.04
+    container: zasdfgbnm/archlinux-yaourt
+    needs:
+      - make-repo
+    steps:
+    - name: Add custom repository to pacman
+      run: |
+        set -eux
+        cat <<<EOF | sudo tee -a /etc/pacman.conf
+        [tcg]
+        SigLevel = Optional
+        Server = https://zasdfgbnm.github.io/tcg/archlinux
+        EOF
+        sudo pacman -Sy tcg
+        tcg
