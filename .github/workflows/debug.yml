@@ -12,6 +12,8 @@ jobs:
     - name: build tcg
       run: |
         set -eux
+        mkdir /w
+        cd /w
         yaourt -G tcg
         ls
         cd tcg
