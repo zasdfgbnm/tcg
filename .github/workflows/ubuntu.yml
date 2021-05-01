@@ -39,6 +39,7 @@ jobs:
         set -eux
         cd build
         cpack
+        apt-get download libfmt7
     - uses: actions/upload-artifact@v2
       with:
         name: deb-package
@@ -58,10 +59,7 @@ jobs:
       with:
         python-version: '3.9'
     - name: Setup environment
-      run: |
-        set -eux
-        ci/add-debian-sid.sh
-        sudo apt install -y ./tcg*.deb
+      run: sudo apt install -y ./*.deb
     - name: Run tests on cgroup hybrid
       continue-on-error: false
       run: |
