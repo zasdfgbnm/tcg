@@ -123,7 +123,7 @@ jobs:
     steps:
     - name: Validate deploy
       run: |
-        sudo add-apt-repository "deb [trusted=yes check-date=no] https://zasdfgbnm.github.io/tcg/deb/ all main"
+        echo "deb [trusted=yes check-date=no] https://zasdfgbnm.github.io/tcg/deb/ all main" | sudo tee -a /etc/apt/sources.list
         sudo apt-get update
         sudo apt-get install -y tcg
         tcg
