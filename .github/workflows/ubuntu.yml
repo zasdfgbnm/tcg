@@ -119,6 +119,7 @@ jobs:
         destination_dir: deb
 
   validate-repo:
+    runs-on: ubuntu-20.04
     needs:
       - push-package
     - name: Validate deploy
