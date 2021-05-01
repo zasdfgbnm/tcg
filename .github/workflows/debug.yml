@@ -18,6 +18,7 @@ jobs:
         ls
         cd tcg
         makepkg -s --noconfirm
+        ls
     - uses: actions/upload-artifact@v2
       with:
         name: archlinux-pkg
