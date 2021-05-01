@@ -1,3 +1,5 @@
+name: debug
+
 on:
   pull_request:
 
