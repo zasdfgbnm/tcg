@@ -96,8 +96,8 @@ jobs:
         # install aptly
         sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED75B5A4483DA07C
         sudo add-apt-repository "deb http://repo.aptly.info/ nightly main"
-        apt-get update
-        apt-get install aptly
+        sudo apt-get update
+        sudo apt-get install aptly
 
         # sudo apt-get install -y dpkg-dev
         # dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
