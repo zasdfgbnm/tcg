@@ -1,6 +1,7 @@
-name: deploy
+name: archlinux
 
 on:
+  pull_request:  # TODO: remove
   push:
     branches:
       - master
@@ -9,6 +10,7 @@ jobs:
 
   push-aur:
     runs-on: ubuntu-20.04
+    if: false  # TODO: remove
     steps:
     - uses: actions/checkout@v2
       with:
@@ -31,8 +33,8 @@ jobs:
   validate-aur:
     runs-on: ubuntu-20.04
     container: zasdfgbnm/archlinux-yaourt
-    needs:
-      - archlinux-aur
+    # needs:
+    #   - archlinux-aur
     steps:
     - name: validate tcg
       run: |
@@ -47,24 +49,24 @@ jobs:
         tcg
         sudo pacman -Rns --noconfirm tcg-git
 
-  xonsh-pypi:
+  package:
     runs-on: ubuntu-20.04
+    container: zasdfgbnm/archlinux-yaourt
+    # needs:
+    #   - archlinux-aur
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - name: install dependencies
+    - name: build tcg
       run: |
         set -eux
-        python -m pip install --upgrade pip
-        pip install twine wheel xonsh
-    - name: build and upload
-      run: |
-        set -eux
-        cd shells/xonsh
-        rm -rf dist/*
-        python setup.py sdist bdist_wheel
-        twine upload -u zasdfgbnm-bot -p ${{secrets.ZASDFGBNM_BOT_PYPI_PASSWORD}} dist/*
+        sudo chown user .
+        yaourt -G tcg
+        ls
+        cd tcg
+        makepkg -s --noconfirm
+        ls
+    - uses: actions/upload-artifact@v2
+      with:
+        name: archlinux-pkg
+        path: tcg/*.pkg.tar.zst
+        retention-days: 1
+
