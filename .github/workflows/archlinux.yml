@@ -1,7 +1,6 @@
 name: archlinux
 
 on:
-  pull_request:  # TODO: remove
   push:
     branches:
       - master
@@ -10,7 +9,6 @@ jobs:
 
   push-aur:
     runs-on: ubuntu-20.04
-    if: false  # TODO: remove
     steps:
     - uses: actions/checkout@v2
       with:
@@ -33,8 +31,8 @@ jobs:
   validate-aur:
     runs-on: ubuntu-20.04
     container: zasdfgbnm/archlinux-yaourt
-    # needs:
-    #   - archlinux-aur
+    needs:
+      - archlinux-aur
     steps:
     - name: validate tcg
       run: |
@@ -48,46 +46,3 @@ jobs:
         yaourt -Sy --noconfirm tcg-git
         tcg
         sudo pacman -Rns --noconfirm tcg-git
-
-  make-repo:
-    runs-on: ubuntu-20.04
-    container: zasdfgbnm/archlinux-yaourt
-    needs:
-      - validate-aur
-    steps:
-    - name: build tcg
-      run: |
-        set -eux
-        pwd
-        sudo chown -R user .
-        mkdir repo
-        yaourt -G tcg
-        cd tcg
-        makepkg -s --noconfirm
-        mv *.pkg.tar.zst ../repo
-        cd ../repo
-        repo-add tcg.db.tar.gz *.pkg.tar.zst
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        force_orphan: true
-        publish_dir: repo
-        destination_dir: archlinux
-
-  validate-repo:
-    runs-on: ubuntu-20.04
-    container: archlinux
-    needs:
-      - make-repo
-    steps:
-    - name: Add custom repository to pacman
-      run: |
-        set -eux
-        cat <<<EOF | sudo tee -a /etc/pacman.conf
-        [tcg]
-        SigLevel = Optional
-        Server = https://zasdfgbnm.github.io/tcg/archlinux
-        EOF
-        sudo pacman -Sy tcg
-        tcg
