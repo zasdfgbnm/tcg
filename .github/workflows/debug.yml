@@ -12,7 +12,8 @@ jobs:
     - name: build tcg
       run: |
         set -eux
-        mkdir /w
+        pwd
+        sudo chown user .
         cd /w
         yaourt -G tcg
         ls
