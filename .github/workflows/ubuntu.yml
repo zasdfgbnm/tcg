@@ -79,3 +79,23 @@ jobs:
       run: |
         sudo dmesg
         journalctl --no-pager
+
+  push-package:
+    needs:
+      - limited-tests
+    # if: github.event_name == 'push'
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: deb-package
+    - name: Show
+      run: |
+        set -eux
+        ls
+        pwd
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        destination_dir: ubuntu
