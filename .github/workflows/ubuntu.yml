@@ -39,7 +39,7 @@ jobs:
         set -eux
         cd build
         cpack
-        apt-get download libfmt7
+        apt-get download libfmt7 libspdlog1
     - uses: actions/upload-artifact@v2
       with:
         name: deb-package
