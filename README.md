@@ -29,7 +29,7 @@ If you use [Xonsh](https://xon.sh), we have a xontrib, see [shells/xonsh/README.
 
 ## Install from source
 
-`tcg` requires boost, you need to install boost on your system first.
+`tcg` requires [boost](https://www.boost.org/), [fmt](https://github.com/fmtlib/fmt), and [spdlog](https://github.com/gabime/spdlog), you need to install boost on your system first.
 
 
 To clone `tcg` from github, run the following command:
