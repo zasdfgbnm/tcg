@@ -8,8 +8,6 @@ jobs:
   archlinux-pkg:
     runs-on: ubuntu-20.04
     container: zasdfgbnm/archlinux-yaourt
-    needs:
-      - archlinux-aur
     steps:
     - name: build tcg
       run: |
