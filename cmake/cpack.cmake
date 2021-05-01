@@ -1,0 +1,6 @@
+set(CPACK_GENERATOR "DEB")
+set(CPACK_PACKAGE_CONTACT "tcg <aur-tcg@emailaddress.biz>")
+set(CPACK_PACKAGE_VERSION ${VERSION})
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-filesystem1.71.0, libfmt7, libspdlog1, libseccomp2")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/zasdfgbnm/tcg")
+include(CPack)

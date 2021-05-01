@@ -45,3 +45,4 @@ configure_file(src/config.h.in config.h @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 include(cmake/coverage.cmake)
+include(cmake/cpack.cmake)
