@@ -76,7 +76,7 @@ jobs:
 
   validate-repo:
     runs-on: ubuntu-20.04
-    container: zasdfgbnm/archlinux-yaourt
+    container: archlinux
     needs:
       - make-repo
     steps:
