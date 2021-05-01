@@ -1,4 +1,4 @@
-name: archlinux
+name: full
 
 on:
   pull_request:
