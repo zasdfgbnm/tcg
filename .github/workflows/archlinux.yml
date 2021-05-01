@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-20.04
     container: zasdfgbnm/archlinux-yaourt
     needs:
-      - archlinux-aur
+      - push-aur
     steps:
     - name: validate tcg
       run: |

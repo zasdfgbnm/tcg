@@ -24,7 +24,13 @@ For systems prior to v248, add the following kernel parameters at boot time:
 
 # Install
 
-If you use Archlinux, you can install from  [Archlinux AUR](https://aur.archlinux.org/packages/tcg-git/).
+If you use Archlinux, you can install from  [Archlinux AUR](https://aur.archlinux.org/packages/tcg/).
+
+If you use Ubuntu or Debian, you can add the following line to your `/etc/apt/sources.list`:
+```
+deb [trusted=yes check-date=no] https://zasdfgbnm.github.io/tcg/deb/ all main
+```
+and install with `apt install tcg`.
 
 If you use [Xonsh](https://xon.sh), we have a xontrib, see [shells/xonsh/README.md](shells/xonsh/README.md) for more information.
 
