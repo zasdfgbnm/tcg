@@ -30,20 +30,16 @@ jobs:
         CXX:  g++-10
       run: |
         set -eux
-        ver=$(python shells/xonsh/setup.py --version)
         mkdir build
         cd build
-        cmake -DVERSION=${ver} ..
+        cmake ..
         make -j
     - name: Package
-      run: |
-        set -eux
-        cd packaging/debian
-        sudo ./build.xsh
+      run: cpack
     - uses: actions/upload-artifact@v2
       with:
         name: deb-package
-        path: packaging/debian/*.deb
+        path: build/*.deb
         retention-days: 5
 
   limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup v2 controllers)
