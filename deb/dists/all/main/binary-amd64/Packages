@@ -1,0 +1,75 @@
+Package: libfmt7
+Priority: optional
+Section: libs
+Installed-Size: 295
+Maintainer: Shengjing Zhu <zhsj@debian.org>
+Architecture: amd64
+Source: fmtlib
+Version: 7.1.3+ds1-5
+Depends: libc6 (>= 2.14), libgcc-s1 (>= 3.0), libstdc++6 (>= 9)
+Filename: pool/main/f/fmtlib/libfmt7_7.1.3+ds1-5_amd64.deb
+Size: 110488
+MD5sum: 2af09cf968587c39bf0aa4f3e3592880
+SHA1: f4f9b5ca3b13a30d93fad618a10e196f8efead1b
+SHA256: d6348fcda5f44d4808b7538fd6f580143b65bb1063e4db89890b9263514d7523
+SHA512: 84fcfea7b070c0e048e0e3475e308f84492a0ee692769aec63158143db94275658c4fcdec8544f655d010d8ae6dce5106f1944c17117ae52da9800398eed4fff
+Description: fast type-safe C++ formatting library -- library
+ This library provides fast, type-safe, small, C++11-aware replacement of
+ (s)printf and related machinery. In some cases it's noticeably faster
+ than boost::format, boost::lexical_cast and even sprintf itself.
+ .
+ This package contains the shared library.
+Homepage: https://fmt.dev/
+Multi-Arch: same
+
+Package: libspdlog1
+Priority: optional
+Section: libs
+Installed-Size: 435
+Maintainer: Debian Med Packaging Team <debian-med-packaging@lists.alioth.debian.org>
+Architecture: amd64
+Source: spdlog
+Version: 1:1.8.1+ds-2.1
+Provides: libspdlog1-fmt7
+Depends: libc6 (>= 2.30), libfmt7 (>= 7.1.3+ds1), libgcc-s1 (>= 3.0), libstdc++6 (>= 6)
+Breaks: bear (<< 3.0.5-1), libear (<< 3.0.5-1), libpurify2.0 (<< 2.0.0-5+b2), nheko (<< 0.7.2-3+b1), purify (<< 2.0.0-5+b2), waybar (<< 0.9.4-1+b2)
+Filename: pool/main/s/spdlog/libspdlog1_1%3a1.8.1+ds-2.1_amd64.deb
+Size: 89704
+MD5sum: 60572f8aebbfa6d642b3c2967c6731fc
+SHA1: f852ce7d2dc75e0ec0b03162613ee9ed78e7145f
+SHA256: a4b09a7ac7f65f70c0c1834ecdf80db7955fafe6dd9278efbbbd0495d12d8a6b
+SHA512: 24ee5b05c6608e14e3d53d111e742ca88f435407065cbc0284bf207ed113891a030eafc078e96f8cb136fe7171b3dff3202614b0527b14902636c53008841d85
+Description: Very fast C++ logging library
+ Features: Very fast - performance is the primary goal; Headers only; No
+ dependencies - just copy and use; call style using the excellent cppformat
+ library; ostream call style is supported too; Optional extremely fast
+ asynchronous mode - using lockfree queues and other tricks to reach millions
+ of calls/sec; Custom formatting; Multi/Single threaded loggers; Easily
+ extendable with custom log targets (just implement a single function in the
+ sink interface). Severity based filtering - threshold levels can be modified
+ in runtime as well as in compile time.
+ .
+ Various log targets:
+ Rotating log files, Daily log files, Console logging, Linux syslog.
+ .
+ This is the compiled version of the library.
+Homepage: https://github.com/gabime/spdlog
+Multi-Arch: same
+
+Package: tcg
+Priority: optional
+Section: devel
+Installed-Size: 988
+Maintainer: tcg <aur-tcg@emailaddress.biz>
+Architecture: amd64
+Version: 0.2.73
+Depends: libboost-filesystem1.71.0, libfmt7, libspdlog1 (>= 1.8.1), libseccomp2
+Filename: pool/main/t/tcg/tcg-0.2.73-Linux.deb
+Size: 225998
+MD5sum: d0bbcd92e39bd04c247fdd6f6937fe25
+SHA1: 07a029140eb7e06fac32e0a082621f8f055d65c8
+SHA256: 3ccf21106d545f606512cf407c50626ab036efdb765de0a2f6e8f09a6819729d
+SHA512: f0d648dd06b64ae4b270caac2d170da4537a0a85dad2efd58d3e9beecf6b9dd727ea4ea287b0512753b10fb5d2067e906e7f89c6538e8b45495f8f8cb074e602
+Description: tcg built using CMake
+Homepage: https://github.com/zasdfgbnm/tcg
+
