@@ -35,7 +35,10 @@ jobs:
         cmake ..
         make -j
     - name: Package
-      run: cpack
+      run: |
+        set -eux
+        cd build
+        cpack
     - uses: actions/upload-artifact@v2
       with:
         name: deb-package
