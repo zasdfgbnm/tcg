@@ -52,13 +52,12 @@ jobs:
   make-repo:
     runs-on: ubuntu-20.04
     container: zasdfgbnm/archlinux-yaourt
-    # needs:
-    #   - archlinux-aur
+    needs:
+      - validate-aur
     steps:
     - name: build tcg
       run: |
         set -eux
-        sudo mkdir /github
         sudo chown user . /github
         mkdir repo
         yaourt -G tcg
