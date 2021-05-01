@@ -59,7 +59,7 @@ jobs:
       with:
         python-version: '3.9'
     - name: Setup environment
-      run: ｜
+      run: |
         set -eux
         sudo apt install -y ./*.deb
         tcg
