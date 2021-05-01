@@ -99,8 +99,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install aptly
 
-        # sudo apt-get install -y dpkg-dev
-        # dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
         aptly repo create -component=main tcg
         aptly repo add tcg ./*.deb
         aptly repo show -with-packages tcg
