@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  archlinux-aur:
+  push-aur:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
@@ -38,11 +38,13 @@ jobs:
       run: |
         set -eux
         yaourt -Sy --noconfirm tcg
+        tcg
         sudo pacman -Rns --noconfirm tcg
     - name: validate tcg-git
       run: |
         set -eux
         yaourt -Sy --noconfirm tcg-git
+        tcg
         sudo pacman -Rns --noconfirm tcg-git
 
   xonsh-pypi:

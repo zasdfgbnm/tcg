@@ -1,0 +1,22 @@
+on:
+  pull_request:
+
+jobs:
+
+  archlinux-pkg:
+    runs-on: ubuntu-20.04
+    container: zasdfgbnm/archlinux-yaourt
+    needs:
+      - archlinux-aur
+    steps:
+    - name: build tcg
+      run: |
+        set -eux
+        yaourt -G tcg
+        cd tcg
+        makepkg
+    - uses: actions/upload-artifact@v2
+      with:
+        name: archlinux-pkg
+        path: tcg/*.pkg.zst
+        retention-days: 1
