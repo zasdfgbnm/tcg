@@ -93,8 +93,15 @@ jobs:
     - name: Prepare
       run: |
         set -eux
-        sudo apt-get install -y dpkg-dev
-        dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+        # install aptly
+        deb http://repo.aptly.info/ nightly main
+        apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED75B5A4483DA07C
+        apt-get update
+        apt-get install aptly
+
+        # sudo apt-get install -y dpkg-dev
+        # dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+        aptly repo create -component=main
         tree -H '.' --noreport --charset utf-8 > index.html
         ls
     - name: Deploy
