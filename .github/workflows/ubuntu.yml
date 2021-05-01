@@ -32,9 +32,8 @@ jobs:
         set -eux
         mkdir build
         cd build
-        cmake ..
+        cmake -DCMAKE_INSTALL_PREFIX=/usr ..
         make -j
-        make install
     - name: Package
       run: |
         set -eux
