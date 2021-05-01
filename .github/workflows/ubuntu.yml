@@ -94,7 +94,7 @@ jobs:
       run: |
         set -eux
         # install aptly
-        deb http://repo.aptly.info/ nightly main
+        sudo add-apt-repository "deb http://repo.aptly.info/ nightly main“
         apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED75B5A4483DA07C
         apt-get update
         apt-get install aptly
