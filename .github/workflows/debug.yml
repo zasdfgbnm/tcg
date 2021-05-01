@@ -14,7 +14,6 @@ jobs:
         set -eux
         pwd
         sudo chown user .
-        cd /w
         yaourt -G tcg
         ls
         cd tcg
