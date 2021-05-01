@@ -58,7 +58,8 @@ jobs:
     - name: build tcg
       run: |
         set -eux
-        sudo chown -R user . /github
+        pwd
+        sudo chown -R user .
         mkdir repo
         yaourt -G tcg
         cd tcg
