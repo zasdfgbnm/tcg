@@ -122,6 +122,8 @@ jobs:
     needs:
       - make-repo
     steps:
+    - name: Wait for things to populate
+      run: sleep 60
     - name: Validate deploy
       run: |
         echo "deb [trusted=yes check-date=no] https://zasdfgbnm.github.io/tcg/deb/ all main" | sudo tee -a /etc/apt/sources.list
