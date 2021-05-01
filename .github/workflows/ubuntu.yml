@@ -99,13 +99,17 @@ jobs:
         sudo apt-get update
         sudo apt-get install aptly
 
+        # prepare debs
+        apt-get download libfmt7
+
+        # create repository
         aptly repo create -component=main tcg
         aptly repo add tcg ./*.deb
         aptly repo show -with-packages tcg
         aptly publish repo -distribution=all -skip-signing tcg
 
+        # prepare to push
         cp -r ~/.aptly/public ./deb
-
         tree -H '.' --noreport --charset utf-8 > index.html
         ls
     - name: Deploy
