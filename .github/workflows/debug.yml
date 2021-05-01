@@ -13,6 +13,7 @@ jobs:
       run: |
         set -eux
         yaourt -G tcg
+        ls
         cd tcg
         makepkg
     - uses: actions/upload-artifact@v2
