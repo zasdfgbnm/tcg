@@ -34,6 +34,7 @@ jobs:
         cd build
         cmake ..
         make -j
+        make install
     - name: Package
       run: |
         set -eux

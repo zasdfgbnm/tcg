@@ -44,5 +44,11 @@ string(TIMESTAMP BUILD_DATE "%Y-%m-%d")
 configure_file(src/config.h.in config.h @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+install(TARGETS tcg
+       RUNTIME DESTINATION bin
+       PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+                   GROUP_EXECUTE WORLD_READ WORLD_EXECUTE SETUID
+)
+
 include(cmake/coverage.cmake)
 include(cmake/cpack.cmake)
