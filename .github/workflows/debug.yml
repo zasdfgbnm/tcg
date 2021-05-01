@@ -22,5 +22,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: archlinux-pkg
-        path: tcg/*.pkg.zst
+        path: tcg/*.pkg.tar.zst
         retention-days: 1
