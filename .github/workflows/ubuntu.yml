@@ -117,6 +117,10 @@ jobs:
         force_orphan: true
         publish_dir: deb
         destination_dir: deb
+
+  validate-repo:
+    needs:
+      - push-package
     - name: Validate deploy
       run: |
         sudo add-apt-repository "deb https://zasdfgbnm.github.io/tcg/deb/ all main"
