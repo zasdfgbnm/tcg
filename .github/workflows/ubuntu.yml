@@ -59,13 +59,15 @@ jobs:
       with:
         python-version: '3.9'
     - name: Setup environment
-      run: sudo apt install -y ./*.deb
+      run: ｜
+        set -eux
+        sudo apt install -y ./*.deb
+        tcg
     - name: Run tests on cgroup hybrid
       continue-on-error: false
       run: |
         set -eux
         pip install xonsh pytest wheel pytest-json-report pytest-timeout
-        tcg
         export TCG_LOG_LEVEL=debug
         pytest --json-report --json-report-file=test_result.json --timeout=60 -v
     - uses: actions/upload-artifact@v2
