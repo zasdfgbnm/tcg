@@ -102,8 +102,11 @@ jobs:
         # sudo apt-get install -y dpkg-dev
         # dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
         aptly repo create -component=main tcg
-        aptly repo add tcg .
+        aptly repo add tcg ./*.deb
         aptly repo show -with-packages tcg
+        aptly publish repo -distribution=all -skip-signing tcg
+
+        cp -r ~/.aptly/public ./deb
 
         tree -H '.' --noreport --charset utf-8 > index.html
         ls
@@ -111,11 +114,11 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: .
-        destination_dir: debian/x86_64
+        publish_dir: deb
+        destination_dir: deb
     - name: Validate deploy
       run: |
-        sudo add-apt-repository "deb https://zasdfgbnm.github.io/tcg/debian/x86_64 /"
+        sudo add-apt-repository "deb https://zasdfgbnm.github.io/tcg/deb all main"
         sudo apt-get update
         sudo apt-get install -y tcg
         tcg
