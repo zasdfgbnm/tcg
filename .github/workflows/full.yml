@@ -1,0 +1,190 @@
+name: full
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+
+  archlinux-pkg:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: build
+      run: |
+        set -eux
+        pushd packaging/archlinux
+        ./prepare.sh
+        popd
+        sudo docker run --privileged -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
+          set -eux
+          export CODE_COVERAGE=ON
+          cp -r /workspace/packaging/archlinux/tcg-git ~/package
+          cd ~/package
+          sudo pacman -Sy
+          sed -i "s/source=.*/source=(\"tcg::git+file:\/\/\/workspace\")/g" PKGBUILD
+          makepkg -s --noconfirm
+          sudo cp *.pkg.tar.zst /workspace/packaging/archlinux
+        '
+    - uses: actions/upload-artifact@v2
+      with:
+        name: archlinux-pkg
+        path: packaging/archlinux/*.pkg.tar.zst
+        retention-days: 5
+
+  archlinux-kernel:
+    runs-on: ubuntu-20.04
+    container: archlinux
+    steps:
+    - name: Install missing packages
+      run: |
+        pacman -Sy --noconfirm linux mkinitcpio
+    - name: Regenerate initramfs
+      run: |
+        set -eux
+        sed -i 's/autodetect //g' /etc/mkinitcpio.conf
+        mkinitcpio -P
+    - uses: actions/upload-artifact@v2
+      with:
+        name: archlinux-kernel
+        path: /boot/*
+        retention-days: 1
+
+  archlinux-image:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Install qemu
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-system
+    - name: Create empty image
+      run: |
+        set -eux
+        sudo modprobe nbd
+        qemu-img create -f qcow2 archlinux.qcow2 10.01G
+        sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
+        sudo mkfs.ext4 /dev/nbd0
+        sudo mount /dev/nbd0 /mnt
+    - name: Bootstrap archlinux
+      run: |
+        set -eux
+        sudo docker run --privileged -v /mnt:/newroot archlinux bash -c '
+          set -eux
+          pacman -Sy --noconfirm wget arch-install-scripts
+          wget https://gitlab.archlinux.org/archlinux/archlinux-docker/-/raw/master/pacman-conf.d-noextract.conf?inline=false -O pacman-conf.d-noextract.conf
+          wget https://raw.githubusercontent.com/zasdfgbnm-dockers/basic/master/pacman.conf -O pacman-zasdfgbnmsystem.conf
+          cat pacman-conf.d-noextract.conf pacman-zasdfgbnmsystem.conf >> /etc/pacman.conf
+          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog lcov gcc libseccomp strace
+        '
+        sudo cp /etc/resolv.conf /mnt/etc
+        sudo chroot /mnt pip install pytest-json-report pytest-timeout wheel setuptools_scm
+        ls /mnt/usr/share/
+    - name: Setup users and system
+      run: |
+        set -eux
+        sudo chroot /mnt useradd -m user
+        sudo chroot /mnt usermod -a -G wheel user
+        sudo chroot /mnt bash -c 'echo root:password | chpasswd'
+        sudo chroot /mnt bash -c 'echo user:password | chpasswd'
+        echo '%wheel ALL=(ALL) NOPASSWD: ALL' | sudo tee /mnt/etc/sudoers
+        echo 'root ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /mnt/etc/sudoers
+        echo "archvm" | sudo tee /mnt/etc/hostname
+    - name: Setup autologin
+      run: |
+        set -eux
+        # https://wiki.archlinux.org/index.php/Getty#Serial_console
+        sudo mkdir -p /mnt/etc/systemd/system/serial-getty@ttyS0.service.d/
+        cat << EOF | sudo tee /mnt/etc/systemd/system/serial-getty@ttyS0.service.d/autologin.conf
+        [Service]
+        ExecStart=
+        ExecStart=-/usr/bin/agetty --autologin user -s %I 115200,38400,9600 vt102
+        EOF
+    - name: Setup autorun of tests
+      run: |
+        set -eux
+        cat << EOF | sudo tee /mnt/home/user/.bashrc
+        # Can not use "set -e", because this will create infinite loop of crash and relogin
+        # when test fails
+        set -ux
+        sudo pacman -U --noconfirm /*.pkg.tar.zst
+        export TCG_LOG_LEVEL=debug
+        sudo chown -R user:user /var/lib/tcg/
+        py.test --json-report --json-report-file=test_result.json --timeout=60 -v
+        sudo cp /usr/src/tcg/* /var/lib/tcg/
+        lcov --capture --directory /var/lib/tcg --output-file coverage.info
+        sudo dmesg
+        journalctl --no-pager
+        sudo poweroff
+        EOF
+        sudo chroot /mnt chown -R user:user /home/user
+    - name: Cleanup mounts
+      run: |
+        set -eux
+        sync
+        sudo umount /mnt
+        sudo qemu-nbd --disconnect /dev/nbd0
+    - uses: actions/upload-artifact@v2
+      with:
+        name: archlinux-image
+        path: archlinux.qcow2
+        retention-days: 1
+
+  tests:
+    runs-on: ubuntu-20.04
+    needs:
+      - archlinux-pkg
+      - archlinux-kernel
+      - archlinux-image
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v2
+      with:
+        name: archlinux-pkg
+    - uses: actions/download-artifact@v2
+      with:
+        name: archlinux-kernel
+    - uses: actions/download-artifact@v2
+      with:
+        name: archlinux-image
+    - name: Install qemu
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-system
+    - name: Copy files
+      run: |
+        set -eux
+        sudo modprobe nbd
+        sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
+        sudo mount /dev/nbd0 /mnt
+        ls
+        sudo cp *.pkg.tar.zst /mnt
+        sudo cp -r test shells /mnt/home/user
+        sudo chroot /mnt chown -R user:user /home/user
+        sync
+        sudo umount /mnt
+        sudo qemu-nbd --disconnect /dev/nbd0
+    - name: Run tests in qemu
+      timeout-minutes: 30
+      run: qemu-system-x86_64 -no-reboot -kernel vmlinuz-linux -initrd initramfs-linux.img -hda archlinux.qcow2 -append "systemd.unified_cgroup_hierarchy=1 cgroup_no_v1=all console=ttyS0 root=/dev/sda rw" -monitor vc -serial stdio -nographic -m 2048
+    - name: Copy result files
+      run: |
+        set -eux
+        sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
+        sudo mount /dev/nbd0 /mnt
+        sudo cp /mnt/home/user/test_result.json .
+        sudo cp /mnt/home/user/coverage.info .
+        sudo chown -R $(id -u):$(id -g) .
+        sync
+        sudo umount /mnt
+        sudo qemu-nbd --disconnect /dev/nbd0
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.info
+        verbose: true
+    - name: Check test results
+      run: sudo python -c "import sys; import json; j = json.load(open('test_result.json')); sys.exit(j['exitcode'])"

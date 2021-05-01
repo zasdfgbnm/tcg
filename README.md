@@ -1,9 +1,10 @@
 # tcg: cgroups for terminals
 
 ![sanity-check](https://github.com/zasdfgbnm/tcg/workflows/sanity-check/badge.svg)
-![archlinux](https://github.com/zasdfgbnm/tcg/workflows/archlinux/badge.svg)
+![full](https://github.com/zasdfgbnm/tcg/workflows/full/badge.svg)
 ![ubuntu](https://github.com/zasdfgbnm/tcg/workflows/ubuntu/badge.svg)
-![deploy](https://github.com/zasdfgbnm/tcg/workflows/deploy/badge.svg)
+![archlinux](https://github.com/zasdfgbnm/tcg/workflows/archlinux/badge.svg)
+![xonsh](https://github.com/zasdfgbnm/tcg/workflows/xonsh/badge.svg)
 [![codecov](https://codecov.io/gh/zasdfgbnm/tcg/branch/master/graph/badge.svg?token=rhCEiUe7K2)](https://codecov.io/gh/zasdfgbnm/tcg)
 
 Terminal cgroup, short for `tcg`, is a tool to help people manage system's resource usage through cgroup. To use `tcg`, you should first do the following:

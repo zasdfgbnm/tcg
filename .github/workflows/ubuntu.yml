@@ -39,6 +39,7 @@ jobs:
         set -eux
         cd build
         cpack
+        apt-get download libfmt7 libspdlog1
     - uses: actions/upload-artifact@v2
       with:
         name: deb-package
@@ -60,14 +61,13 @@ jobs:
     - name: Setup environment
       run: |
         set -eux
-        ci/add-debian-sid.sh
-        sudo apt install -y ./tcg*.deb
+        sudo apt install -y ./*.deb
+        tcg
     - name: Run tests on cgroup hybrid
       continue-on-error: false
       run: |
         set -eux
         pip install xonsh pytest wheel pytest-json-report pytest-timeout
-        tcg
         export TCG_LOG_LEVEL=debug
         pytest --json-report --json-report-file=test_result.json --timeout=60 -v
     - uses: actions/upload-artifact@v2
@@ -79,3 +79,52 @@ jobs:
       run: |
         sudo dmesg
         journalctl --no-pager
+
+  make-repo:
+    runs-on: ubuntu-20.04
+    needs:
+      - limited-tests
+    if: github.event_name == 'push'
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: deb-package
+    - name: Prepare
+      run: |
+        set -eux
+        # install aptly
+        sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED75B5A4483DA07C
+        sudo add-apt-repository "deb http://repo.aptly.info/ nightly main"
+        sudo apt-get update
+        sudo apt-get install aptly
+
+        # create repository
+        aptly repo create -component=main tcg
+        aptly repo add tcg ./*.deb
+        aptly repo show -with-packages tcg
+        aptly publish repo -distribution=all -skip-signing tcg
+
+        # prepare to push
+        cp -r ~/.aptly/public ./deb
+        cd deb
+        tree -H '.' --noreport --charset utf-8 > index.html
+        ls
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        force_orphan: true
+        publish_dir: deb
+        destination_dir: deb
+
+  validate-repo:
+    runs-on: ubuntu-20.04
+    needs:
+      - make-repo
+    steps:
+    - name: Validate deploy
+      run: |
+        echo "deb [trusted=yes check-date=no] https://zasdfgbnm.github.io/tcg/deb/ all main" | sudo tee -a /etc/apt/sources.list
+        sudo apt-get update
+        sudo apt-get install -y tcg
+        tcg
