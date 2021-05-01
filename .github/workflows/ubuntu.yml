@@ -83,7 +83,8 @@ jobs:
   push-package:
     runs-on: ubuntu-20.04
     needs:
-      - limited-tests
+      - debian-pkg
+      # - limited-tests
     # if: github.event_name == 'push'
     steps:
     - uses: actions/download-artifact@v2
@@ -101,4 +102,10 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: .
-        destination_dir: ubuntu
+        destination_dir: debian/x86_64
+    - name: Validate deploy
+      run: |
+        sudo add-apt-repository "deb https://zasdfgbnm.github.io/tcg/debian/x86_64 /"
+        sudo apt-get update
+        sudo apt-get install -y tcg
+        tcg
