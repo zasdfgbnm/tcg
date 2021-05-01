@@ -107,6 +107,7 @@ jobs:
 
         # prepare to push
         cp -r ~/.aptly/public ./deb
+        cd deb
         tree -H '.' --noreport --charset utf-8 > index.html
         ls
     - name: Deploy
