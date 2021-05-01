@@ -122,6 +122,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - push-package
+    steps:
     - name: Validate deploy
       run: |
         sudo add-apt-repository "deb [trusted=yes] https://zasdfgbnm.github.io/tcg/deb/ all main"
