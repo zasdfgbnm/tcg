@@ -81,6 +81,7 @@ jobs:
         journalctl --no-pager
 
   push-package:
+    runs-on: ubuntu-20.04
     needs:
       - limited-tests
     # if: github.event_name == 'push'
