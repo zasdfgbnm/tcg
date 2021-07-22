@@ -25,7 +25,7 @@ jobs:
           export CODE_COVERAGE=ON
           cp -r /workspace/packaging/archlinux/tcg-git ~/package
           cd ~/package
-          sudo pacman -Sy lcov
+          sudo pacman -Sy archlinuxcn-keyring lcov
           sed -i "s/source=.*/source=(\"tcg::git+file:\/\/\/workspace\")/g" PKGBUILD
           makepkg -s --noconfirm
           sudo cp *.pkg.tar.zst /workspace/packaging/archlinux
@@ -79,7 +79,7 @@ jobs:
           wget https://raw.githubusercontent.com/zasdfgbnm-dockers/basic/master/pacman.conf -O pacman-zasdfgbnmsystem.conf
           wget https://raw.githubusercontent.com/zasdfgbnm-dockers/archlinux-yaourt/master/custom_repo.conf -O pacman-yaourt.conf
           cat pacman-conf.d-noextract.conf pacman-zasdfgbnmsystem.conf pacman-yaourt.conf >> /etc/pacman.conf
-          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog lcov gcc libseccomp strace
+          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog archlinuxcn-keyring lcov gcc libseccomp strace
         '
         sudo cp /etc/resolv.conf /mnt/etc
         sudo chroot /mnt pip install pytest-json-report pytest-timeout wheel setuptools_scm
