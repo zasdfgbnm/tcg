@@ -27,7 +27,7 @@ DEFINE_HANDLER(args_, "set the value of the key of the specified cgroup", {
   auto d = name_dir(name, true) + "/" + key;
   logger->debug("Printing {} to {}...", value, d);
   auto out = fmt::output_file(d);
-  out.print(value);
+  out.print("{}", value);
   out.close();
   logger->debug("Done printting.");
 });

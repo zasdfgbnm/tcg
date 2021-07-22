@@ -38,7 +38,7 @@ DEFINE_HANDLER({}, "show the cgroup of the current shell", {
     logger->debug("Parsing line: {}", line);
     std::size_t pos;
     if ((pos = line.find(userdir)) != std::string::npos) {
-      fmt::print(line.substr(pos + userdir.size()) + "\n");
+      fmt::print("{}", line.substr(pos + userdir.size()) + "\n");
       break;
     }
   }

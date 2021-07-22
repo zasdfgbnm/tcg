@@ -58,7 +58,7 @@ DEFINE_HANDLER({}, "show the help information for the entire tcg tool", {
       continue;
     }
     fmt::print(name_format, i.first + ": ");
-    fmt::print(i.second->short_description);
+    fmt::print("{}", i.second->short_description);
     fmt::print("\n");
   }
   fmt::print("\n");
@@ -76,7 +76,7 @@ DEFINE_HANDLER({}, "show the help information for the entire tcg tool", {
         if (!first) {
           fmt::print(", ");
         }
-        fmt::print(a);
+        fmt::print("{}", a);
         first = false;
       }
       fmt::print("\n");
@@ -153,7 +153,7 @@ DEFINE_HANDLER(args_, "shows the help for the given command", {
   // long description
   if (c->additional_note.size() > 0) {
     fmt::print("\n");
-    fmt::print(c->additional_note);
+    fmt::print("{}", c->additional_note);
   }
 });
 
