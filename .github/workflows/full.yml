@@ -22,7 +22,7 @@ jobs:
         popd
         sudo docker run --privileged -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
           set -eux
-          # export CODE_COVERAGE=ON
+          export CODE_COVERAGE=ON
           cp -r /workspace/packaging/archlinux/tcg-git ~/package
           cd ~/package
           sudo pacman -Sy --noconfirm archlinuxcn-keyring
@@ -81,6 +81,7 @@ jobs:
           wget https://raw.githubusercontent.com/zasdfgbnm-dockers/archlinux-yaourt/master/custom_repo.conf -O pacman-yaourt.conf
           cat pacman-conf.d-noextract.conf pacman-zasdfgbnmsystem.conf pacman-yaourt.conf >> /etc/pacman.conf
           pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog archlinuxcn-keyring gcc libseccomp strace
+          cat pacman-conf.d-noextract.conf pacman-zasdfgbnmsystem.conf pacman-yaourt.conf >> /newroot/etc/pacman.conf
           cp /etc/resolv.conf /newroot/etc/resolv.conf
           chroot /newroot pacman -Sy --noconfirm lcov
         '
