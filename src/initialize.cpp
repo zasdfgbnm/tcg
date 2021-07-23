@@ -127,7 +127,7 @@ void enable_controllers(std::shared_ptr<spdlog::logger> logger,
     auto text = "+" + c;
     logger->debug("Printting \"{}\" to {}.", text, dir);
     auto out = fmt::output_file(subtree_control);
-    out.print(text);
+    out.print("{}", text);
     out.close();
     logger->debug("Done printting.");
   }
