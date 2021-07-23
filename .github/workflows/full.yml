@@ -80,10 +80,11 @@ jobs:
           wget https://raw.githubusercontent.com/zasdfgbnm-dockers/basic/master/pacman.conf -O pacman-zasdfgbnmsystem.conf
           wget https://raw.githubusercontent.com/zasdfgbnm-dockers/archlinux-yaourt/master/custom_repo.conf -O pacman-yaourt.conf
           cat pacman-conf.d-noextract.conf pacman-zasdfgbnmsystem.conf pacman-yaourt.conf >> /etc/pacman.conf
-          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog archlinuxcn-keyring gcc libseccomp strace
+          pacstrap /newroot base sudo python python-pip python-pytest xonsh boost-libs fmt spdlog gcc libseccomp strace
           cat pacman-conf.d-noextract.conf pacman-zasdfgbnmsystem.conf pacman-yaourt.conf >> /newroot/etc/pacman.conf
           cp /etc/resolv.conf /newroot/etc/resolv.conf
           pacman -Sy --noconfirm archlinuxcn-keyring
+          pacman --root /newroot -Sy --noconfirm archlinuxcn-keyring
           pacman --root /newroot -Sy --noconfirm lcov
         '
         sudo cp /etc/resolv.conf /mnt/etc
