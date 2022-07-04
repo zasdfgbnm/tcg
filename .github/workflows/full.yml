@@ -20,7 +20,7 @@ jobs:
         pushd packaging/archlinux
         ./prepare.sh
         popd
-        sudo docker run --privileged -v $PWD:/workspace zasdfgbnm/archlinux-yaourt bash -c '
+        sudo docker run --privileged -v $PWD:/workspace zasdfgbnm/archlinux-yay bash -c '
           set -eux
           export CODE_COVERAGE=ON
           cp -r /workspace/packaging/archlinux/tcg-git ~/package

@@ -30,19 +30,19 @@ jobs:
 
   validate-aur:
     runs-on: ubuntu-20.04
-    container: zasdfgbnm/archlinux-yaourt
+    container: zasdfgbnm/archlinux-yay
     needs:
       - push-aur
     steps:
     - name: validate tcg
       run: |
         set -eux
-        yaourt -Sy --noconfirm tcg
+        yay -Sy --noconfirm tcg
         tcg
         sudo pacman -Rns --noconfirm tcg
     - name: validate tcg-git
       run: |
         set -eux
-        yaourt -Sy --noconfirm tcg-git
+        yay -Sy --noconfirm tcg-git
         tcg
         sudo pacman -Rns --noconfirm tcg-git
