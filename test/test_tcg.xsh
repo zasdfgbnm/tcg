@@ -73,6 +73,7 @@ def install_xontrib():
 
 def test_invalid_argument():
     with pytest.raises(subprocess.CalledProcessError):
+        $RAISE_SUBPROC_ERROR = True
         tcg aaa
 
 
