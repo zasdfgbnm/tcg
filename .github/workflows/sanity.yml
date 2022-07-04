@@ -11,7 +11,7 @@ on:
 jobs:
 
   clang-format:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - name: Lint with clang-format
@@ -26,7 +26,7 @@ jobs:
         exit 1
 
   # clang-tidy:
-  #   runs-on: ubuntu-20.04
+  #   runs-on: ubuntu-22.04
   #   steps:
   #   - uses: actions/checkout@v2
   #   - name: Install dependencies
@@ -43,7 +43,7 @@ jobs:
   #       clang-tidy -p build/compile_commands.json src/*.{cpp,hpp}
 
   xonsh-test-pypi:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
       with:

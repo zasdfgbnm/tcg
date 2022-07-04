@@ -11,7 +11,7 @@ on:
 jobs:
 
   debian-pkg:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
       with:
@@ -47,7 +47,7 @@ jobs:
         retention-days: 5
 
   limited-tests:  # run tests that does not require VM (i.e. those that don't uses cgroup v2 controllers)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - debian-pkg
     steps:
@@ -81,7 +81,7 @@ jobs:
         journalctl --no-pager
 
   make-repo:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - limited-tests
     if: github.event_name == 'push'
@@ -118,7 +118,7 @@ jobs:
         destination_dir: deb
 
   validate-repo:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - make-repo
     steps:

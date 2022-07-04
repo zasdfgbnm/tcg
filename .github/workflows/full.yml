@@ -11,7 +11,7 @@ on:
 jobs:
 
   archlinux-pkg:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - name: build
@@ -37,7 +37,7 @@ jobs:
         retention-days: 5
 
   archlinux-kernel:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     container: archlinux
     steps:
     - name: Install missing packages
@@ -55,7 +55,7 @@ jobs:
         retention-days: 1
 
   archlinux-image:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Install qemu
       run: |
@@ -134,7 +134,7 @@ jobs:
         retention-days: 1
 
   tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - archlinux-pkg
       - archlinux-kernel
