@@ -25,7 +25,7 @@ jobs:
           export CODE_COVERAGE=ON
           cp -r /workspace/packaging/archlinux/tcg-git ~/package
           cd ~/package
-          sudo pacman -Sy
+          sudo pacman -Sy tree
           sed -i "s/source=.*/source=(\"tcg::git+file:\/\/\/workspace\")/g" PKGBUILD
           makepkg -s --noconfirm
           sudo cp *.pkg.tar.zst /workspace/packaging/archlinux
