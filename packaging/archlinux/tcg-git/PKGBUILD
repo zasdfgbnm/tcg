@@ -28,6 +28,7 @@ package() {
   cd "$srcdir/tcg"
   install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/tcg/LICENSE"
   if [ "x$CODE_COVERAGE" = "xON" ]; then
+    tree build/
     mkdir -p "${pkgdir}/usr/src/tcg/"
     mkdir -p "${pkgdir}/var/lib/tcg/"
     install -Dm644 build/*.gcno "${pkgdir}/usr/src/tcg/"
