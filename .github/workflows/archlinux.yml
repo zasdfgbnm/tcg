@@ -8,7 +8,7 @@ on:
 jobs:
 
   push-aur:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
       with:
@@ -29,20 +29,20 @@ jobs:
         ./push.sh
 
   validate-aur:
-    runs-on: ubuntu-20.04
-    container: zasdfgbnm/archlinux-yaourt
+    runs-on: ubuntu-22.04
+    container: zasdfgbnm/archlinux-yay
     needs:
       - push-aur
     steps:
     - name: validate tcg
       run: |
         set -eux
-        yaourt -Sy --noconfirm tcg
+        yay -Sy --noconfirm tcg
         tcg
         sudo pacman -Rns --noconfirm tcg
     - name: validate tcg-git
       run: |
         set -eux
-        yaourt -Sy --noconfirm tcg-git
+        yay -Sy --noconfirm tcg-git
         tcg
         sudo pacman -Rns --noconfirm tcg-git
