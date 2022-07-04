@@ -10,7 +10,7 @@ run () {
     sed -i "s/pkgver=x/pkgver=$ver/g" PKGBUILD
     sed -i "s/commit=x/commit=$commit/g" PKGBUILD
     cat PKGBUILD
-    sudo docker run --privileged -v $PWD:/w -w /tmp zasdfgbnm/archlinux-yaourt bash -c '
+    sudo docker run --privileged -v $PWD:/w -w /tmp zasdfgbnm/archlinux-yay bash -c '
         set -eux
         cp -r /w .
         cd w
