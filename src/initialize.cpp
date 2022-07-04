@@ -1,6 +1,7 @@
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <unistd.h>
 #include <unordered_set>
 

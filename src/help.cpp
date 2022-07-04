@@ -126,14 +126,12 @@ DEFINE_HANDLER(args_, "shows the help for the given command", {
     fmt::print(listing_format, "[{}] ", i++);
     fmt::print("tcg {}", c->name);
     for (auto &a : h->arguments) {
-      if (typeid(std::remove_pointer_t<decltype(a)>) == typeid(Variable)) {
+      if (typeid(*a) == typeid(Variable)) {
         fmt::print(" <{}>", a->name);
-      } else if (typeid(std::remove_pointer_t<decltype(a)>) ==
-                 typeid(Varargs)) {
+      } else if (typeid(*a) == typeid(Varargs)) {
         fmt::print(" <{}...>", a->name);
       } else {
-        BOOST_ASSERT_MSG(typeid(std::remove_pointer_t<decltype(a)>) ==
-                             typeid(Keyword),
+        BOOST_ASSERT_MSG(typeid(*a) == typeid(Keyword),
                          "BUG: unknown argument type.");
         fmt::print(" {}", a->name);
         auto kwd = std::dynamic_pointer_cast<const Keyword>(a);
