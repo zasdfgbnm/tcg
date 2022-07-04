@@ -28,6 +28,7 @@ if os.path.isfile('/sys/fs/cgroup/unified/cgroup.procs'):
     CGROUP2_STATUS = Cgroupv2Status.HYBRID
     ROOT = f'/sys/fs/cgroup/unified/terminals/{uid}/'
 
+print("CGROUP2_STATUS:", CGROUP2_STATUS)
 
 known_commands = {
     "help": ["h"],
