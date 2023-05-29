@@ -175,8 +175,8 @@ jobs:
         set -eux
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
-        sudo cp /mnt/home/user/test_result.json .
-        sudo cp /mnt/home/user/coverage.info .
+        sudo cp -f /mnt/home/user/test_result.json .
+        sudo cp -f /mnt/home/user/coverage.info .
         sudo chown -R $(id -u):$(id -g) .
         sync
         sudo umount /mnt
