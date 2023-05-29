@@ -23,7 +23,7 @@ jobs:
       run: |
         set -eux
         ci/add-debian-sid.sh
-        sudo apt-get install -y "libboost-filesystem1.74-dev" "libfmt-dev=8.*" "libspdlog-dev=1:*" libseccomp-dev xonsh
+        sudo apt-get install -y "libboost-filesystem-dev" "libfmt-dev" "libspdlog-dev" libseccomp-dev xonsh
     - name: Compile
       env:
         CC:   gcc-10
@@ -39,7 +39,7 @@ jobs:
         set -eux
         cd build
         cpack
-        apt-get download libfmt8 libspdlog1
+        apt-get download libfmt9 libspdlog1
     - uses: actions/upload-artifact@v2
       with:
         name: deb-package
