@@ -175,16 +175,16 @@ jobs:
         set -eux
         sudo qemu-nbd --connect=/dev/nbd0 archlinux.qcow2
         sudo mount /dev/nbd0 /mnt
-        sudo cp -f /mnt/home/user/test_result.json .
-        sudo cp -f /mnt/home/user/coverage.info .
+        sudo cp /mnt/home/user/test_result.json .
+        # sudo cp /mnt/home/user/coverage.info .
         sudo chown -R $(id -u):$(id -g) .
         sync
         sudo umount /mnt
         sudo qemu-nbd --disconnect /dev/nbd0
-    - uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.info
-        verbose: true
+    # - uses: codecov/codecov-action@v1
+    #   with:
+    #     token: ${{ secrets.CODECOV_TOKEN }}
+    #     files: ./coverage.info
+    #     verbose: true
     - name: Check test results
       run: sudo python -c "import sys; import json; j = json.load(open('test_result.json')); sys.exit(j['exitcode'])"
