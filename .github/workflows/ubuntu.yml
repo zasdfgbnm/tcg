@@ -52,7 +52,7 @@ jobs:
       - debian-pkg
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: deb-package
     - uses: actions/setup-python@v2
@@ -87,7 +87,7 @@ jobs:
       - limited-tests
     if: github.event_name == 'push'
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: deb-package
     - name: Prepare
